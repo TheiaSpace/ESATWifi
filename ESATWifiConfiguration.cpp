@@ -17,9 +17,11 @@
  */
 
 #include "ESATWifiConfiguration.h"
+#include <EEPROM.h>
 
 void ESATWifiConfiguration::begin()
 {
+  EEPROM.begin(CONFIGURATION_LENGTH);
 }
 
 void ESATWifiConfiguration::readConfiguration()
@@ -34,26 +36,48 @@ void ESATWifiConfiguration::readConfiguration()
 
 void ESATWifiConfiguration::readAddress()
 {
+  for (byte i = 0; i < ADDRESS_LENGTH; i++)
+  {
+    address[i] = EEPROM.read(ADDRESS_OFFSET + i);
+  }
 }
 
 void ESATWifiConfiguration::readNetworkConnectionAttemptInterval()
 {
+  const byte highByte =
+    EEPROM.read(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET);
+  const byte lowByte =
+    EEPROM.read(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET + 1);
+  networkConnectionAttemptInterval = word(highByte, lowByte);
 }
 
 void ESATWifiConfiguration::readNetworkConnectionAttempts()
 {
+  networkConnectionAttempts =
+    EEPROM.read(NETWORK_CONNECTION_ATTEMPTS_OFFSET);
 }
 
 void ESATWifiConfiguration::readPassphrase()
 {
+  for (byte i = 0; i < PASSPHRASE_LENGTH; i++)
+  {
+    passphrase[i] = EEPROM.read(PASSPHRASE_OFFSET + i);
+  }
 }
 
 void ESATWifiConfiguration::readPort()
 {
+  const byte highByte = EEPROM.read(PORT_OFFSET);
+  const byte lowByte = EEPROM.read(PORT_OFFSET + 1);
+  port = word(highByte, lowByte);
 }
 
 void ESATWifiConfiguration::readSSID()
 {
+  for (byte i = 0; i < SSID_LENGTH; i++)
+  {
+    ssid[i] = EEPROM.read(SSID_OFFSET + i);
+  }
 }
 
 void ESATWifiConfiguration::writeConfiguration()
@@ -68,26 +92,54 @@ void ESATWifiConfiguration::writeConfiguration()
 
 void ESATWifiConfiguration::writeAddress()
 {
+  for (byte i = 0; i < ADDRESS_LENGTH; i++)
+  {
+    EEPROM.write(ADDRESS_OFFSET + i ,address[i]);
+  }
+  EEPROM.commit();
 }
 
 void ESATWifiConfiguration::writeNetworkConnectionAttemptInterval()
 {
+  EEPROM.write(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET,
+               highByte(networkConnectionAttemptInterval));
+  EEPROM.write(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET + 1,
+               lowByte(networkConnectionAttemptInterval));
+  EEPROM.commit();
 }
 
 void ESATWifiConfiguration::writeNetworkConnectionAttempts()
 {
+  EEPROM.write(NETWORK_CONNECTION_ATTEMPTS_OFFSET,
+               networkConnectionAttempts);
+  EEPROM.commit();
 }
 
 void ESATWifiConfiguration::writePassphrase()
 {
+  for (byte i = 0; i < PASSPHRASE_LENGTH; i++)
+  {
+    EEPROM.write(PASSPHRASE_OFFSET + i,
+                 passphrase[i]);
+  }
+  EEPROM.commit();
 }
 
 void ESATWifiConfiguration::writePort()
 {
+  EEPROM.write(PORT_OFFSET, highByte(port));
+  EEPROM.write(PORT_OFFSET + 1, lowByte(port));
+  EEPROM.commit();
 }
 
 void ESATWifiConfiguration::writeSSID()
 {
+  for (byte i = 0; i < SSID_LENGTH; i++)
+  {
+    EEPROM.write(SSID_OFFSET + i,
+                 ssid[i]);
+  }
+  EEPROM.commit();
 }
 
 ESATWifiConfiguration WifiConfiguration;

@@ -62,6 +62,53 @@ class ESATWifiConfiguration
     void writeConfiguration();
 
   private:
+    // Offset of the network connection attempts parameter in the storage.
+    static const byte NETWORK_CONNECTION_ATTEMPTS_OFFSET = 0;
+
+    // Length of the network connection attempts parameter.
+    static const byte NETWORK_CONNECTION_ATTEMPTS_LENGTH = 1;
+
+    // Offset of the network connection attempt interval parameter
+    // in the storage.
+    static const byte NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET =
+      NETWORK_CONNECTION_ATTEMPTS_OFFSET
+      + NETWORK_CONNECTION_ATTEMPTS_LENGTH;
+
+    // Length of the network connection interval parameter.
+    static const byte NETWORK_CONNECTION_ATTEMPT_INTERVAL_LENGTH = 2;
+
+    // Offset of the SSID parameter in the storage.
+    static const byte SSID_OFFSET =
+      NETWORK_CONNECTION_ATTEMPTS_OFFSET
+      + NETWORK_CONNECTION_ATTEMPTS_LENGTH;
+
+    // Offset of the passphrase parameter in the storage.
+    static const byte PASSPHRASE_OFFSET =
+      SSID_OFFSET
+      + SSID_LENGTH;
+
+    // Offset of the address parameter in the storage.
+    static const byte ADDRESS_OFFSET =
+      PASSPHRASE_OFFSET
+      + PASSPHRASE_LENGTH;
+
+    // Offset of the port parameter in the storage.
+    static const byte PORT_OFFSET =
+      ADDRESS_OFFSET
+      + ADDRESS_LENGTH;
+
+    // Length of the port parameter.
+    static const byte PORT_LENGTH = 2;
+
+    // Total length of the configuration.
+    static const byte CONFIGURATION_LENGTH =
+      NETWORK_CONNECTION_ATTEMPT_INTERVAL_LENGTH
+      + NETWORK_CONNECTION_ATTEMPTS_LENGTH
+      + SSID_LENGTH
+      + PASSPHRASE_LENGTH
+      + ADDRESS_LENGTH
+      + PORT_LENGTH;
+
     // Read the address of the ground segment server.
     // Part of the configuration.
     void readAddress();
