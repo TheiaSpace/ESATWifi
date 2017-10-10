@@ -27,6 +27,112 @@ void ESATWifi::begin()
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
 {
+  const byte majorVersionNumber = packet.readByte();
+  const byte minorVersionNumber = packet.readByte();
+  const byte patchVersionNumber = packet.readByte();
+  const byte commandCode = packet.readByte();
+  switch (commandCode)
+  {
+    case CONNECT:
+      handleConnectCommand(packet);
+      break;
+    case DISCONNECT:
+      handleDisconnectCommand(packet);
+      break;
+    case SET_NETWORK_CONNECTION_ATTEMPTS:
+      handleSetNetworkConnectionAttemptsCommand(packet);
+      break;
+    case SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL:
+      handleSetNetworkConnectionAttemptIntervalCommand(packet);
+      break;
+    case SET_SSID:
+      handleSetSSIDCommand(packet);
+      break;
+    case SET_PASSPHRASE:
+      handleSetPassphraseCommand(packet);
+      break;
+    case SET_ADDRESS:
+      handleSetAddressCommand(packet);
+      break;
+    case SET_PORT:
+      handleSetPortCommand(packet);
+      break;
+    case READ_CONFIGURATION:
+      handleReadConfigurationCommand(packet);
+      break;
+    case WRITE_CONFIGURATION:
+      handleWriteConfigurationCommand(packet);
+      break;
+    default:
+      break;
+  }
+}
+
+void ESATWifi::handleConnectCommand(ESATCCSDSPacket& packet)
+{
+  for (int i = 0; i < WifiConfiguration.networkConnectionAttempts; i++)
+  {
+    WiFi.begin(WifiConfiguration.ssid, WifiConfiguration.passphrase);
+    delay(WifiConfiguration.networkConnectionAttemptInterval);
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      client.connect(WifiConfiguration.address, WifiConfiguration.port);
+    }
+  }
+}
+
+void ESATWifi::handleDisconnectCommand(ESATCCSDSPacket& packet)
+{
+  WiFi.disconnect();
+}
+
+void ESATWifi::handleSetNetworkConnectionAttemptsCommand(ESATCCSDSPacket& packet)
+{
+  WifiConfiguration.networkConnectionAttempts = packet.readByte();
+}
+
+void ESATWifi::handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet)
+{
+  WifiConfiguration.networkConnectionAttemptInterval = packet.readWord();
+}
+
+void ESATWifi::handleSetSSIDCommand(ESATCCSDSPacket& packet)
+{
+  for (byte i = 0; i < WifiConfiguration.SSID_LENGTH; i++)
+  {
+    WifiConfiguration.ssid[i] = packet.readByte();
+  }
+}
+
+void ESATWifi::handleSetPassphraseCommand(ESATCCSDSPacket& packet)
+{
+  for (byte i = 0; i < WifiConfiguration.PASSPHRASE_LENGTH; i++)
+  {
+    WifiConfiguration.passphrase[i] = packet.readByte();
+  }
+}
+
+void ESATWifi::handleSetAddressCommand(ESATCCSDSPacket& packet)
+{
+  for (byte i = 0; i < WifiConfiguration.ADDRESS_LENGTH; i++)
+  {
+    WifiConfiguration.address[i] = packet.readByte();
+  }
+}
+
+void ESATWifi::handleSetPortCommand(ESATCCSDSPacket& packet)
+{
+  WifiConfiguration.port = packet.readWord();
+}
+
+void ESATWifi::handleReadConfigurationCommand(ESATCCSDSPacket& packet)
+{
+  WifiConfiguration.readConfiguration();
+}
+
+void ESATWifi::handleWriteConfigurationCommand(ESATCCSDSPacket& packet)
+{
+  WifiConfiguration.writeConfiguration();
 }
 
 boolean ESATWifi::readPacketFromRadio(ESATCCSDSPacket& packet)
