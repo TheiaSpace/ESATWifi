@@ -27,9 +27,26 @@ void ESATWifi::begin()
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
 {
+  if (packet.readPacketType() != packet.TELECOMMAND)
+  {
+    return;
+  }
+  if (packet.readApplicationProcessIdentifier()
+      != APPLICATION_PROCESS_IDENTIFIER)
+  {
+    return;
+  }
+  if (packet.readPacketDataLength() < MINIMUM_TELECOMMAND_PACKET_DATA_LENGTH)
+  {
+    return;
+  }
   const byte majorVersionNumber = packet.readByte();
   const byte minorVersionNumber = packet.readByte();
   const byte patchVersionNumber = packet.readByte();
+  if (majorVersionNumber < MAJOR_VERSION_NUMBER)
+  {
+    return;
+  }
   const byte commandCode = packet.readByte();
   switch (commandCode)
   {
