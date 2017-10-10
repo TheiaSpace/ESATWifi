@@ -31,20 +31,36 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
 
 boolean ESATWifi::readPacketFromRadio(ESATCCSDSPacket& packet)
 {
-  return false;
+  if (client.available() > 0)
+  {
+    return packet.readFrom(client);
+  }
+  else
+  {
+    return false;
+  }
 }
 
 boolean ESATWifi::readPacketFromSerial(ESATCCSDSPacket& packet)
 {
-  return false;
+  if (Serial.available())
+  {
+    return packet.readFrom(Serial);
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void ESATWifi::writePacketToRadio(ESATCCSDSPacket& packet)
 {
+  (void) packet.writeTo(client);
 }
 
 void ESATWifi::writePacketToSerial(ESATCCSDSPacket& packet)
 {
+  (void) packet.writeTo(Serial);
 }
 
 ESATWifi Wifi;

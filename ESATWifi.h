@@ -21,6 +21,7 @@
 
 #include <Arduino.h>
 #include <ESATCCSDSPacket.h>
+#include <ESP8266WiFi.h>
 
 // Wifi module.
 class ESATWifi
@@ -45,6 +46,10 @@ class ESATWifi
 
     // Send a packet through the serial interface.
     void writePacketToSerial(ESATCCSDSPacket& packet);
+
+  private:
+    // Use this client to connect to the ground segment server.
+    WiFiClient client;
 };
 
 extern ESATWifi Wifi;
