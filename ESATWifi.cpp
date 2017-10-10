@@ -17,9 +17,12 @@
  */
 
 #include "ESATWifi.h"
+#include "ESATWifiConfiguration.h"
 
 void ESATWifi::begin()
 {
+  WifiConfiguration.begin();
+  WifiConfiguration.readConfiguration();
 }
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
