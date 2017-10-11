@@ -21,6 +21,7 @@
 
 void ESATWifi::begin()
 {
+  WiFi.mode(WIFI_STA);
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
 }
