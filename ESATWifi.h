@@ -76,6 +76,9 @@ class ESATWifi
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 
+    // Connect to the wireless network and ground station server.
+    void connect();
+
     // Handle a telecommand for connecting to the network and server.
     void handleConnectCommand(ESATCCSDSPacket& packet);
 

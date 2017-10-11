@@ -21,8 +21,24 @@
 
 void ESATWifi::begin()
 {
+  WiFi.mode(WIFI_STA);
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
+  Serial.begin(115200);
+  connect();
+}
+
+void ESATWifi::connect()
+{
+  for (int i = 0; i < WifiConfiguration.networkConnectionAttempts; i++)
+  {
+    WiFi.begin(WifiConfiguration.ssid, WifiConfiguration.passphrase);
+    delay(WifiConfiguration.networkConnectionAttemptInterval);
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      client.connect(WifiConfiguration.address, WifiConfiguration.port);
+    }
+  }
 }
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
@@ -87,15 +103,7 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
 
 void ESATWifi::handleConnectCommand(ESATCCSDSPacket& packet)
 {
-  for (int i = 0; i < WifiConfiguration.networkConnectionAttempts; i++)
-  {
-    WiFi.begin(WifiConfiguration.ssid, WifiConfiguration.passphrase);
-    delay(WifiConfiguration.networkConnectionAttemptInterval);
-    if (WiFi.status() == WL_CONNECTED)
-    {
-      client.connect(WifiConfiguration.address, WifiConfiguration.port);
-    }
-  }
+  connect();
 }
 
 void ESATWifi::handleDisconnectCommand(ESATCCSDSPacket& packet)
