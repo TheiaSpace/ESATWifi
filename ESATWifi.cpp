@@ -33,7 +33,7 @@ void ESATWifi::connect()
   for (int i = 0; i < WifiConfiguration.networkConnectionAttempts; i++)
   {
     WiFi.begin(WifiConfiguration.networkSSID,
-               WifiConfiguration.passphrase);
+               WifiConfiguration.networkPassphrase);
     delay(WifiConfiguration.networkConnectionAttemptInterval);
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -83,8 +83,8 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
     case SET_NETWORK_SSID:
       handleSetNetworkSSIDCommand(packet);
       break;
-    case SET_PASSPHRASE:
-      handleSetPassphraseCommand(packet);
+    case SET_NETWORK_PASSPHRASE:
+      handleSetNetworkPassphraseCommand(packet);
       break;
     case SET_SERVER_ADDRESS:
       handleSetServerAddressCommand(packet);
@@ -131,11 +131,11 @@ void ESATWifi::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::handleSetPassphraseCommand(ESATCCSDSPacket& packet)
+void ESATWifi::handleSetNetworkPassphraseCommand(ESATCCSDSPacket& packet)
 {
-  for (byte i = 0; i < WifiConfiguration.PASSPHRASE_LENGTH; i++)
+  for (byte i = 0; i < WifiConfiguration.NETWORK_PASSPHRASE_LENGTH; i++)
   {
-    WifiConfiguration.passphrase[i] = packet.readByte();
+    WifiConfiguration.networkPassphrase[i] = packet.readByte();
   }
 }
 

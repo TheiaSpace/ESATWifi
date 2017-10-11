@@ -56,7 +56,7 @@ class ESATWifi
       SET_NETWORK_CONNECTION_ATTEMPTS = 0x10,
       SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL = 0x11,
       SET_NETWORK_SSID = 0x12,
-      SET_PASSPHRASE = 0x13,
+      SET_NETWORK_PASSPHRASE = 0x13,
       SET_SERVER_ADDRESS = 0x014,
       SET_SERVER_PORT = 0x15,
       READ_CONFIGURATION = 0x20,
@@ -97,7 +97,7 @@ class ESATWifi
     void handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for setting the passphrase of the network.
-    void handleSetPassphraseCommand(ESATCCSDSPacket& packet);
+    void handleSetNetworkPassphraseCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for setting the address of the ground
     // segment server.
