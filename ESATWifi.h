@@ -55,7 +55,7 @@ class ESATWifi
       DISCONNECT = 0x01,
       SET_NETWORK_CONNECTION_ATTEMPTS = 0x10,
       SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL = 0x11,
-      SET_SSID = 0x12,
+      SET_NETWORK_SSID = 0x12,
       SET_PASSPHRASE = 0x13,
       SET_SERVER_ADDRESS = 0x014,
       SET_SERVER_PORT = 0x15,
@@ -94,7 +94,7 @@ class ESATWifi
     void handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for setting the SSID of the network.
-    void handleSetSSIDCommand(ESATCCSDSPacket& packet);
+    void handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for setting the passphrase of the network.
     void handleSetPassphraseCommand(ESATCCSDSPacket& packet);
