@@ -48,8 +48,67 @@ class ESATWifi
     void writePacketToSerial(ESATCCSDSPacket& packet);
 
   private:
+    // Commands handled by the Wifi board.
+    enum CommandCode
+    {
+      CONNECT = 0x00,
+      DISCONNECT = 0x01,
+      SET_NETWORK_CONNECTION_ATTEMPTS = 0x10,
+      SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL = 0x11,
+      SET_SSID = 0x12,
+      SET_PASSPHRASE = 0x13,
+      SET_ADDRESS = 0x014,
+      SET_PORT = 0x15,
+      READ_CONFIGURATION = 0x20,
+      WRITE_CONFIGURATION = 0x21,
+    };
+
+    static const word APPLICATION_PROCESS_IDENTIFIER = 4;
+
+    // Version numbers.
+    static const byte MAJOR_VERSION_NUMBER = 2;
+    static const byte MINOR_VERSION_NUMBER = 0;
+    static const byte PATCH_VERSION_NUMBER = 0;
+
+    // Minimum telecommand packet data length.
+    const byte MINIMUM_TELECOMMAND_PACKET_DATA_LENGTH = 4;
+
     // Use this client to connect to the ground segment server.
     WiFiClient client;
+
+    // Handle a telecommand for connecting to the network and server.
+    void handleConnectCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for disconnecting from the network and server.
+    void handleDisconnectCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for setting the number of network
+    // connection attempts.
+    void handleSetNetworkConnectionAttemptsCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for setting the interval between network
+    // connection attempts.
+    void handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for setting the SSID of the network.
+    void handleSetSSIDCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for setting the passphrase of the network.
+    void handleSetPassphraseCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for setting the address of the ground
+    // segment server.
+    void handleSetAddressCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for setting the port of the ground segment
+    // server.
+    void handleSetPortCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for reading the configuration.
+    void handleReadConfigurationCommand(ESATCCSDSPacket& packet);
+
+    // Handle a telecommand for writing the configuration.
+    void handleWriteConfigurationCommand(ESATCCSDSPacket& packet);
 };
 
 extern ESATWifi Wifi;
