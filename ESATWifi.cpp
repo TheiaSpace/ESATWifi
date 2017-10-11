@@ -36,7 +36,7 @@ void ESATWifi::connect()
     delay(WifiConfiguration.networkConnectionAttemptInterval);
     if (WiFi.status() == WL_CONNECTED)
     {
-      client.connect(WifiConfiguration.address, WifiConfiguration.port);
+      client.connect(WifiConfiguration.serverAddress, WifiConfiguration.port);
     }
   }
 }
@@ -84,8 +84,8 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
     case SET_PASSPHRASE:
       handleSetPassphraseCommand(packet);
       break;
-    case SET_ADDRESS:
-      handleSetAddressCommand(packet);
+    case SET_SERVER_ADDRESS:
+      handleSetServerAddressCommand(packet);
       break;
     case SET_PORT:
       handleSetPortCommand(packet);
@@ -137,11 +137,11 @@ void ESATWifi::handleSetPassphraseCommand(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::handleSetAddressCommand(ESATCCSDSPacket& packet)
+void ESATWifi::handleSetServerAddressCommand(ESATCCSDSPacket& packet)
 {
-  for (byte i = 0; i < WifiConfiguration.ADDRESS_LENGTH; i++)
+  for (byte i = 0; i < WifiConfiguration.SERVER_ADDRESS_LENGTH; i++)
   {
-    WifiConfiguration.address[i] = packet.readByte();
+    WifiConfiguration.serverAddress[i] = packet.readByte();
   }
 }
 
