@@ -24,6 +24,7 @@ void ESATWifi::begin()
   WiFi.mode(WIFI_STA);
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
+  Serial.begin(115200);
 }
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
