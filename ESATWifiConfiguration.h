@@ -43,11 +43,11 @@ class ESATWifiConfiguration
     // Connect to the wireless network using this passphrase.
     char passphrase[PASSPHRASE_LENGTH];
 
-    // Connect to this port of the ground segment server.
-    word port;
-
     // Connect to this ground segment server host address.
     byte serverAddress[SERVER_ADDRESS_LENGTH];
+
+    // Connect to this port of the ground segment server.
+    word serverPort;
 
     // Connect to the wireless network with this SSID.
     char ssid[SSID_LENGTH];
@@ -92,13 +92,13 @@ class ESATWifiConfiguration
       PASSPHRASE_OFFSET
       + PASSPHRASE_LENGTH;
 
-    // Offset of the port parameter in the storage.
-    static const byte PORT_OFFSET =
+    // Offset of the server port parameter in the storage.
+    static const byte SERVER_PORT_OFFSET =
       SERVER_ADDRESS_OFFSET
       + SERVER_ADDRESS_LENGTH;
 
-    // Length of the port parameter.
-    static const byte PORT_LENGTH = 2;
+    // Length of the server port parameter.
+    static const byte SERVER_PORT_LENGTH = 2;
 
     // Total length of the configuration.
     static const byte CONFIGURATION_LENGTH =
@@ -107,7 +107,7 @@ class ESATWifiConfiguration
       + SSID_LENGTH
       + PASSPHRASE_LENGTH
       + SERVER_ADDRESS_LENGTH
-      + PORT_LENGTH;
+      + SERVER_PORT_LENGTH;
 
     // Read the interval between network connection attempts.
     // Part of the configuration.
@@ -121,13 +121,13 @@ class ESATWifiConfiguration
     // Part of the configuration.
     void readPassphrase();
 
-    // Read the port of the ground segment server.
-    // Part of the configuration.
-    void readPort();
-
     // Read the address of the ground segment server.
     // Part of the configuration.
     void readServerAddress();
+
+    // Read the port of the ground segment server.
+    // Part of the configuration.
+    void readServerPort();
 
     // Read the SSID of the wireless network.
     // Part of the configuration.
@@ -145,13 +145,13 @@ class ESATWifiConfiguration
     // Part of the configuration.
     void writePassphrase();
 
-    // Write the port of the ground segment server.
-    // Part of the configuration.
-    void writePort();
-
     // Write the address of the ground segment server.
     // Part of the configuration.
     void writeServerAddress();
+
+    // Write the port of the ground segment server.
+    // Part of the configuration.
+    void writeServerPort();
 
     // Write the SSID of the wireless network.
     // Part of the configuration.
