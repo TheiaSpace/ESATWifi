@@ -25,17 +25,14 @@
 class ESATWifiConfiguration
 {
   public:
-    // Length of the host address.
-    static const byte ADDRESS_LENGTH = 4;
+    // Maximum length of the SSID of the wireless network.
+    static const byte NETWORK_SSID_LENGTH = 32;
 
     // Maximum length of the passphrase of the wireless network.
-    static const byte PASSPHRASE_LENGTH = 65;
+    static const byte NETWORK_PASSPHRASE_LENGTH = 65;
 
-    // Maximum length of the SSID of the wireless network.
-    static const byte SSID_LENGTH = 32;
-
-    // Connect to this ground segment server host address.
-    byte address[ADDRESS_LENGTH];
+    // Length of the ground segment server address.
+    static const byte SERVER_ADDRESS_LENGTH = 4;
 
     // Wait this number of milliseconds between network connection attempts.
     word networkConnectionAttemptInterval;
@@ -44,13 +41,16 @@ class ESATWifiConfiguration
     byte networkConnectionAttempts;
 
     // Connect to the wireless network using this passphrase.
-    char passphrase[PASSPHRASE_LENGTH];
+    char networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
+
+    // Connect to this ground segment server host address.
+    byte serverAddress[SERVER_ADDRESS_LENGTH];
 
     // Connect to this port of the ground segment server.
-    word port;
+    word serverPort;
 
     // Connect to the wireless network with this SSID.
-    char ssid[SSID_LENGTH];
+    char networkSSID[NETWORK_SSID_LENGTH];
 
     // Set up the configuration storage.
     void begin();
@@ -77,41 +77,37 @@ class ESATWifiConfiguration
     // Length of the network connection interval parameter.
     static const byte NETWORK_CONNECTION_ATTEMPT_INTERVAL_LENGTH = 2;
 
-    // Offset of the SSID parameter in the storage.
-    static const byte SSID_OFFSET =
+    // Offset of the network SSID parameter in the storage.
+    static const byte NETWORK_SSID_OFFSET =
       NETWORK_CONNECTION_ATTEMPTS_OFFSET
       + NETWORK_CONNECTION_ATTEMPTS_LENGTH;
 
-    // Offset of the passphrase parameter in the storage.
-    static const byte PASSPHRASE_OFFSET =
-      SSID_OFFSET
-      + SSID_LENGTH;
+    // Offset of the network passphrase parameter in the storage.
+    static const byte NETWORK_PASSPHRASE_OFFSET =
+      NETWORK_SSID_OFFSET
+      + NETWORK_SSID_LENGTH;
 
-    // Offset of the address parameter in the storage.
-    static const byte ADDRESS_OFFSET =
-      PASSPHRASE_OFFSET
-      + PASSPHRASE_LENGTH;
+    // Offset of the server address parameter in the storage.
+    static const byte SERVER_ADDRESS_OFFSET =
+      NETWORK_PASSPHRASE_OFFSET
+      + NETWORK_PASSPHRASE_LENGTH;
 
-    // Offset of the port parameter in the storage.
-    static const byte PORT_OFFSET =
-      ADDRESS_OFFSET
-      + ADDRESS_LENGTH;
+    // Offset of the server port parameter in the storage.
+    static const byte SERVER_PORT_OFFSET =
+      SERVER_ADDRESS_OFFSET
+      + SERVER_ADDRESS_LENGTH;
 
-    // Length of the port parameter.
-    static const byte PORT_LENGTH = 2;
+    // Length of the server port parameter.
+    static const byte SERVER_PORT_LENGTH = 2;
 
     // Total length of the configuration.
     static const byte CONFIGURATION_LENGTH =
       NETWORK_CONNECTION_ATTEMPT_INTERVAL_LENGTH
       + NETWORK_CONNECTION_ATTEMPTS_LENGTH
-      + SSID_LENGTH
-      + PASSPHRASE_LENGTH
-      + ADDRESS_LENGTH
-      + PORT_LENGTH;
-
-    // Read the address of the ground segment server.
-    // Part of the configuration.
-    void readAddress();
+      + NETWORK_SSID_LENGTH
+      + NETWORK_PASSPHRASE_LENGTH
+      + SERVER_ADDRESS_LENGTH
+      + SERVER_PORT_LENGTH;
 
     // Read the interval between network connection attempts.
     // Part of the configuration.
@@ -123,19 +119,19 @@ class ESATWifiConfiguration
 
     // Read the passphrase of the wireless network.
     // Part of the configuration.
-    void readPassphrase();
-
-    // Read the port of the ground segment server.
-    // Part of the configuration.
-    void readPort();
+    void readNetworkPassphrase();
 
     // Read the SSID of the wireless network.
     // Part of the configuration.
-    void readSSID();
+    void readNetworkSSID();
 
-    // Write the address of the ground segment server.
+    // Read the address of the ground segment server.
     // Part of the configuration.
-    void writeAddress();
+    void readServerAddress();
+
+    // Read the port of the ground segment server.
+    // Part of the configuration.
+    void readServerPort();
 
     // Write the interval between network connection attempts.
     // Part of the configuration.
@@ -147,15 +143,19 @@ class ESATWifiConfiguration
 
     // Write the passphrase of the wireless network.
     // Part of the configuration.
-    void writePassphrase();
-
-    // Write the port of the ground segment server.
-    // Part of the configuration.
-    void writePort();
+    void writeNetworkPassphrase();
 
     // Write the SSID of the wireless network.
     // Part of the configuration.
-    void writeSSID();
+    void writeNetworkSSID();
+
+    // Write the address of the ground segment server.
+    // Part of the configuration.
+    void writeServerAddress();
+
+    // Write the port of the ground segment server.
+    // Part of the configuration.
+    void writeServerPort();
 };
 
 extern ESATWifiConfiguration WifiConfiguration;

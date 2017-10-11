@@ -28,18 +28,10 @@ void ESATWifiConfiguration::readConfiguration()
 {
   readNetworkConnectionAttempts();
   readNetworkConnectionAttemptInterval();
-  readSSID();
-  readPassphrase();
-  readAddress();
-  readPort();
-}
-
-void ESATWifiConfiguration::readAddress()
-{
-  for (byte i = 0; i < ADDRESS_LENGTH; i++)
-  {
-    address[i] = EEPROM.read(ADDRESS_OFFSET + i);
-  }
+  readNetworkSSID();
+  readNetworkPassphrase();
+  readServerAddress();
+  readServerPort();
 }
 
 void ESATWifiConfiguration::readNetworkConnectionAttemptInterval()
@@ -57,46 +49,45 @@ void ESATWifiConfiguration::readNetworkConnectionAttempts()
     EEPROM.read(NETWORK_CONNECTION_ATTEMPTS_OFFSET);
 }
 
-void ESATWifiConfiguration::readPassphrase()
+void ESATWifiConfiguration::readNetworkPassphrase()
 {
-  for (byte i = 0; i < PASSPHRASE_LENGTH; i++)
+  for (byte i = 0; i < NETWORK_PASSPHRASE_LENGTH; i++)
   {
-    passphrase[i] = EEPROM.read(PASSPHRASE_OFFSET + i);
+    networkPassphrase[i] = EEPROM.read(NETWORK_PASSPHRASE_OFFSET + i);
   }
 }
 
-void ESATWifiConfiguration::readPort()
+void ESATWifiConfiguration::readNetworkSSID()
 {
-  const byte highByte = EEPROM.read(PORT_OFFSET);
-  const byte lowByte = EEPROM.read(PORT_OFFSET + 1);
-  port = word(highByte, lowByte);
+  for (byte i = 0; i < NETWORK_SSID_LENGTH; i++)
+  {
+    networkSSID[i] = EEPROM.read(NETWORK_SSID_OFFSET + i);
+  }
 }
 
-void ESATWifiConfiguration::readSSID()
+void ESATWifiConfiguration::readServerAddress()
 {
-  for (byte i = 0; i < SSID_LENGTH; i++)
+  for (byte i = 0; i < SERVER_ADDRESS_LENGTH; i++)
   {
-    ssid[i] = EEPROM.read(SSID_OFFSET + i);
+    serverAddress[i] = EEPROM.read(SERVER_ADDRESS_OFFSET + i);
   }
+}
+
+void ESATWifiConfiguration::readServerPort()
+{
+  const byte highByte = EEPROM.read(SERVER_PORT_OFFSET);
+  const byte lowByte = EEPROM.read(SERVER_PORT_OFFSET + 1);
+  serverPort = word(highByte, lowByte);
 }
 
 void ESATWifiConfiguration::writeConfiguration()
 {
   writeNetworkConnectionAttempts();
   writeNetworkConnectionAttemptInterval();
-  writeSSID();
-  writePassphrase();
-  writeAddress();
-  writePort();
-}
-
-void ESATWifiConfiguration::writeAddress()
-{
-  for (byte i = 0; i < ADDRESS_LENGTH; i++)
-  {
-    EEPROM.write(ADDRESS_OFFSET + i ,address[i]);
-  }
-  EEPROM.commit();
+  writeNetworkSSID();
+  writeNetworkPassphrase();
+  writeServerAddress();
+  writeServerPort();
 }
 
 void ESATWifiConfiguration::writeNetworkConnectionAttemptInterval()
@@ -115,30 +106,39 @@ void ESATWifiConfiguration::writeNetworkConnectionAttempts()
   EEPROM.commit();
 }
 
-void ESATWifiConfiguration::writePassphrase()
+void ESATWifiConfiguration::writeNetworkPassphrase()
 {
-  for (byte i = 0; i < PASSPHRASE_LENGTH; i++)
+  for (byte i = 0; i < NETWORK_PASSPHRASE_LENGTH; i++)
   {
-    EEPROM.write(PASSPHRASE_OFFSET + i,
-                 passphrase[i]);
+    EEPROM.write(NETWORK_PASSPHRASE_OFFSET + i,
+                 networkPassphrase[i]);
   }
   EEPROM.commit();
 }
 
-void ESATWifiConfiguration::writePort()
+void ESATWifiConfiguration::writeNetworkSSID()
 {
-  EEPROM.write(PORT_OFFSET, highByte(port));
-  EEPROM.write(PORT_OFFSET + 1, lowByte(port));
+  for (byte i = 0; i < NETWORK_SSID_LENGTH; i++)
+  {
+    EEPROM.write(NETWORK_SSID_OFFSET + i,
+                 networkSSID[i]);
+  }
   EEPROM.commit();
 }
 
-void ESATWifiConfiguration::writeSSID()
+void ESATWifiConfiguration::writeServerAddress()
 {
-  for (byte i = 0; i < SSID_LENGTH; i++)
+  for (byte i = 0; i < SERVER_ADDRESS_LENGTH; i++)
   {
-    EEPROM.write(SSID_OFFSET + i,
-                 ssid[i]);
+    EEPROM.write(SERVER_ADDRESS_OFFSET + i, serverAddress[i]);
   }
+  EEPROM.commit();
+}
+
+void ESATWifiConfiguration::writeServerPort()
+{
+  EEPROM.write(SERVER_PORT_OFFSET, highByte(serverPort));
+  EEPROM.write(SERVER_PORT_OFFSET + 1, lowByte(serverPort));
   EEPROM.commit();
 }
 
