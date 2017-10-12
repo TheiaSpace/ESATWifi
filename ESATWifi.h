@@ -24,6 +24,20 @@
 #include <ESP8266WiFi.h>
 
 // Wifi module.
+// The Wifi module goes into a socket in the OBC board and has the
+// following responsibilities:
+// - Connect through the wireless interface to a ground segment
+//   server.
+// - Connect trhough the serial interface to the OBC.
+// - Receive telecommand packets from the ground segment server and
+//   forward them to the OBC.
+// - Receive telecommand packets from the OBC and execute them.
+// - Receive telemetry packets from the OBC and forward them to the
+//   ground segment server.
+// The telecommands handled by the Wifi module are for simple network
+// connection configuration actions.
+// Use the global Wifi object to access the functionality of the Wifi
+// module.  See the example program.
 class ESATWifi
 {
   public:
