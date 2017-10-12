@@ -41,6 +41,9 @@ class ESATWifi
     // Return true if there was a new packet; otherwise return false.
     boolean readPacketFromSerial(ESATCCSDSPacket& packet);
 
+    // Perform connection management and related tasks.
+    void update();
+
     // Send a packet through the radio interface.
     void writePacketToRadio(ESATCCSDSPacket& packet);
 
@@ -53,14 +56,23 @@ class ESATWifi
     {
       CONNECT = 0x00,
       DISCONNECT = 0x01,
-      SET_NETWORK_CONNECTION_ATTEMPTS = 0x10,
-      SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL = 0x11,
-      SET_NETWORK_SSID = 0x12,
-      SET_NETWORK_PASSPHRASE = 0x13,
-      SET_SERVER_ADDRESS = 0x014,
-      SET_SERVER_PORT = 0x15,
+      SET_NETWORK_SSID = 0x10,
+      SET_NETWORK_PASSPHRASE = 0x11,
+      SET_SERVER_ADDRESS = 0x012,
+      SET_SERVER_PORT = 0x13,
       READ_CONFIGURATION = 0x20,
       WRITE_CONFIGURATION = 0x21,
+    };
+
+    // Possible states of the connection state machine.
+    enum ConnectionState
+    {
+      CONNECTING_TO_NETWORK,
+      WAITING_FOR_NETWORK_CONNECTION,
+      CONNECTING_TO_SERVER,
+      CONNECTED,
+      DISCONNECTING,
+      DISCONNECTED,
     };
 
     static const word APPLICATION_PROCESS_IDENTIFIER = 4;
@@ -76,22 +88,23 @@ class ESATWifi
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 
-    // Connect to the wireless network and ground station server.
-    void connect();
+    // Current state of the connection state machine.
+    ConnectionState connectionState;
+
+    // Connect to the wireless network.
+    void connectToNetwork();
+
+    // Connect to the ground segment server.
+    void connectToServer();
+
+    // Disconnect from the wireless network and ground station server.
+    void disconnect();
 
     // Handle a telecommand for connecting to the network and server.
     void handleConnectCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for disconnecting from the network and server.
     void handleDisconnectCommand(ESATCCSDSPacket& packet);
-
-    // Handle a telecommand for setting the number of network
-    // connection attempts.
-    void handleSetNetworkConnectionAttemptsCommand(ESATCCSDSPacket& packet);
-
-    // Handle a telecommand for setting the interval between network
-    // connection attempts.
-    void handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for setting the SSID of the network.
     void handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet);
@@ -112,6 +125,13 @@ class ESATWifi
 
     // Handle a telecommand for writing the configuration.
     void handleWriteConfigurationCommand(ESATCCSDSPacket& packet);
+
+    // Reconnect to the server if disconnected from the server or to
+    // the network if disconnected from the network.
+    void reconnectIfDisconnected();
+
+    // Check that the network connection is established.
+    void waitForNetworkConnection();
 };
 
 extern ESATWifi Wifi;

@@ -25,22 +25,33 @@ void ESATWifi::begin()
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
   Serial.begin(115200);
-  connect();
+  connectionState = CONNECTING_TO_NETWORK;
 }
 
-void ESATWifi::connect()
+void ESATWifi::connectToNetwork()
 {
-  for (int i = 0; i < WifiConfiguration.networkConnectionAttempts; i++)
+  (void) WiFi.begin(WifiConfiguration.networkSSID,
+                    WifiConfiguration.networkPassphrase);
+  connectionState = WAITING_FOR_NETWORK_CONNECTION;
+}
+
+void ESATWifi::connectToServer()
+{
+  if (client.connect(WifiConfiguration.serverAddress,
+                     WifiConfiguration.serverPort))
   {
-    WiFi.begin(WifiConfiguration.networkSSID,
-               WifiConfiguration.networkPassphrase);
-    delay(WifiConfiguration.networkConnectionAttemptInterval);
-    if (WiFi.status() == WL_CONNECTED)
-    {
-      client.connect(WifiConfiguration.serverAddress,
-                     WifiConfiguration.serverPort);
-    }
+    connectionState = CONNECTED;
   }
+  else
+  {
+    connectionState = CONNECTING_TO_SERVER;
+  }
+}
+
+void ESATWifi::disconnect()
+{
+  (void) WiFi.disconnect(true);
+  connectionState = DISCONNECTED;
 }
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
@@ -74,12 +85,6 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
     case DISCONNECT:
       handleDisconnectCommand(packet);
       break;
-    case SET_NETWORK_CONNECTION_ATTEMPTS:
-      handleSetNetworkConnectionAttemptsCommand(packet);
-      break;
-    case SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL:
-      handleSetNetworkConnectionAttemptIntervalCommand(packet);
-      break;
     case SET_NETWORK_SSID:
       handleSetNetworkSSIDCommand(packet);
       break;
@@ -105,22 +110,12 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
 
 void ESATWifi::handleConnectCommand(ESATCCSDSPacket& packet)
 {
-  connect();
+  connectionState = CONNECTING_TO_NETWORK;
 }
 
 void ESATWifi::handleDisconnectCommand(ESATCCSDSPacket& packet)
 {
-  WiFi.disconnect();
-}
-
-void ESATWifi::handleSetNetworkConnectionAttemptsCommand(ESATCCSDSPacket& packet)
-{
-  WifiConfiguration.networkConnectionAttempts = packet.readByte();
-}
-
-void ESATWifi::handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet)
-{
-  WifiConfiguration.networkConnectionAttemptInterval = packet.readWord();
+  connectionState = DISCONNECTING;
 }
 
 void ESATWifi::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)
@@ -164,6 +159,10 @@ void ESATWifi::handleWriteConfigurationCommand(ESATCCSDSPacket& packet)
 
 boolean ESATWifi::readPacketFromRadio(ESATCCSDSPacket& packet)
 {
+  if (connectionState != CONNECTED)
+  {
+    return false;
+  }
   if (client.available() > 0)
   {
     return packet.readFrom(client);
@@ -186,9 +185,66 @@ boolean ESATWifi::readPacketFromSerial(ESATCCSDSPacket& packet)
   }
 }
 
+void ESATWifi::reconnectIfDisconnected()
+{
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    connectionState = CONNECTING_TO_NETWORK;
+    return;
+  }
+  if (!client.connected())
+  {
+    connectionState = CONNECTING_TO_SERVER;
+    return;
+  }
+  connectionState = CONNECTED;
+}
+
+void ESATWifi::update()
+{
+  switch (connectionState)
+  {
+    case CONNECTING_TO_NETWORK:
+      connectToNetwork();
+      break;
+    case WAITING_FOR_NETWORK_CONNECTION:
+      waitForNetworkConnection();
+      break;
+    case CONNECTING_TO_SERVER:
+      connectToServer();
+      break;
+    case CONNECTED:
+      reconnectIfDisconnected();
+      client.println("hello");
+      break;
+    case DISCONNECTING:
+      disconnect();
+      break;
+    case DISCONNECTED:
+      break;
+    default:
+      break;
+  }
+}
+
+void ESATWifi::waitForNetworkConnection()
+{
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    connectionState = CONNECTING_TO_SERVER;
+  }
+  else
+  {
+    connectionState = WAITING_FOR_NETWORK_CONNECTION;
+  }
+}
+
 void ESATWifi::writePacketToRadio(ESATCCSDSPacket& packet)
 {
-  (void) packet.writeTo(client);
+  if (connectionState == CONNECTED)
+  {
+    (void) packet.writeTo(client);
+  }
 }
 
 void ESATWifi::writePacketToSerial(ESATCCSDSPacket& packet)

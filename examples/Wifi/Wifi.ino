@@ -29,4 +29,5 @@ void loop()
       Wifi.writePacketToRadio(packet);
     }
   }
+  Wifi.update();
 }

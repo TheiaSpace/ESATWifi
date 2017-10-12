@@ -34,12 +34,6 @@ class ESATWifiConfiguration
     // Length of the ground segment server address.
     static const byte SERVER_ADDRESS_LENGTH = 4;
 
-    // Wait this number of milliseconds between network connection attempts.
-    word networkConnectionAttemptInterval;
-
-    // Attempt to connect to the network up to this number of times.
-    byte networkConnectionAttempts;
-
     // Connect to the wireless network using this passphrase.
     char networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
 
@@ -62,25 +56,8 @@ class ESATWifiConfiguration
     void writeConfiguration();
 
   private:
-    // Offset of the network connection attempts parameter in the storage.
-    static const byte NETWORK_CONNECTION_ATTEMPTS_OFFSET = 0;
-
-    // Length of the network connection attempts parameter.
-    static const byte NETWORK_CONNECTION_ATTEMPTS_LENGTH = 1;
-
-    // Offset of the network connection attempt interval parameter
-    // in the storage.
-    static const byte NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET =
-      NETWORK_CONNECTION_ATTEMPTS_OFFSET
-      + NETWORK_CONNECTION_ATTEMPTS_LENGTH;
-
-    // Length of the network connection interval parameter.
-    static const byte NETWORK_CONNECTION_ATTEMPT_INTERVAL_LENGTH = 2;
-
     // Offset of the network SSID parameter in the storage.
-    static const byte NETWORK_SSID_OFFSET =
-      NETWORK_CONNECTION_ATTEMPTS_OFFSET
-      + NETWORK_CONNECTION_ATTEMPTS_LENGTH;
+    static const byte NETWORK_SSID_OFFSET = 0;
 
     // Offset of the network passphrase parameter in the storage.
     static const byte NETWORK_PASSPHRASE_OFFSET =
@@ -102,20 +79,10 @@ class ESATWifiConfiguration
 
     // Total length of the configuration.
     static const byte CONFIGURATION_LENGTH =
-      NETWORK_CONNECTION_ATTEMPT_INTERVAL_LENGTH
-      + NETWORK_CONNECTION_ATTEMPTS_LENGTH
-      + NETWORK_SSID_LENGTH
+      NETWORK_SSID_LENGTH
       + NETWORK_PASSPHRASE_LENGTH
       + SERVER_ADDRESS_LENGTH
       + SERVER_PORT_LENGTH;
-
-    // Read the interval between network connection attempts.
-    // Part of the configuration.
-    void readNetworkConnectionAttemptInterval();
-
-    // Read the number of network connection attempts.
-    // Part of the configuration.
-    void readNetworkConnectionAttempts();
 
     // Read the passphrase of the wireless network.
     // Part of the configuration.
@@ -132,14 +99,6 @@ class ESATWifiConfiguration
     // Read the port of the ground segment server.
     // Part of the configuration.
     void readServerPort();
-
-    // Write the interval between network connection attempts.
-    // Part of the configuration.
-    void writeNetworkConnectionAttemptInterval();
-
-    // Write the number of network connection attempts.
-    // Part of the configuration.
-    void writeNetworkConnectionAttempts();
 
     // Write the passphrase of the wireless network.
     // Part of the configuration.
