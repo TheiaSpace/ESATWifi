@@ -68,6 +68,7 @@ class ESATWifi
     enum ConnectionState
     {
       CONNECTING_TO_NETWORK,
+      WAITING_FOR_NETWORK_CONNECTION,
       CONNECTING_TO_SERVER,
       CONNECTED,
       DISCONNECTING,
@@ -124,6 +125,13 @@ class ESATWifi
 
     // Handle a telecommand for writing the configuration.
     void handleWriteConfigurationCommand(ESATCCSDSPacket& packet);
+
+    // Reconnect to the server if disconnected from the server or to
+    // the network if disconnected from the network.
+    void reconnectIfDisconnected();
+
+    // Check that the network connection is established.
+    void waitForNetworkConnection();
 };
 
 extern ESATWifi Wifi;

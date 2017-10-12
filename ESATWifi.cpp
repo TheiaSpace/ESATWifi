@@ -25,20 +25,14 @@ void ESATWifi::begin()
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
   Serial.begin(115200);
+  connectionState = CONNECTING_TO_NETWORK;
 }
 
 void ESATWifi::connectToNetwork()
 {
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    connectionState = CONNECTING_TO_SERVER;
-  }
-  else
-  {
-    (void) WiFi.begin(WifiConfiguration.networkSSID,
-                      WifiConfiguration.networkPassphrase);
-    connectionState = CONNECTING_TO_NETWORK;
-  }
+  (void) WiFi.begin(WifiConfiguration.networkSSID,
+                    WifiConfiguration.networkPassphrase);
+  connectionState = WAITING_FOR_NETWORK_CONNECTION;
 }
 
 void ESATWifi::connectToServer()
@@ -191,6 +185,21 @@ boolean ESATWifi::readPacketFromSerial(ESATCCSDSPacket& packet)
   }
 }
 
+void ESATWifi::reconnectIfDisconnected()
+{
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    connectionState = CONNECTING_TO_NETWORK;
+    return;
+  }
+  if (!client.connected())
+  {
+    connectionState = CONNECTING_TO_SERVER;
+    return;
+  }
+  connectionState = CONNECTED;
+}
+
 void ESATWifi::update()
 {
   switch (connectionState)
@@ -198,14 +207,35 @@ void ESATWifi::update()
     case CONNECTING_TO_NETWORK:
       connectToNetwork();
       break;
+    case WAITING_FOR_NETWORK_CONNECTION:
+      waitForNetworkConnection();
+      break;
     case CONNECTING_TO_SERVER:
       connectToServer();
+      break;
+    case CONNECTED:
+      reconnectIfDisconnected();
+      client.println("hello");
       break;
     case DISCONNECTING:
       disconnect();
       break;
+    case DISCONNECTED:
+      break;
     default:
       break;
+  }
+}
+
+void ESATWifi::waitForNetworkConnection()
+{
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    connectionState = CONNECTING_TO_SERVER;
+  }
+  else
+  {
+    connectionState = WAITING_FOR_NETWORK_CONNECTION;
   }
 }
 
