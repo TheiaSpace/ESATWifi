@@ -65,6 +65,25 @@ class ESATWifi
     };
 
     // Possible states of the connection state machine.
+    // State transitions:
+    // - From any state to CONNECTING_TO_NETWORK (when commanded to
+    // - connect).
+    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
+    //   (right after configuring the Wifi interface to connect to the
+    //   network).
+    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
+    //   (when the network connection is established).
+    // - From CONNECTING_TO_SERVER to CONNECTED (when the
+    //   client-to-server connection is established).
+    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
+    //   connection drops).
+    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
+    //   connection stays active, but the client-to-server connection
+    //   drops).
+    // - From any state to DISCONNECTING (when commanded to
+    // - disconnect).
+    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
+    // - from the network).
     enum ConnectionState
     {
       CONNECTING_TO_NETWORK,
