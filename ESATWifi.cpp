@@ -25,25 +25,39 @@ void ESATWifi::begin()
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
   Serial.begin(115200);
-  connect();
 }
 
-void ESATWifi::connect()
+void ESATWifi::connectToNetwork()
 {
-  if (WiFi.status() != WL_CONNECTED)
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    connectionState = CONNECTING_TO_SERVER;
+  }
+  else
   {
     (void) WiFi.begin(WifiConfiguration.networkSSID,
                       WifiConfiguration.networkPassphrase);
+    connectionState = CONNECTING_TO_NETWORK;
   }
-  if (WiFi.status() != WL_CONNECTED)
+}
+
+void ESATWifi::connectToServer()
+{
+  if (client.connect(WifiConfiguration.serverAddress,
+                     WifiConfiguration.serverPort))
   {
-    return;
+    connectionState = CONNECTED;
   }
-  if (!client.connected())
+  else
   {
-    (void) client.connect(WifiConfiguration.serverAddress,
-                          WifiConfiguration.serverPort);
+    connectionState = CONNECTING_TO_SERVER;
   }
+}
+
+void ESATWifi::disconnect()
+{
+  (void) WiFi.disconnect(true);
+  connectionState = DISCONNECTED;
 }
 
 void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
@@ -102,12 +116,12 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
 
 void ESATWifi::handleConnectCommand(ESATCCSDSPacket& packet)
 {
-  connect();
+  connectionState = CONNECTING_TO_NETWORK;
 }
 
 void ESATWifi::handleDisconnectCommand(ESATCCSDSPacket& packet)
 {
-  WiFi.disconnect();
+  connectionState = DISCONNECTING;
 }
 
 void ESATWifi::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)
@@ -151,6 +165,10 @@ void ESATWifi::handleWriteConfigurationCommand(ESATCCSDSPacket& packet)
 
 boolean ESATWifi::readPacketFromRadio(ESATCCSDSPacket& packet)
 {
+  if (connectionState != CONNECTED)
+  {
+    return false;
+  }
   if (client.available() > 0)
   {
     return packet.readFrom(client);
@@ -173,9 +191,30 @@ boolean ESATWifi::readPacketFromSerial(ESATCCSDSPacket& packet)
   }
 }
 
+void ESATWifi::update()
+{
+  switch (connectionState)
+  {
+    case CONNECTING_TO_NETWORK:
+      connectToNetwork();
+      break;
+    case CONNECTING_TO_SERVER:
+      connectToServer();
+      break;
+    case DISCONNECTING:
+      disconnect();
+      break;
+    default:
+      break;
+  }
+}
+
 void ESATWifi::writePacketToRadio(ESATCCSDSPacket& packet)
 {
-  (void) packet.writeTo(client);
+  if (connectionState == CONNECTED)
+  {
+    (void) packet.writeTo(client);
+  }
 }
 
 void ESATWifi::writePacketToSerial(ESATCCSDSPacket& packet)
