@@ -75,6 +75,8 @@ class ESATWifi
       DISCONNECTED,
     };
 
+    // Unique identifier of the Wifi board for telemetry and
+    // telecommand purposes.
     static const word APPLICATION_PROCESS_IDENTIFIER = 4;
 
     // Version numbers.
