@@ -24,6 +24,20 @@
 #include <ESP8266WiFi.h>
 
 // Wifi module.
+// The Wifi module goes into a socket in the OBC board and has the
+// following responsibilities:
+// - Connect through the wireless interface to a ground segment
+//   server.
+// - Connect trhough the serial interface to the OBC.
+// - Receive telecommand packets from the ground segment server and
+//   forward them to the OBC.
+// - Receive telecommand packets from the OBC and execute them.
+// - Receive telemetry packets from the OBC and forward them to the
+//   ground segment server.
+// The telecommands handled by the Wifi module are for simple network
+// connection configuration actions.
+// Use the global Wifi object to access the functionality of the Wifi
+// module.  See the example program.
 class ESATWifi
 {
   public:
@@ -65,6 +79,25 @@ class ESATWifi
     };
 
     // Possible states of the connection state machine.
+    // State transitions:
+    // - From any state to CONNECTING_TO_NETWORK (when commanded to
+    // - connect).
+    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
+    //   (right after configuring the Wifi interface to connect to the
+    //   network).
+    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
+    //   (when the network connection is established).
+    // - From CONNECTING_TO_SERVER to CONNECTED (when the
+    //   client-to-server connection is established).
+    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
+    //   connection drops).
+    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
+    //   connection stays active, but the client-to-server connection
+    //   drops).
+    // - From any state to DISCONNECTING (when commanded to
+    // - disconnect).
+    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
+    // - from the network).
     enum ConnectionState
     {
       CONNECTING_TO_NETWORK,
@@ -75,6 +108,8 @@ class ESATWifi
       DISCONNECTED,
     };
 
+    // Unique identifier of the Wifi board for telemetry and
+    // telecommand purposes.
     static const word APPLICATION_PROCESS_IDENTIFIER = 4;
 
     // Version numbers.

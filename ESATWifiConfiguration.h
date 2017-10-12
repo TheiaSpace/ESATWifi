@@ -21,7 +21,27 @@
 
 #include <Arduino.h>
 
-// Wifi configuration.
+// Wifi module configuration.
+// Use the global WifiConfiguration object to access the
+// configuration parameters.
+// The configuration parameters are simple atributes that can
+// be read and written freely:
+// - networkSSID: the SSID of the wireless network.  Used
+//   as an argument to WiFi.begin().
+// - networkPassphrase: the passphrase of the wireless network.
+//   Used as an argument to WiFi.begin().
+// - serverAddress: the address of the ground segment server.
+//   Used as an argument to WiFiClient.connect().
+// - serverPort: the port of the ground segment server.
+//   Used as an argument to WiFiClient.connect().
+// The configuration parameters can be stored in the EEPROM in order
+// to have persistency between reboots.
+// Before loading the configuration parameters from storage or storing
+// them, call WifiConfiguration.begin() to up the EEPROM access.
+// To load the stored configuration, call
+// WifiConfiguration.readConfiguration().
+// To store the configuration, call
+// WifiConfiguration.writeConfiguration().
 class ESATWifiConfiguration
 {
   public:
