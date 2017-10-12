@@ -26,19 +26,19 @@ class ESATWifiConfiguration
 {
   public:
     // Maximum length of the SSID of the wireless network.
-    static const byte NETWORK_SSID_LENGTH = 32;
+    static const word NETWORK_SSID_LENGTH = 32;
 
     // Maximum length of the passphrase of the wireless network.
-    static const byte NETWORK_PASSPHRASE_LENGTH = 65;
+    static const word NETWORK_PASSPHRASE_LENGTH = 65;
 
     // Length of the ground segment server address.
-    static const byte SERVER_ADDRESS_LENGTH = 4;
+    static const word SERVER_ADDRESS_LENGTH = 253;
 
     // Connect to the wireless network using this passphrase.
     char networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
 
     // Connect to this ground segment server host address.
-    byte serverAddress[SERVER_ADDRESS_LENGTH];
+    char serverAddress[SERVER_ADDRESS_LENGTH];
 
     // Connect to this port of the ground segment server.
     word serverPort;
@@ -57,28 +57,28 @@ class ESATWifiConfiguration
 
   private:
     // Offset of the network SSID parameter in the storage.
-    static const byte NETWORK_SSID_OFFSET = 0;
+    static const word NETWORK_SSID_OFFSET = 0;
 
     // Offset of the network passphrase parameter in the storage.
-    static const byte NETWORK_PASSPHRASE_OFFSET =
+    static const word NETWORK_PASSPHRASE_OFFSET =
       NETWORK_SSID_OFFSET
       + NETWORK_SSID_LENGTH;
 
     // Offset of the server address parameter in the storage.
-    static const byte SERVER_ADDRESS_OFFSET =
+    static const word SERVER_ADDRESS_OFFSET =
       NETWORK_PASSPHRASE_OFFSET
       + NETWORK_PASSPHRASE_LENGTH;
 
     // Offset of the server port parameter in the storage.
-    static const byte SERVER_PORT_OFFSET =
+    static const word SERVER_PORT_OFFSET =
       SERVER_ADDRESS_OFFSET
       + SERVER_ADDRESS_LENGTH;
 
     // Length of the server port parameter.
-    static const byte SERVER_PORT_LENGTH = 2;
+    static const word SERVER_PORT_LENGTH = 2;
 
     // Total length of the configuration.
-    static const byte CONFIGURATION_LENGTH =
+    static const word CONFIGURATION_LENGTH =
       NETWORK_SSID_LENGTH
       + NETWORK_PASSPHRASE_LENGTH
       + SERVER_ADDRESS_LENGTH
