@@ -26,27 +26,10 @@ void ESATWifiConfiguration::begin()
 
 void ESATWifiConfiguration::readConfiguration()
 {
-  readNetworkConnectionAttempts();
-  readNetworkConnectionAttemptInterval();
   readNetworkSSID();
   readNetworkPassphrase();
   readServerAddress();
   readServerPort();
-}
-
-void ESATWifiConfiguration::readNetworkConnectionAttemptInterval()
-{
-  const byte highByte =
-    EEPROM.read(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET);
-  const byte lowByte =
-    EEPROM.read(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET + 1);
-  networkConnectionAttemptInterval = word(highByte, lowByte);
-}
-
-void ESATWifiConfiguration::readNetworkConnectionAttempts()
-{
-  networkConnectionAttempts =
-    EEPROM.read(NETWORK_CONNECTION_ATTEMPTS_OFFSET);
 }
 
 void ESATWifiConfiguration::readNetworkPassphrase()
@@ -82,28 +65,10 @@ void ESATWifiConfiguration::readServerPort()
 
 void ESATWifiConfiguration::writeConfiguration()
 {
-  writeNetworkConnectionAttempts();
-  writeNetworkConnectionAttemptInterval();
   writeNetworkSSID();
   writeNetworkPassphrase();
   writeServerAddress();
   writeServerPort();
-}
-
-void ESATWifiConfiguration::writeNetworkConnectionAttemptInterval()
-{
-  EEPROM.write(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET,
-               highByte(networkConnectionAttemptInterval));
-  EEPROM.write(NETWORK_CONNECTION_ATTEMPT_INTERVAL_OFFSET + 1,
-               lowByte(networkConnectionAttemptInterval));
-  EEPROM.commit();
-}
-
-void ESATWifiConfiguration::writeNetworkConnectionAttempts()
-{
-  EEPROM.write(NETWORK_CONNECTION_ATTEMPTS_OFFSET,
-               networkConnectionAttempts);
-  EEPROM.commit();
 }
 
 void ESATWifiConfiguration::writeNetworkPassphrase()

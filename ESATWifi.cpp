@@ -30,16 +30,19 @@ void ESATWifi::begin()
 
 void ESATWifi::connect()
 {
-  for (int i = 0; i < WifiConfiguration.networkConnectionAttempts; i++)
+  if (WiFi.status() != WL_CONNECTED)
   {
-    WiFi.begin(WifiConfiguration.networkSSID,
-               WifiConfiguration.networkPassphrase);
-    delay(WifiConfiguration.networkConnectionAttemptInterval);
-    if (WiFi.status() == WL_CONNECTED)
-    {
-      client.connect(WifiConfiguration.serverAddress,
-                     WifiConfiguration.serverPort);
-    }
+    (void) WiFi.begin(WifiConfiguration.networkSSID,
+                      WifiConfiguration.networkPassphrase);
+  }
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    return;
+  }
+  if (!client.connected())
+  {
+    (void) client.connect(WifiConfiguration.serverAddress,
+                          WifiConfiguration.serverPort);
   }
 }
 
@@ -74,12 +77,6 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
     case DISCONNECT:
       handleDisconnectCommand(packet);
       break;
-    case SET_NETWORK_CONNECTION_ATTEMPTS:
-      handleSetNetworkConnectionAttemptsCommand(packet);
-      break;
-    case SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL:
-      handleSetNetworkConnectionAttemptIntervalCommand(packet);
-      break;
     case SET_NETWORK_SSID:
       handleSetNetworkSSIDCommand(packet);
       break;
@@ -111,16 +108,6 @@ void ESATWifi::handleConnectCommand(ESATCCSDSPacket& packet)
 void ESATWifi::handleDisconnectCommand(ESATCCSDSPacket& packet)
 {
   WiFi.disconnect();
-}
-
-void ESATWifi::handleSetNetworkConnectionAttemptsCommand(ESATCCSDSPacket& packet)
-{
-  WifiConfiguration.networkConnectionAttempts = packet.readByte();
-}
-
-void ESATWifi::handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet)
-{
-  WifiConfiguration.networkConnectionAttemptInterval = packet.readWord();
 }
 
 void ESATWifi::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)

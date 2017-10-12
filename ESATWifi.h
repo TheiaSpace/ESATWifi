@@ -53,12 +53,10 @@ class ESATWifi
     {
       CONNECT = 0x00,
       DISCONNECT = 0x01,
-      SET_NETWORK_CONNECTION_ATTEMPTS = 0x10,
-      SET_NETWORK_CONNECTION_ATTEMPT_INTERVAL = 0x11,
-      SET_NETWORK_SSID = 0x12,
-      SET_NETWORK_PASSPHRASE = 0x13,
-      SET_SERVER_ADDRESS = 0x014,
-      SET_SERVER_PORT = 0x15,
+      SET_NETWORK_SSID = 0x10,
+      SET_NETWORK_PASSPHRASE = 0x11,
+      SET_SERVER_ADDRESS = 0x012,
+      SET_SERVER_PORT = 0x13,
       READ_CONFIGURATION = 0x20,
       WRITE_CONFIGURATION = 0x21,
     };
@@ -84,14 +82,6 @@ class ESATWifi
 
     // Handle a telecommand for disconnecting from the network and server.
     void handleDisconnectCommand(ESATCCSDSPacket& packet);
-
-    // Handle a telecommand for setting the number of network
-    // connection attempts.
-    void handleSetNetworkConnectionAttemptsCommand(ESATCCSDSPacket& packet);
-
-    // Handle a telecommand for setting the interval between network
-    // connection attempts.
-    void handleSetNetworkConnectionAttemptIntervalCommand(ESATCCSDSPacket& packet);
 
     // Handle a telecommand for setting the SSID of the network.
     void handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet);
