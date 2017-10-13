@@ -25,7 +25,7 @@ void ESATWifiBoard::begin()
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
   Serial.begin(115200);
-  connectionState = CONNECTING_TO_NETWORK;
+  connectionState = DISCONNECTED;
 }
 
 void ESATWifiBoard::connectToNetwork()
