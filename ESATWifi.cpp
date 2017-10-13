@@ -65,19 +65,16 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
   {
     return;
   }
-  if (packet.readPacketDataLength() < MINIMUM_TELECOMMAND_PACKET_DATA_LENGTH)
+  if (packet.readPacketDataLength() < ESATCCSDSSecondaryHeader::LENGTH)
   {
     return;
   }
-  const byte majorVersionNumber = packet.readByte();
-  const byte minorVersionNumber = packet.readByte();
-  const byte patchVersionNumber = packet.readByte();
-  if (majorVersionNumber < MAJOR_VERSION_NUMBER)
+  const ESATCCSDSSecondaryHeader secondaryHeader = packet.readSecondaryHeader();
+  if (secondaryHeader.majorVersionNumber < MAJOR_VERSION_NUMBER)
   {
     return;
   }
-  const byte commandCode = packet.readByte();
-  switch (commandCode)
+  switch (secondaryHeader.packetIdentifier)
   {
     case CONNECT:
       handleConnectCommand(packet);
