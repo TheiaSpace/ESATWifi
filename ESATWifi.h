@@ -117,9 +117,6 @@ class ESATWifi
     static const byte MINOR_VERSION_NUMBER = 0;
     static const byte PATCH_VERSION_NUMBER = 0;
 
-    // Minimum telecommand packet data length.
-    const byte MINIMUM_TELECOMMAND_PACKET_DATA_LENGTH = 4;
-
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 
