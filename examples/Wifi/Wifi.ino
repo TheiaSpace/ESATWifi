@@ -1,9 +1,9 @@
-#include "ESATWifi.h"
+#include "ESATWifiBoard.h"
 #include <ESATCCSDSPacket.h>
 
 void setup()
 {
-  Wifi.begin();
+  WifiBoard.begin();
 }
 
 void loop()
@@ -11,23 +11,23 @@ void loop()
   const word bufferLength = 256;
   byte buffer[bufferLength];
   ESATCCSDSPacket packet(buffer, bufferLength);
-  while (Wifi.readPacketFromRadio(packet))
+  while (WifiBoard.readPacketFromRadio(packet))
   {
     if (packet.readPacketType() == packet.TELECOMMAND)
     {
-      Wifi.writePacketToSerial(packet);
+      WifiBoard.writePacketToSerial(packet);
     }
   }
-  while (Wifi.readPacketFromSerial(packet))
+  while (WifiBoard.readPacketFromSerial(packet))
   {
     if (packet.readPacketType() == packet.TELECOMMAND)
     {
-      Wifi.handleTelecommand(packet);
+      WifiBoard.handleTelecommand(packet);
     }
     else
     {
-      Wifi.writePacketToRadio(packet);
+      WifiBoard.writePacketToRadio(packet);
     }
   }
-  Wifi.update();
+  WifiBoard.update();
 }
