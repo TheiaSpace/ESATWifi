@@ -16,15 +16,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATWifi_h
-#define ESATWifi_h
+#ifndef ESATWifiBoard_h
+#define ESATWifiBoard_h
 
 #include <Arduino.h>
 #include <ESATCCSDSPacket.h>
 #include <ESP8266WiFi.h>
 
-// Wifi module.
-// The Wifi module goes into a socket in the OBC board and has the
+// Wifi board module.
+// The Wifi board goes into a socket in the OBC board and has the
 // following responsibilities:
 // - Connect through the wireless interface to a ground segment
 //   server.
@@ -34,11 +34,11 @@
 // - Receive telecommand packets from the OBC and execute them.
 // - Receive telemetry packets from the OBC and forward them to the
 //   ground segment server.
-// The telecommands handled by the Wifi module are for simple network
+// The telecommands handled by the Wifi board are for simple network
 // connection configuration actions.
 // Use the global Wifi object to access the functionality of the Wifi
-// module.  See the example program.
-class ESATWifi
+// board.  See the example program.
+class ESATWifiBoard
 {
   public:
     // Set up the Wifi board.
@@ -166,6 +166,6 @@ class ESATWifi
     void waitForNetworkConnection();
 };
 
-extern ESATWifi Wifi;
+extern ESATWifiBoard WifiBoard;
 
-#endif /* ESATWifi_h */
+#endif /* ESATWifiBoard_h */

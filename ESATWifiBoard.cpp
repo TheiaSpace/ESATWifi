@@ -16,10 +16,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATWifi.h"
+#include "ESATWifiBoard.h"
 #include "ESATWifiConfiguration.h"
 
-void ESATWifi::begin()
+void ESATWifiBoard::begin()
 {
   WiFi.mode(WIFI_STA);
   WifiConfiguration.begin();
@@ -28,14 +28,14 @@ void ESATWifi::begin()
   connectionState = CONNECTING_TO_NETWORK;
 }
 
-void ESATWifi::connectToNetwork()
+void ESATWifiBoard::connectToNetwork()
 {
   (void) WiFi.begin(WifiConfiguration.networkSSID,
                     WifiConfiguration.networkPassphrase);
   connectionState = WAITING_FOR_NETWORK_CONNECTION;
 }
 
-void ESATWifi::connectToServer()
+void ESATWifiBoard::connectToServer()
 {
   if (client.connect(WifiConfiguration.serverAddress,
                      WifiConfiguration.serverPort))
@@ -48,13 +48,13 @@ void ESATWifi::connectToServer()
   }
 }
 
-void ESATWifi::disconnect()
+void ESATWifiBoard::disconnect()
 {
   (void) WiFi.disconnect(true);
   connectionState = DISCONNECTED;
 }
 
-void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleTelecommand(ESATCCSDSPacket& packet)
 {
   if (packet.readPacketType() != packet.TELECOMMAND)
   {
@@ -105,17 +105,17 @@ void ESATWifi::handleTelecommand(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::handleConnectCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleConnectCommand(ESATCCSDSPacket& packet)
 {
   connectionState = CONNECTING_TO_NETWORK;
 }
 
-void ESATWifi::handleDisconnectCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleDisconnectCommand(ESATCCSDSPacket& packet)
 {
   connectionState = DISCONNECTING;
 }
 
-void ESATWifi::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)
 {
   for (byte i = 0; i < WifiConfiguration.NETWORK_SSID_LENGTH; i++)
   {
@@ -123,7 +123,7 @@ void ESATWifi::handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::handleSetNetworkPassphraseCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleSetNetworkPassphraseCommand(ESATCCSDSPacket& packet)
 {
   for (byte i = 0; i < WifiConfiguration.NETWORK_PASSPHRASE_LENGTH; i++)
   {
@@ -131,7 +131,7 @@ void ESATWifi::handleSetNetworkPassphraseCommand(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::handleSetServerAddressCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleSetServerAddressCommand(ESATCCSDSPacket& packet)
 {
   for (byte i = 0; i < WifiConfiguration.SERVER_ADDRESS_LENGTH; i++)
   {
@@ -139,22 +139,22 @@ void ESATWifi::handleSetServerAddressCommand(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::handleSetServerPortCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleSetServerPortCommand(ESATCCSDSPacket& packet)
 {
   WifiConfiguration.serverPort = packet.readWord();
 }
 
-void ESATWifi::handleReadConfigurationCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleReadConfigurationCommand(ESATCCSDSPacket& packet)
 {
   WifiConfiguration.readConfiguration();
 }
 
-void ESATWifi::handleWriteConfigurationCommand(ESATCCSDSPacket& packet)
+void ESATWifiBoard::handleWriteConfigurationCommand(ESATCCSDSPacket& packet)
 {
   WifiConfiguration.writeConfiguration();
 }
 
-boolean ESATWifi::readPacketFromRadio(ESATCCSDSPacket& packet)
+boolean ESATWifiBoard::readPacketFromRadio(ESATCCSDSPacket& packet)
 {
   if (connectionState != CONNECTED)
   {
@@ -170,7 +170,7 @@ boolean ESATWifi::readPacketFromRadio(ESATCCSDSPacket& packet)
   }
 }
 
-boolean ESATWifi::readPacketFromSerial(ESATCCSDSPacket& packet)
+boolean ESATWifiBoard::readPacketFromSerial(ESATCCSDSPacket& packet)
 {
   if (Serial.available())
   {
@@ -182,7 +182,7 @@ boolean ESATWifi::readPacketFromSerial(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::reconnectIfDisconnected()
+void ESATWifiBoard::reconnectIfDisconnected()
 {
   if (WiFi.status() != WL_CONNECTED)
   {
@@ -197,7 +197,7 @@ void ESATWifi::reconnectIfDisconnected()
   connectionState = CONNECTED;
 }
 
-void ESATWifi::update()
+void ESATWifiBoard::update()
 {
   switch (connectionState)
   {
@@ -224,7 +224,7 @@ void ESATWifi::update()
   }
 }
 
-void ESATWifi::waitForNetworkConnection()
+void ESATWifiBoard::waitForNetworkConnection()
 {
   if (WiFi.status() == WL_CONNECTED)
   {
@@ -236,7 +236,7 @@ void ESATWifi::waitForNetworkConnection()
   }
 }
 
-void ESATWifi::writePacketToRadio(ESATCCSDSPacket& packet)
+void ESATWifiBoard::writePacketToRadio(ESATCCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
@@ -244,9 +244,9 @@ void ESATWifi::writePacketToRadio(ESATCCSDSPacket& packet)
   }
 }
 
-void ESATWifi::writePacketToSerial(ESATCCSDSPacket& packet)
+void ESATWifiBoard::writePacketToSerial(ESATCCSDSPacket& packet)
 {
   (void) packet.writeTo(Serial);
 }
 
-ESATWifi Wifi;
+ESATWifiBoard WifiBoard;
