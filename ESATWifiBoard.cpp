@@ -18,6 +18,7 @@
 
 #include "ESATWifiBoard.h"
 #include "ESATWifiConfiguration.h"
+#include <ESATKISSStream.h>
 
 void ESATWifiBoard::begin()
 {
@@ -162,7 +163,11 @@ boolean ESATWifiBoard::readPacketFromRadio(ESATCCSDSPacket& packet)
   }
   if (client.available() > 0)
   {
-    return packet.readFrom(client);
+    const unsigned long bufferLength =
+      packet.PRIMARY_HEADER_LENGTH + packet.packetDataBufferLength;
+    byte buffer[bufferLength];
+    ESATKISSStream decoder(client, buffer, bufferLength);
+    return packet.readFrom(decoder);
   }
   else
   {
@@ -174,7 +179,11 @@ boolean ESATWifiBoard::readPacketFromSerial(ESATCCSDSPacket& packet)
 {
   if (Serial.available())
   {
-    return packet.readFrom(Serial);
+    const unsigned long bufferLength =
+      packet.PRIMARY_HEADER_LENGTH + packet.packetDataBufferLength;
+    byte buffer[bufferLength];
+    ESATKISSStream decoder(Serial, buffer, bufferLength);
+    return packet.readFrom(decoder);
   }
   else
   {
@@ -240,13 +249,15 @@ void ESATWifiBoard::writePacketToRadio(ESATCCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
-    (void) packet.writeTo(client);
+    ESATKISSStream encoder(client, nullptr, 0);
+    (void) packet.writeTo(encoder);
   }
 }
 
 void ESATWifiBoard::writePacketToSerial(ESATCCSDSPacket& packet)
 {
-  (void) packet.writeTo(Serial);
+  ESATKISSStream encoder(Serial, nullptr, 0);
+  (void) packet.writeTo(encoder);
 }
 
 ESATWifiBoard WifiBoard;
