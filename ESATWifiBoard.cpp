@@ -221,7 +221,6 @@ void ESATWifiBoard::update()
       break;
     case CONNECTED:
       reconnectIfDisconnected();
-      client.println("hello");
       break;
     case DISCONNECTING:
       disconnect();
