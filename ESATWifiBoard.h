@@ -110,7 +110,7 @@ class ESATWifiBoard
 
     // Unique identifier of the Wifi board for telemetry and
     // telecommand purposes.
-    static const word APPLICATION_PROCESS_IDENTIFIER = 4;
+    static const word APPLICATION_PROCESS_IDENTIFIER = 3;
 
     // Version numbers.
     static const byte MAJOR_VERSION_NUMBER = 2;
