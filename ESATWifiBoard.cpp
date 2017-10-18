@@ -22,6 +22,7 @@
 
 void ESATWifiBoard::begin()
 {
+  (void) WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
