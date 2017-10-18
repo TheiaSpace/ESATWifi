@@ -52,7 +52,7 @@ class ESATWifiConfiguration
     static const word NETWORK_PASSPHRASE_LENGTH = 65;
 
     // Length of the ground segment server address.
-    static const word SERVER_ADDRESS_LENGTH = 253;
+    static const word SERVER_ADDRESS_LENGTH = 64;
 
     // Connect to the wireless network using this passphrase.
     char networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
