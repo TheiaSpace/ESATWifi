@@ -244,15 +244,27 @@ void ESATWifiBoard::writePacketToRadio(ESATCCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
-    ESATKISSStream encoder(client, nullptr, 0);
+    const unsigned long encoderBufferLength =
+      ESATKISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
+                                  + packet.readPacketDataLength());
+    byte encoderBuffer[encoderBufferLength];
+    ESATKISSStream encoder(client, encoderBuffer, encoderBufferLength);
+    (void) encoder.beginFrame();
     (void) packet.writeTo(encoder);
+    (void) encoder.endFrame();
   }
 }
 
 void ESATWifiBoard::writePacketToSerial(ESATCCSDSPacket& packet)
 {
-  ESATKISSStream encoder(Serial, nullptr, 0);
+  const unsigned long encoderBufferLength =
+    ESATKISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
+                                + packet.readPacketDataLength());
+  byte encoderBuffer[encoderBufferLength];
+  ESATKISSStream encoder(Serial, encoderBuffer, encoderBufferLength);
+  (void) encoder.beginFrame();
   (void) packet.writeTo(encoder);
+  (void) encoder.endFrame();
 }
 
 ESATWifiBoard WifiBoard;
