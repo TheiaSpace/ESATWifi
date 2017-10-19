@@ -22,6 +22,7 @@
 #include <Arduino.h>
 #include <ESATCCSDSPacket.h>
 #include <ESP8266WiFi.h>
+#include <ESATKISSStream.h>
 
 // Wifi board module.
 // The Wifi board goes into a socket in the OBC board and has the
@@ -42,7 +43,10 @@ class ESATWifiBoard
 {
   public:
     // Set up the Wifi board.
-    void begin();
+    void begin(byte radioBuffer[],
+               unsigned long radioBufferLength,
+               byte serialBuffer[],
+               unsigned long serialBufferLength);
 
     // Handle a telecommand.
     void handleTelecommand(ESATCCSDSPacket& packet);
@@ -122,6 +126,12 @@ class ESATWifiBoard
 
     // Current state of the connection state machine.
     ConnectionState connectionState;
+
+    // Decode incoming radio KISS frames with this stream.
+    ESATKISSStream radioDecoder;
+
+    // Decode incoming serial KISS frames with this stream.
+    ESATKISSStream serialDecoder;
 
     // Connect to the wireless network.
     void connectToNetwork();
