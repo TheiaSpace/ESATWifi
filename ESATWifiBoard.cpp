@@ -25,11 +25,8 @@ void ESATWifiBoard::begin(byte radioBuffer[],
                           byte serialBuffer[],
                           unsigned long serialBufferLength)
 {
-  (void) WiFi.disconnect(true);
-  WiFi.mode(WIFI_STA);
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
-  Serial.begin(115200);
   connectionState = DISCONNECTED;
   radioDecoder = ESATKISSStream(client, serialBuffer, serialBufferLength);
   serialDecoder = ESATKISSStream(Serial, serialBuffer, serialBufferLength);
