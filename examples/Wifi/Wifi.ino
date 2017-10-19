@@ -1,6 +1,5 @@
 #include "ESATWifiBoard.h"
 #include <ESATCCSDSPacket.h>
-#include <ESATTimer.h>
 
 const word PACKET_DATA_BUFFER_LENGTH = 256;
 const word WHOLE_PACKET_BUFFER_LENGTH =
