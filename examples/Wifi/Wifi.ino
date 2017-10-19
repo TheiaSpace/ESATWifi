@@ -14,7 +14,7 @@ void setup()
 {
   (void) WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
-  Serial.begin(115200);
+  Serial.begin(9600);
   WifiBoard.begin(radioBuffer,
                   WHOLE_PACKET_BUFFER_LENGTH,
                   serialBuffer,
