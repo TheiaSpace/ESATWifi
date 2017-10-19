@@ -20,7 +20,10 @@
 #include "ESATWifiConfiguration.h"
 #include <ESATKISSStream.h>
 
-void ESATWifiBoard::begin()
+void ESATWifiBoard::begin(byte radioBuffer[],
+                          unsigned long radioBufferLength,
+                          byte serialBuffer[],
+                          unsigned long serialBufferLength)
 {
   (void) WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
@@ -28,6 +31,8 @@ void ESATWifiBoard::begin()
   WifiConfiguration.readConfiguration();
   Serial.begin(115200);
   connectionState = DISCONNECTED;
+  radioDecoder = ESATKISSStream(client, serialBuffer, serialBufferLength);
+  serialDecoder = ESATKISSStream(Serial, serialBuffer, serialBufferLength);
 }
 
 void ESATWifiBoard::connectToNetwork()
@@ -162,34 +167,24 @@ boolean ESATWifiBoard::readPacketFromRadio(ESATCCSDSPacket& packet)
   {
     return false;
   }
-  if (client.available() > 0)
-  {
-    const unsigned long bufferLength =
-      packet.PRIMARY_HEADER_LENGTH + packet.packetDataBufferLength;
-    byte buffer[bufferLength];
-    ESATKISSStream decoder(client, buffer, bufferLength);
-    return packet.readFrom(decoder);
-  }
-  else
+  const boolean gotFrame = radioDecoder.receiveFrame();
+  if (!gotFrame)
   {
     return false;
   }
+  const boolean gotPacket = packet.readFrom(radioDecoder);
+  return gotPacket;
 }
 
 boolean ESATWifiBoard::readPacketFromSerial(ESATCCSDSPacket& packet)
 {
-  if (Serial.available())
-  {
-    const unsigned long bufferLength =
-      packet.PRIMARY_HEADER_LENGTH + packet.packetDataBufferLength;
-    byte buffer[bufferLength];
-    ESATKISSStream decoder(Serial, buffer, bufferLength);
-    return packet.readFrom(decoder);
-  }
-  else
+  const boolean gotFrame = serialDecoder.receiveFrame();
+  if (!gotFrame)
   {
     return false;
   }
+  const boolean gotPacket = packet.readFrom(serialDecoder);
+  return gotPacket;
 }
 
 void ESATWifiBoard::reconnectIfDisconnected()
@@ -249,15 +244,27 @@ void ESATWifiBoard::writePacketToRadio(ESATCCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
-    ESATKISSStream encoder(client, nullptr, 0);
+    const unsigned long encoderBufferLength =
+      ESATKISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
+                                  + packet.readPacketDataLength());
+    byte encoderBuffer[encoderBufferLength];
+    ESATKISSStream encoder(client, encoderBuffer, encoderBufferLength);
+    (void) encoder.beginFrame();
     (void) packet.writeTo(encoder);
+    (void) encoder.endFrame();
   }
 }
 
 void ESATWifiBoard::writePacketToSerial(ESATCCSDSPacket& packet)
 {
-  ESATKISSStream encoder(Serial, nullptr, 0);
+  const unsigned long encoderBufferLength =
+    ESATKISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
+                                + packet.readPacketDataLength());
+  byte encoderBuffer[encoderBufferLength];
+  ESATKISSStream encoder(Serial, encoderBuffer, encoderBufferLength);
+  (void) encoder.beginFrame();
   (void) packet.writeTo(encoder);
+  (void) encoder.endFrame();
 }
 
 ESATWifiBoard WifiBoard;

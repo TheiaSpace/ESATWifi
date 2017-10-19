@@ -1,16 +1,26 @@
 #include "ESATWifiBoard.h"
 #include <ESATCCSDSPacket.h>
+#include <ESATTimer.h>
+
+const word PACKET_DATA_BUFFER_LENGTH = 256;
+const word WHOLE_PACKET_BUFFER_LENGTH =
+  (ESATCCSDSPacket::PRIMARY_HEADER_LENGTH + PACKET_DATA_BUFFER_LENGTH);
+
+byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
+byte radioBuffer[WHOLE_PACKET_BUFFER_LENGTH];
+byte serialBuffer[WHOLE_PACKET_BUFFER_LENGTH];
 
 void setup()
 {
-  WifiBoard.begin();
+  WifiBoard.begin(radioBuffer,
+                  WHOLE_PACKET_BUFFER_LENGTH,
+                  serialBuffer,
+                  WHOLE_PACKET_BUFFER_LENGTH);
 }
 
 void loop()
 {
-  const word bufferLength = 256;
-  byte buffer[bufferLength];
-  ESATCCSDSPacket packet(buffer, bufferLength);
+  ESATCCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
   while (WifiBoard.readPacketFromRadio(packet))
   {
     if (packet.readPacketType() == packet.TELECOMMAND)
