@@ -66,7 +66,7 @@ void ESATWifiBoard::connectToServer()
 
 void ESATWifiBoard::disconnect()
 {
-  if (client)
+  if (client.connected())
   {
     client.stop();
   }
