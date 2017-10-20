@@ -1,6 +1,7 @@
 #include "ESATWifiBoard.h"
 #include <ESATCCSDSPacket.h>
 
+const byte NETWORK_CONNECTION_TIMEOUT_SECONDS = 60;
 const word PACKET_DATA_BUFFER_LENGTH = 256;
 const word WHOLE_PACKET_BUFFER_LENGTH =
   (ESATCCSDSPacket::PRIMARY_HEADER_LENGTH + PACKET_DATA_BUFFER_LENGTH);
@@ -17,7 +18,8 @@ void setup()
   WifiBoard.begin(radioBuffer,
                   WHOLE_PACKET_BUFFER_LENGTH,
                   serialBuffer,
-                  WHOLE_PACKET_BUFFER_LENGTH);
+                  WHOLE_PACKET_BUFFER_LENGTH,
+                  NETWORK_CONNECTION_TIMEOUT_SECONDS);
 }
 
 void loop()
