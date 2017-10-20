@@ -46,7 +46,8 @@ class ESATWifiBoard
     void begin(byte radioBuffer[],
                unsigned long radioBufferLength,
                byte serialBuffer[],
-               unsigned long serialBufferLength);
+               unsigned long serialBufferLength,
+               byte networkConnectionTimeoutSeconds);
 
     // Handle a telecommand.
     void handleTelecommand(ESATCCSDSPacket& packet);
@@ -126,6 +127,14 @@ class ESATWifiBoard
 
     // Current state of the connection state machine.
     ConnectionState connectionState;
+
+    // Time when the previous connection attempt started.
+    unsigned long networkConnectionStartTimeMilliseconds;
+
+    // Timeout in milliseconds for each network connection attempt.
+    // Every time the connection attempt is unsuccessful for longer
+    // than the timeout, try connect again.
+    unsigned long networkConnectionTimeoutMilliseconds;
 
     // Decode incoming radio KISS frames with this stream.
     ESATKISSStream radioDecoder;

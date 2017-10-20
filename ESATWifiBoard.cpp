@@ -23,32 +23,44 @@
 void ESATWifiBoard::begin(byte radioBuffer[],
                           unsigned long radioBufferLength,
                           byte serialBuffer[],
-                          unsigned long serialBufferLength)
+                          unsigned long serialBufferLength,
+                          const byte networkConnectionTimeoutSeconds)
 {
   WifiConfiguration.begin();
   WifiConfiguration.readConfiguration();
   connectionState = DISCONNECTED;
+  networkConnectionTimeoutMilliseconds =
+    1000 * ((unsigned long) networkConnectionTimeoutSeconds);
   radioDecoder = ESATKISSStream(client, serialBuffer, serialBufferLength);
   serialDecoder = ESATKISSStream(Serial, serialBuffer, serialBufferLength);
 }
 
 void ESATWifiBoard::connectToNetwork()
 {
+  disconnect();
   (void) WiFi.begin(WifiConfiguration.networkSSID,
                     WifiConfiguration.networkPassphrase);
   connectionState = WAITING_FOR_NETWORK_CONNECTION;
+  networkConnectionStartTimeMilliseconds = millis();
 }
 
 void ESATWifiBoard::connectToServer()
 {
-  if (client.connect(WifiConfiguration.serverAddress,
-                     WifiConfiguration.serverPort))
+  if (WiFi.status() == WL_CONNECTED)
   {
-    connectionState = CONNECTED;
+    if (client.connect(WifiConfiguration.serverAddress,
+                       WifiConfiguration.serverPort))
+    {
+      connectionState = CONNECTED;
+    }
+    else
+    {
+      connectionState = CONNECTING_TO_SERVER;
+    }
   }
   else
   {
-    connectionState = CONNECTING_TO_SERVER;
+    connectionState = CONNECTING_TO_NETWORK;
   }
 }
 
@@ -234,6 +246,13 @@ void ESATWifiBoard::waitForNetworkConnection()
   else
   {
     connectionState = WAITING_FOR_NETWORK_CONNECTION;
+    const unsigned long currentTime = millis();
+    const unsigned long ellapsedTime =
+      currentTime - networkConnectionStartTimeMilliseconds;
+    if (ellapsedTime > networkConnectionTimeoutMilliseconds)
+    {
+      connectionState = CONNECTING_TO_NETWORK;
+    }
   }
 }
 
