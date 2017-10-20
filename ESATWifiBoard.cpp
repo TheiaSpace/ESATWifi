@@ -66,6 +66,10 @@ void ESATWifiBoard::connectToServer()
 
 void ESATWifiBoard::disconnect()
 {
+  if (client)
+  {
+    client.stop();
+  }
   (void) WiFi.disconnect(true);
   connectionState = DISCONNECTED;
 }
