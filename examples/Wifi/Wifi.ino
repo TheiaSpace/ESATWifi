@@ -1,10 +1,10 @@
-#include "ESATWifiBoard.h"
-#include <ESATCCSDSPacket.h>
+#include "ESAT_Wifi.h"
+#include <ESAT_CCSDSPacket.h>
 
 const byte NETWORK_CONNECTION_TIMEOUT_SECONDS = 60;
 const word PACKET_DATA_BUFFER_LENGTH = 256;
 const word WHOLE_PACKET_BUFFER_LENGTH =
-  (ESATCCSDSPacket::PRIMARY_HEADER_LENGTH + PACKET_DATA_BUFFER_LENGTH);
+  (ESAT_CCSDSPacket::PRIMARY_HEADER_LENGTH + PACKET_DATA_BUFFER_LENGTH);
 
 byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
 byte radioBuffer[WHOLE_PACKET_BUFFER_LENGTH];
@@ -15,7 +15,7 @@ void setup()
   (void) WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
   Serial.begin(9600);
-  WifiBoard.begin(radioBuffer,
+  ESAT_Wifi.begin(radioBuffer,
                   WHOLE_PACKET_BUFFER_LENGTH,
                   serialBuffer,
                   WHOLE_PACKET_BUFFER_LENGTH,
@@ -24,24 +24,24 @@ void setup()
 
 void loop()
 {
-  ESATCCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
-  while (WifiBoard.readPacketFromRadio(packet))
+  ESAT_CCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
+  while (ESAT_Wifi.readPacketFromRadio(packet))
   {
     if (packet.readPacketType() == packet.TELECOMMAND)
     {
-      WifiBoard.writePacketToSerial(packet);
+      ESAT_Wifi.writePacketToSerial(packet);
     }
   }
-  while (WifiBoard.readPacketFromSerial(packet))
+  while (ESAT_Wifi.readPacketFromSerial(packet))
   {
     if (packet.readPacketType() == packet.TELECOMMAND)
     {
-      WifiBoard.handleTelecommand(packet);
+      ESAT_Wifi.handleTelecommand(packet);
     }
     else
     {
-      WifiBoard.writePacketToRadio(packet);
+      ESAT_Wifi.writePacketToRadio(packet);
     }
   }
-  WifiBoard.update();
+  ESAT_Wifi.update();
 }

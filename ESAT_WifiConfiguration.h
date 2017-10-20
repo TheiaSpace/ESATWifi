@@ -16,13 +16,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATWifiConfiguration_h
-#define ESATWifiConfiguration_h
+#ifndef ESAT_WifiConfiguration_h
+#define ESAT_WifiConfiguration_h
 
 #include <Arduino.h>
 
 // Wifi module configuration.
-// Use the global WifiConfiguration object to access the
+// Use the global ESAT_WifiConfiguration object to access the
 // configuration parameters.
 // The configuration parameters are simple atributes that can
 // be read and written freely:
@@ -37,12 +37,12 @@
 // The configuration parameters can be stored in the EEPROM in order
 // to have persistency between reboots.
 // Before loading the configuration parameters from storage or storing
-// them, call WifiConfiguration.begin() to up the EEPROM access.
+// them, call ESAT_WifiConfiguration.begin() to up the EEPROM access.
 // To load the stored configuration, call
-// WifiConfiguration.readConfiguration().
+// ESAT_WifiConfiguration.readConfiguration().
 // To store the configuration, call
-// WifiConfiguration.writeConfiguration().
-class ESATWifiConfiguration
+// ESAT_WifiConfiguration.writeConfiguration().
+class ESAT_WifiConfigurationClass
 {
   public:
     // Maximum length of the SSID of the wireless network.
@@ -137,6 +137,7 @@ class ESATWifiConfiguration
     void writeServerPort();
 };
 
-extern ESATWifiConfiguration WifiConfiguration;
+// Global instance of the Wifi configuration library.
+extern ESAT_WifiConfigurationClass ESAT_WifiConfiguration;
 
-#endif /* ESATWifiConfiguration_h */
+#endif /* ESAT_WifiConfiguration_h */

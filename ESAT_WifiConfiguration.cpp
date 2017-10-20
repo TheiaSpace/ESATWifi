@@ -16,15 +16,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATWifiConfiguration.h"
+#include "ESAT_WifiConfiguration.h"
 #include <EEPROM.h>
 
-void ESATWifiConfiguration::begin()
+void ESAT_WifiConfigurationClass::begin()
 {
   EEPROM.begin(CONFIGURATION_LENGTH);
 }
 
-void ESATWifiConfiguration::readConfiguration()
+void ESAT_WifiConfigurationClass::readConfiguration()
 {
   readNetworkSSID();
   readNetworkPassphrase();
@@ -32,7 +32,7 @@ void ESATWifiConfiguration::readConfiguration()
   readServerPort();
 }
 
-void ESATWifiConfiguration::readNetworkPassphrase()
+void ESAT_WifiConfigurationClass::readNetworkPassphrase()
 {
   for (byte i = 0; i < NETWORK_PASSPHRASE_LENGTH; i++)
   {
@@ -40,7 +40,7 @@ void ESATWifiConfiguration::readNetworkPassphrase()
   }
 }
 
-void ESATWifiConfiguration::readNetworkSSID()
+void ESAT_WifiConfigurationClass::readNetworkSSID()
 {
   for (byte i = 0; i < NETWORK_SSID_LENGTH; i++)
   {
@@ -48,7 +48,7 @@ void ESATWifiConfiguration::readNetworkSSID()
   }
 }
 
-void ESATWifiConfiguration::readServerAddress()
+void ESAT_WifiConfigurationClass::readServerAddress()
 {
   for (byte i = 0; i < SERVER_ADDRESS_LENGTH; i++)
   {
@@ -56,14 +56,14 @@ void ESATWifiConfiguration::readServerAddress()
   }
 }
 
-void ESATWifiConfiguration::readServerPort()
+void ESAT_WifiConfigurationClass::readServerPort()
 {
   const byte highByte = EEPROM.read(SERVER_PORT_OFFSET);
   const byte lowByte = EEPROM.read(SERVER_PORT_OFFSET + 1);
   serverPort = word(highByte, lowByte);
 }
 
-void ESATWifiConfiguration::writeConfiguration()
+void ESAT_WifiConfigurationClass::writeConfiguration()
 {
   writeNetworkSSID();
   writeNetworkPassphrase();
@@ -71,7 +71,7 @@ void ESATWifiConfiguration::writeConfiguration()
   writeServerPort();
 }
 
-void ESATWifiConfiguration::writeNetworkPassphrase()
+void ESAT_WifiConfigurationClass::writeNetworkPassphrase()
 {
   for (byte i = 0; i < NETWORK_PASSPHRASE_LENGTH; i++)
   {
@@ -81,7 +81,7 @@ void ESATWifiConfiguration::writeNetworkPassphrase()
   EEPROM.commit();
 }
 
-void ESATWifiConfiguration::writeNetworkSSID()
+void ESAT_WifiConfigurationClass::writeNetworkSSID()
 {
   for (byte i = 0; i < NETWORK_SSID_LENGTH; i++)
   {
@@ -91,7 +91,7 @@ void ESATWifiConfiguration::writeNetworkSSID()
   EEPROM.commit();
 }
 
-void ESATWifiConfiguration::writeServerAddress()
+void ESAT_WifiConfigurationClass::writeServerAddress()
 {
   for (byte i = 0; i < SERVER_ADDRESS_LENGTH; i++)
   {
@@ -100,11 +100,11 @@ void ESATWifiConfiguration::writeServerAddress()
   EEPROM.commit();
 }
 
-void ESATWifiConfiguration::writeServerPort()
+void ESAT_WifiConfigurationClass::writeServerPort()
 {
   EEPROM.write(SERVER_PORT_OFFSET, highByte(serverPort));
   EEPROM.write(SERVER_PORT_OFFSET + 1, lowByte(serverPort));
   EEPROM.commit();
 }
 
-ESATWifiConfiguration WifiConfiguration;
+ESAT_WifiConfigurationClass ESAT_WifiConfiguration;

@@ -16,13 +16,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATWifiBoard_h
-#define ESATWifiBoard_h
+#ifndef ESAT_Wifi_h
+#define ESAT_Wifi_h
 
 #include <Arduino.h>
-#include <ESATCCSDSPacket.h>
+#include <ESAT_CCSDSPacket.h>
 #include <ESP8266WiFi.h>
-#include <ESATKISSStream.h>
+#include <ESAT_KISSStream.h>
 
 // Wifi board module.
 // The Wifi board goes into a socket in the OBC board and has the
@@ -37,9 +37,9 @@
 //   ground segment server.
 // The telecommands handled by the Wifi board are for simple network
 // connection configuration actions.
-// Use the global Wifi object to access the functionality of the Wifi
-// board.  See the example program.
-class ESATWifiBoard
+// Use the global ESAT_Wifi object to access the functionality of
+// the Wifi board.  See the example program.
+class ESAT_WifiClass
 {
   public:
     // Set up the Wifi board.
@@ -50,24 +50,24 @@ class ESATWifiBoard
                byte networkConnectionTimeoutSeconds);
 
     // Handle a telecommand.
-    void handleTelecommand(ESATCCSDSPacket& packet);
+    void handleTelecommand(ESAT_CCSDSPacket& packet);
 
     // Fill the packet with data read from the radio interface.
     // Return true if there was a new packet; otherwise return false.
-    boolean readPacketFromRadio(ESATCCSDSPacket& packet);
+    boolean readPacketFromRadio(ESAT_CCSDSPacket& packet);
 
     // Fill the packet with data read from the serial interface.
     // Return true if there was a new packet; otherwise return false.
-    boolean readPacketFromSerial(ESATCCSDSPacket& packet);
+    boolean readPacketFromSerial(ESAT_CCSDSPacket& packet);
 
     // Perform connection management and related tasks.
     void update();
 
     // Send a packet through the radio interface.
-    void writePacketToRadio(ESATCCSDSPacket& packet);
+    void writePacketToRadio(ESAT_CCSDSPacket& packet);
 
     // Send a packet through the serial interface.
-    void writePacketToSerial(ESATCCSDSPacket& packet);
+    void writePacketToSerial(ESAT_CCSDSPacket& packet);
 
   private:
     // Commands handled by the Wifi board.
@@ -140,10 +140,10 @@ class ESATWifiBoard
     unsigned long networkConnectionTimeoutMilliseconds;
 
     // Decode incoming radio KISS frames with this stream.
-    ESATKISSStream radioDecoder;
+    ESAT_KISSStream radioDecoder;
 
     // Decode incoming serial KISS frames with this stream.
-    ESATKISSStream serialDecoder;
+    ESAT_KISSStream serialDecoder;
 
     // Connect to the wireless network.
     void connectToNetwork();
@@ -155,30 +155,30 @@ class ESATWifiBoard
     void disconnect();
 
     // Handle a telecommand for connecting to the network and server.
-    void handleConnectCommand(ESATCCSDSPacket& packet);
+    void handleConnectCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for disconnecting from the network and server.
-    void handleDisconnectCommand(ESATCCSDSPacket& packet);
+    void handleDisconnectCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for setting the SSID of the network.
-    void handleSetNetworkSSIDCommand(ESATCCSDSPacket& packet);
+    void handleSetNetworkSSIDCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for setting the passphrase of the network.
-    void handleSetNetworkPassphraseCommand(ESATCCSDSPacket& packet);
+    void handleSetNetworkPassphraseCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for setting the address of the ground
     // segment server.
-    void handleSetServerAddressCommand(ESATCCSDSPacket& packet);
+    void handleSetServerAddressCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for setting the port of the ground segment
     // server.
-    void handleSetServerPortCommand(ESATCCSDSPacket& packet);
+    void handleSetServerPortCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for reading the configuration.
-    void handleReadConfigurationCommand(ESATCCSDSPacket& packet);
+    void handleReadConfigurationCommand(ESAT_CCSDSPacket& packet);
 
     // Handle a telecommand for writing the configuration.
-    void handleWriteConfigurationCommand(ESATCCSDSPacket& packet);
+    void handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet);
 
     // Reconnect to the server if disconnected from the server or to
     // the network if disconnected from the network.
@@ -188,6 +188,6 @@ class ESATWifiBoard
     void waitForNetworkConnection();
 };
 
-extern ESATWifiBoard WifiBoard;
+extern ESAT_WifiClass ESAT_Wifi;
 
-#endif /* ESATWifiBoard_h */
+#endif /* ESAT_Wifi_h */
