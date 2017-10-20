@@ -122,6 +122,9 @@ class ESATWifiBoard
     static const byte MINOR_VERSION_NUMBER = 0;
     static const byte PATCH_VERSION_NUMBER = 0;
 
+    // Line for signaling that the Wifi board is not connected to the server.
+    static const byte NOT_CONNECTED_SIGNAL_PIN = 0;
+
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 

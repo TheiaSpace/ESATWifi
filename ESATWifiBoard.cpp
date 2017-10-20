@@ -33,6 +33,8 @@ void ESATWifiBoard::begin(byte radioBuffer[],
     1000 * ((unsigned long) networkConnectionTimeoutSeconds);
   radioDecoder = ESATKISSStream(client, serialBuffer, serialBufferLength);
   serialDecoder = ESATKISSStream(Serial, serialBuffer, serialBufferLength);
+  pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
+  digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
 }
 
 void ESATWifiBoard::connectToNetwork()
@@ -238,6 +240,14 @@ void ESATWifiBoard::update()
       break;
     default:
       break;
+  }
+  if (connectionState == CONNECTED)
+  {
+    digitalWrite(NOT_CONNECTED_SIGNAL_PIN, LOW);
+  }
+  else
+  {
+    digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
   }
 }
 
