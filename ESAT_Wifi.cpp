@@ -279,7 +279,7 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
     const unsigned long encoderBufferLength =
       ESAT_KISSStream::frameLength(packet.length());
     byte encoderBuffer[encoderBufferLength];
-    ESAT_KISSStream encoder(client, encoderBuffer, encoderBufferLength);
+    ESAT_KISSStream encoder(client, encoderBuffer, sizeof(encoderBuffer));
     (void) encoder.beginFrame();
     (void) packet.writeTo(encoder);
     (void) encoder.endFrame();
@@ -292,7 +292,7 @@ void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)
   const unsigned long encoderBufferLength =
     ESAT_KISSStream::frameLength(packet.length());
   byte encoderBuffer[encoderBufferLength];
-  ESAT_KISSStream encoder(Serial, encoderBuffer, encoderBufferLength);
+  ESAT_KISSStream encoder(Serial, encoderBuffer, sizeof(encoderBuffer));
   (void) encoder.beginFrame();
   (void) packet.writeTo(encoder);
   (void) encoder.endFrame();

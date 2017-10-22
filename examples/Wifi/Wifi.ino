@@ -16,9 +16,9 @@ void setup()
   WiFi.mode(WIFI_STA);
   Serial.begin(9600);
   ESAT_Wifi.begin(radioBuffer,
-                  WHOLE_PACKET_BUFFER_LENGTH,
+                  sizeof(radioBuffer),
                   serialBuffer,
-                  WHOLE_PACKET_BUFFER_LENGTH,
+                  sizeof(serialBuffer),
                   NETWORK_CONNECTION_TIMEOUT_SECONDS);
 }
 
