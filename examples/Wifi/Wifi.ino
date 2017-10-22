@@ -4,7 +4,7 @@
 const byte NETWORK_CONNECTION_TIMEOUT_SECONDS = 60;
 const word PACKET_DATA_BUFFER_LENGTH = 256;
 const word WHOLE_PACKET_BUFFER_LENGTH =
-  (ESAT_CCSDSPacket::PRIMARY_HEADER_LENGTH + PACKET_DATA_BUFFER_LENGTH);
+  (ESAT_CCSDSPrimaryHeader::LENGTH + PACKET_DATA_BUFFER_LENGTH);
 
 byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
 byte radioBuffer[WHOLE_PACKET_BUFFER_LENGTH];
@@ -27,14 +27,16 @@ void loop()
   ESAT_CCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
   while (ESAT_Wifi.readPacketFromRadio(packet))
   {
-    if (packet.readPacketType() == packet.TELECOMMAND)
+    const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
+    if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
     {
       ESAT_Wifi.writePacketToSerial(packet);
     }
   }
   while (ESAT_Wifi.readPacketFromSerial(packet))
   {
-    if (packet.readPacketType() == packet.TELECOMMAND)
+    const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
+    if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
     {
       ESAT_Wifi.handleTelecommand(packet);
     }

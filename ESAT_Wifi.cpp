@@ -18,6 +18,7 @@
 
 #include "ESAT_Wifi.h"
 #include "ESAT_WifiConfiguration.h"
+#include <ESAT_Buffer.h>
 #include <ESAT_KISSStream.h>
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
@@ -40,8 +41,8 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
 void ESAT_WifiClass::connectToNetwork()
 {
   disconnect();
-  (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
-                    ESAT_WifiConfiguration.networkPassphrase);
+  (void) WiFi.begin((char*) ESAT_WifiConfiguration.networkSSID,
+                    (char*) ESAT_WifiConfiguration.networkPassphrase);
   connectionState = WAITING_FOR_NETWORK_CONNECTION;
   networkConnectionStartTimeMilliseconds = millis();
 }
@@ -78,16 +79,18 @@ void ESAT_WifiClass::disconnect()
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 {
-  if (packet.readPacketType() != packet.TELECOMMAND)
+  packet.rewind();
+  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
+  if (primaryHeader.packetType != primaryHeader.TELECOMMAND)
   {
     return;
   }
-  if (packet.readApplicationProcessIdentifier()
+  if (primaryHeader.applicationProcessIdentifier
       != APPLICATION_PROCESS_IDENTIFIER)
   {
     return;
   }
-  if (packet.readPacketDataLength() < ESAT_CCSDSSecondaryHeader::LENGTH)
+  if (primaryHeader.packetDataLength < ESAT_CCSDSSecondaryHeader::LENGTH)
   {
     return;
   }
@@ -140,26 +143,23 @@ void ESAT_WifiClass::handleDisconnectCommand(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::handleSetNetworkSSIDCommand(ESAT_CCSDSPacket& packet)
 {
-  for (byte i = 0; i < ESAT_WifiConfiguration.NETWORK_SSID_LENGTH; i++)
-  {
-    ESAT_WifiConfiguration.networkSSID[i] = packet.readByte();
-  }
+  ESAT_Buffer networkSSID(ESAT_WifiConfiguration.networkSSID,
+                          sizeof(ESAT_WifiConfiguration.networkSSID));
+  (void) networkSSID.readFrom(packet, networkSSID.capacity());
 }
 
 void ESAT_WifiClass::handleSetNetworkPassphraseCommand(ESAT_CCSDSPacket& packet)
 {
-  for (byte i = 0; i < ESAT_WifiConfiguration.NETWORK_PASSPHRASE_LENGTH; i++)
-  {
-    ESAT_WifiConfiguration.networkPassphrase[i] = packet.readByte();
-  }
+  ESAT_Buffer networkPassphrase(ESAT_WifiConfiguration.networkPassphrase,
+                                sizeof(ESAT_WifiConfiguration.networkPassphrase));
+  (void) networkPassphrase.readFrom(packet, networkPassphrase.capacity());
 }
 
 void ESAT_WifiClass::handleSetServerAddressCommand(ESAT_CCSDSPacket& packet)
 {
-  for (byte i = 0; i < ESAT_WifiConfiguration.SERVER_ADDRESS_LENGTH; i++)
-  {
-    ESAT_WifiConfiguration.serverAddress[i] = packet.readByte();
-  }
+  ESAT_Buffer serverAddress(ESAT_WifiConfiguration.serverAddress,
+                            sizeof(ESAT_WifiConfiguration.serverAddress));
+  (void) serverAddress.readFrom(packet, serverAddress.capacity());
 }
 
 void ESAT_WifiClass::handleSetServerPortCommand(ESAT_CCSDSPacket& packet)
@@ -275,9 +275,9 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
+    packet.rewind();
     const unsigned long encoderBufferLength =
-      ESAT_KISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
-                                   + packet.readPacketDataLength());
+      ESAT_KISSStream::frameLength(packet.length());
     byte encoderBuffer[encoderBufferLength];
     ESAT_KISSStream encoder(client, encoderBuffer, encoderBufferLength);
     (void) encoder.beginFrame();
@@ -288,9 +288,9 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)
 {
+  packet.rewind();
   const unsigned long encoderBufferLength =
-    ESAT_KISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
-                                 + packet.readPacketDataLength());
+    ESAT_KISSStream::frameLength(packet.length());
   byte encoderBuffer[encoderBufferLength];
   ESAT_KISSStream encoder(Serial, encoderBuffer, encoderBufferLength);
   (void) encoder.beginFrame();
