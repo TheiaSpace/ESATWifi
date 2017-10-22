@@ -41,8 +41,8 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
 void ESAT_WifiClass::connectToNetwork()
 {
   disconnect();
-  (void) WiFi.begin((char*) ESAT_WifiConfiguration.networkSSID,
-                    (char*) ESAT_WifiConfiguration.networkPassphrase);
+  (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
+                    ESAT_WifiConfiguration.networkPassphrase);
   connectionState = WAITING_FOR_NETWORK_CONNECTION;
   networkConnectionStartTimeMilliseconds = millis();
 }
@@ -143,21 +143,21 @@ void ESAT_WifiClass::handleDisconnectCommand(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::handleSetNetworkSSIDCommand(ESAT_CCSDSPacket& packet)
 {
-  ESAT_Buffer networkSSID(ESAT_WifiConfiguration.networkSSID,
+  ESAT_Buffer networkSSID((byte*) ESAT_WifiConfiguration.networkSSID,
                           sizeof(ESAT_WifiConfiguration.networkSSID));
   (void) networkSSID.readFrom(packet, networkSSID.capacity());
 }
 
 void ESAT_WifiClass::handleSetNetworkPassphraseCommand(ESAT_CCSDSPacket& packet)
 {
-  ESAT_Buffer networkPassphrase(ESAT_WifiConfiguration.networkPassphrase,
+  ESAT_Buffer networkPassphrase((byte*) ESAT_WifiConfiguration.networkPassphrase,
                                 sizeof(ESAT_WifiConfiguration.networkPassphrase));
   (void) networkPassphrase.readFrom(packet, networkPassphrase.capacity());
 }
 
 void ESAT_WifiClass::handleSetServerAddressCommand(ESAT_CCSDSPacket& packet)
 {
-  ESAT_Buffer serverAddress(ESAT_WifiConfiguration.serverAddress,
+  ESAT_Buffer serverAddress((byte*) ESAT_WifiConfiguration.serverAddress,
                             sizeof(ESAT_WifiConfiguration.serverAddress));
   (void) serverAddress.readFrom(packet, serverAddress.capacity());
 }
