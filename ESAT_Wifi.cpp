@@ -78,16 +78,18 @@ void ESAT_WifiClass::disconnect()
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 {
-  if (packet.readPacketType() != packet.TELECOMMAND)
+  packet.rewind();
+  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
+  if (primaryHeader.packetType != primaryHeader.TELECOMMAND)
   {
     return;
   }
-  if (packet.readApplicationProcessIdentifier()
+  if (primaryHeader.applicationProcessIdentifier
       != APPLICATION_PROCESS_IDENTIFIER)
   {
     return;
   }
-  if (packet.readPacketDataLength() < ESAT_CCSDSSecondaryHeader::LENGTH)
+  if (primaryHeader.packetDataLength < ESAT_CCSDSSecondaryHeader::LENGTH)
   {
     return;
   }
@@ -275,9 +277,11 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
+    packet.rewind();
+    const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
     const unsigned long encoderBufferLength =
-      ESAT_KISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
-                                   + packet.readPacketDataLength());
+      ESAT_KISSStream::frameLength(primaryHeader.LENGTH
+                                   + primaryHeader.packetDataLength);
     byte encoderBuffer[encoderBufferLength];
     ESAT_KISSStream encoder(client, encoderBuffer, encoderBufferLength);
     (void) encoder.beginFrame();
@@ -288,9 +292,10 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)
 {
+  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
   const unsigned long encoderBufferLength =
-    ESAT_KISSStream::frameLength(packet.PRIMARY_HEADER_LENGTH
-                                 + packet.readPacketDataLength());
+    ESAT_KISSStream::frameLength(primaryHeader.LENGTH
+                                 + primaryHeader.packetDataLength);
   byte encoderBuffer[encoderBufferLength];
   ESAT_KISSStream encoder(Serial, encoderBuffer, encoderBufferLength);
   (void) encoder.beginFrame();
