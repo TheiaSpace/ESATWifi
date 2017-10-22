@@ -6,7 +6,6 @@ const word PACKET_DATA_BUFFER_LENGTH = 256;
 const word WHOLE_PACKET_BUFFER_LENGTH =
   (ESAT_CCSDSPrimaryHeader::LENGTH + PACKET_DATA_BUFFER_LENGTH);
 
-byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
 byte radioBuffer[WHOLE_PACKET_BUFFER_LENGTH];
 byte serialBuffer[WHOLE_PACKET_BUFFER_LENGTH];
 
@@ -16,14 +15,15 @@ void setup()
   WiFi.mode(WIFI_STA);
   Serial.begin(9600);
   ESAT_Wifi.begin(radioBuffer,
-                  WHOLE_PACKET_BUFFER_LENGTH,
+                  sizeof(radioBuffer),
                   serialBuffer,
-                  WHOLE_PACKET_BUFFER_LENGTH,
+                  sizeof(serialBuffer),
                   NETWORK_CONNECTION_TIMEOUT_SECONDS);
 }
 
 void loop()
 {
+  byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
   ESAT_CCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
   while (ESAT_Wifi.readPacketFromRadio(packet))
   {
