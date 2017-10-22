@@ -55,16 +55,16 @@ class ESAT_WifiConfigurationClass
     static const word SERVER_ADDRESS_LENGTH = 64;
 
     // Connect to the wireless network using this passphrase.
-    byte networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
+    char networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
 
     // Connect to this ground segment server host address.
-    byte serverAddress[SERVER_ADDRESS_LENGTH];
+    char serverAddress[SERVER_ADDRESS_LENGTH];
 
     // Connect to this port of the ground segment server.
     word serverPort;
 
     // Connect to the wireless network with this SSID.
-    byte networkSSID[NETWORK_SSID_LENGTH];
+    char networkSSID[NETWORK_SSID_LENGTH];
 
     // Set up the configuration storage.
     void begin();
