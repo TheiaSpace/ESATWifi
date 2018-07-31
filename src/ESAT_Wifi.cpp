@@ -32,7 +32,7 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   connectionState = DISCONNECTED;
   networkConnectionTimeoutMilliseconds =
     1000 * ((unsigned long) networkConnectionTimeoutSeconds);
-  radioDecoder = ESAT_KISSStream(client, serialBuffer, serialBufferLength);
+  radioDecoder = ESAT_KISSStream(client, radioBuffer, radioBufferLength);
   serialDecoder = ESAT_KISSStream(Serial, serialBuffer, serialBufferLength);
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
