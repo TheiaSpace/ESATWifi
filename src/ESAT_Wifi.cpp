@@ -133,11 +133,13 @@ void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::handleConnectCommand(ESAT_CCSDSPacket& packet)
 {
+  (void) packet; // Unused.
   connectionState = CONNECTING_TO_NETWORK;
 }
 
 void ESAT_WifiClass::handleDisconnectCommand(ESAT_CCSDSPacket& packet)
 {
+  (void) packet; // Unused;
   connectionState = DISCONNECTING;
 }
 
@@ -169,11 +171,13 @@ void ESAT_WifiClass::handleSetServerPortCommand(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::handleReadConfigurationCommand(ESAT_CCSDSPacket& packet)
 {
+  (void) packet; // Unused;
   ESAT_WifiConfiguration.readConfiguration();
 }
 
 void ESAT_WifiClass::handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet)
 {
+  (void) packet; // Unused;
   ESAT_WifiConfiguration.writeConfiguration();
 }
 
