@@ -17,9 +17,21 @@ along with Theia Space's ESAT EPS library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
+ESAT Wifi library version 2.1.0.
+
 Wifi communications subsystem for ESAT.
 
-See the example Wifi program.
+This software runs in the ESAT Wifi board.  Use it with Arduino 1.8.0
+or newer together with the Arduino core for ESP8266-based boards
+(esp8266) 2.3.0 or a newer 2.x.y version and the ESAT utility library
+(ESATUtil) version 2.1.0 or a newer 2.x.y version.  Use Generic
+ESP8266 Module as the target board.
+
+See the example Wifi program (examples/Wifi/Wifi.ino).  This program
+uses the modules of the Wifi library.
+
+The src/ directory contains the Wifi library, which consists of the
+following modules:
 
 
 # ESAT_Wifi
