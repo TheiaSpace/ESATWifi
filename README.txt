@@ -21,7 +21,11 @@ ESAT Wifi library version 2.1.0.
 
 Wifi communications subsystem for ESAT.
 
-See the example Wifi program (examples/Wifi/Wifi.ino).
+See the example Wifi program (examples/Wifi/Wifi.ino).  This program
+uses the modules of the Wifi library.
+
+The src/ directory contains the Wifi library, which consists of the
+following modules:
 
 
 # ESAT_Wifi
