@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Wifi library.
  *
  * Theia Space's ESAT Wifi library is free software: you can
