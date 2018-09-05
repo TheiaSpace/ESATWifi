@@ -1,3 +1,44 @@
-ESAT_Wifi	KEYWORD1
+# Copyright (C) 2017-2018 Theia Space, Universidad Politécnica de Madrid
+#
+# This file is part of Theia Space's ESAT Wifi library.
+#
+# Theia Space's ESAT Wifi library is free software: you can
+# redistribute it and/or modify it under the terms of the GNU General
+# Public License as published by the Free Software Foundation, either
+# version 3 of the License, or (at your option) any later version.
+#
+# Theia Space's ESAT Wifi library is distributed in the hope that it
+# will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Theia Space's ESAT Wifi library.  If not, see
+# <http://www.gnu.org/licenses/>.
 
-ESAT_WifiConfiguration	KEYWORD1
+
+#######################################
+# Syntax Coloring Map For ESATWifi
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ESAT_WifiClass	KEYWORD1
+ESAT_WifiConfigurationClass	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+ESAT_Wifi	KEYWORD2
+ESAT_WifiConfiguration	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
