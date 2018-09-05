@@ -17,6 +17,8 @@ along with Theia Space's ESAT EPS library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
+ESAT Wifi library version 2.1.0.
+
 Wifi communications subsystem for ESAT.
 
 See the example Wifi program.
