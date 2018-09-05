@@ -1,3 +1,25 @@
-ESAT_Wifi	KEYWORD1
+#######################################
+# Syntax Coloring Map For ESATWifi
+#######################################
 
-ESAT_WifiConfiguration	KEYWORD1
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ESAT_WifiClass	KEYWORD1
+ESAT_WifiConfigurationClass	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+ESAT_Wifi	KEYWORD2
+ESAT_WifiConfiguration	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
