@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017-2018 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -23,8 +23,8 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
+#include <ESAT_CCSDSPacketFromKISSFrameReader.h>
 #include <ESP8266WiFi.h>
-#include <ESAT_KISSStream.h>
 
 // Wifi board module.
 // The Wifi board goes into a socket in the OBC board and has the
@@ -141,11 +141,13 @@ class ESAT_WifiClass
     // than the timeout, try connect again.
     unsigned long networkConnectionTimeoutMilliseconds;
 
-    // Decode incoming radio KISS frames with this stream.
-    ESAT_KISSStream radioDecoder;
+    // Use this to read CCSDS packets from KISS frames coming from
+    // radio.
+    ESAT_CCSDSPacketFromKISSFrameReader radioReader;
 
-    // Decode incoming serial KISS frames with this stream.
-    ESAT_KISSStream serialDecoder;
+    // Use this to read CCSDS packets from KISS frames coming from
+    // radio.
+    ESAT_CCSDSPacketFromKISSFrameReader serialReader;
 
     // Connect to the wireless network.
     void connectToNetwork();
