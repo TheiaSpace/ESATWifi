@@ -21,7 +21,7 @@
 #include "ESAT_Wifi.h"
 #include "ESAT_WifiConfiguration.h"
 #include <ESAT_Buffer.h>
-#include <ESAT_KISSStream.h>
+#include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
                            unsigned long radioBufferLength,
@@ -34,8 +34,12 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   connectionState = DISCONNECTED;
   networkConnectionTimeoutMilliseconds =
     1000 * ((unsigned long) networkConnectionTimeoutSeconds);
-  radioDecoder = ESAT_KISSStream(client, radioBuffer, radioBufferLength);
-  serialDecoder = ESAT_KISSStream(Serial, serialBuffer, serialBufferLength);
+  radioReader = ESAT_CCSDSPacketFromKISSFrameReader(client,
+                                                    radioBuffer,
+                                                    radioBufferLength);
+  serialReader = ESAT_CCSDSPacketFromKISSFrameReader(Serial,
+                                                     serialBuffer,
+                                                     serialBufferLength);
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
 }
@@ -189,24 +193,12 @@ boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
   {
     return false;
   }
-  const boolean gotFrame = radioDecoder.receiveFrame();
-  if (!gotFrame)
-  {
-    return false;
-  }
-  const boolean gotPacket = packet.readFrom(radioDecoder);
-  return gotPacket;
+  return radioReader.read(packet);
 }
 
 boolean ESAT_WifiClass::readPacketFromSerial(ESAT_CCSDSPacket& packet)
 {
-  const boolean gotFrame = serialDecoder.receiveFrame();
-  if (!gotFrame)
-  {
-    return false;
-  }
-  const boolean gotPacket = packet.readFrom(serialDecoder);
-  return gotPacket;
+  return serialReader.read(packet);
 }
 
 void ESAT_WifiClass::reconnectIfDisconnected()
@@ -281,27 +273,15 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 {
   if (connectionState == CONNECTED)
   {
-    packet.rewind();
-    const unsigned long encoderBufferLength =
-      ESAT_KISSStream::frameLength(packet.length());
-    byte encoderBuffer[encoderBufferLength];
-    ESAT_KISSStream encoder(client, encoderBuffer, sizeof(encoderBuffer));
-    (void) encoder.beginFrame();
-    (void) packet.writeTo(encoder);
-    (void) encoder.endFrame();
+    ESAT_CCSDSPacketToKISSFrameWriter radioWriter(client);
+    (void) radioWriter.bufferedWrite(packet);
   }
 }
 
 void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)
 {
-  packet.rewind();
-  const unsigned long encoderBufferLength =
-    ESAT_KISSStream::frameLength(packet.length());
-  byte encoderBuffer[encoderBufferLength];
-  ESAT_KISSStream encoder(Serial, encoderBuffer, sizeof(encoderBuffer));
-  (void) encoder.beginFrame();
-  (void) packet.writeTo(encoder);
-  (void) encoder.endFrame();
+  ESAT_CCSDSPacketToKISSFrameWriter serialWriter(Serial);
+  (void) serialWriter.unbufferedWrite(packet);
 }
 
 ESAT_WifiClass ESAT_Wifi;
