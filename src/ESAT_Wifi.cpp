@@ -206,6 +206,20 @@ boolean ESAT_WifiClass::readPacketFromSerial(ESAT_CCSDSPacket& packet)
   return serialReader.read(packet);
 }
 
+boolean ESAT_WifiClass::readTelemetry(ESAT_CCSDSPacket& packet)
+{
+  if (pendingTelemetry.available())
+  {
+    const byte identifier = byte(pendingTelemetry.readNext());
+    pendingTelemetry.clear(identifier);
+    return telemetryPacketBuilder.build(packet, identifier);
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void ESAT_WifiClass::reconnectIfDisconnected()
 {
   if (WiFi.status() != WL_CONNECTED)

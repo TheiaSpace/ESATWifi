@@ -25,6 +25,7 @@
 #include <ESAT_CCSDSPacket.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
 #include <ESAT_CCSDSTelemetryPacketBuilder.h>
+#include <ESAT_FlagContainer.h>
 #include <ESAT_SoftwareClock.h>
 #include <ESP8266WiFi.h>
 
@@ -97,6 +98,10 @@ class ESAT_WifiClass
     // Return true if there was a new packet; otherwise return false.
     boolean readPacketFromSerial(ESAT_CCSDSPacket& packet);
 
+    // Fill a new ESAT Wifi board telemetry packet.
+    // Return true if there was a new packet; otherwise return false.
+    boolean readTelemetry(ESAT_CCSDSPacket& packet);
+
     // Perform connection management and related tasks.
     void update();
 
@@ -148,6 +153,9 @@ class ESAT_WifiClass
     // Every time the connection attempt is unsuccessful for longer
     // than the timeout, try connect again.
     unsigned long networkConnectionTimeoutMilliseconds;
+
+    // List of pending telemetry packet identifiers.
+    ESAT_FlagContainer pendingTelemetry;
 
     // Use this to read CCSDS packets from KISS frames coming from
     // radio.
