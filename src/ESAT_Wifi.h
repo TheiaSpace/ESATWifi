@@ -24,6 +24,8 @@
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
+#include <ESAT_CCSDSTelemetryPacketBuilder.h>
+#include <ESAT_SoftwareClock.h>
 #include <ESP8266WiFi.h>
 
 // Wifi board module.
@@ -133,6 +135,9 @@ class ESAT_WifiClass
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 
+    // Use this clock for timekeeping.
+    ESAT_SoftwareClock clock;
+
     // Current state of the connection state machine.
     ConnectionState connectionState;
 
@@ -151,6 +156,14 @@ class ESAT_WifiClass
     // Use this to read CCSDS packets from KISS frames coming from
     // radio.
     ESAT_CCSDSPacketFromKISSFrameReader serialReader;
+
+    // Use this for building telemetry packets.
+    ESAT_CCSDSTelemetryPacketBuilder telemetryPacketBuilder =
+      ESAT_CCSDSTelemetryPacketBuilder(APPLICATION_PROCESS_IDENTIFIER,
+                                       MAJOR_VERSION_NUMBER,
+                                       MINOR_VERSION_NUMBER,
+                                       PATCH_VERSION_NUMBER,
+                                       clock);
 
     // Connect to the wireless network.
     void connectToNetwork();
