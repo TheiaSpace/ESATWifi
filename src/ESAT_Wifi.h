@@ -44,6 +44,36 @@
 class ESAT_WifiClass
 {
   public:
+    // Possible states of the connection state machine.
+    // State transitions:
+    // - From any state to CONNECTING_TO_NETWORK (when commanded to
+    // - connect).
+    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
+    //   (right after configuring the Wifi interface to connect to the
+    //   network).
+    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
+    //   (when the network connection is established).
+    // - From CONNECTING_TO_SERVER to CONNECTED (when the
+    //   client-to-server connection is established).
+    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
+    //   connection drops).
+    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
+    //   connection stays active, but the client-to-server connection
+    //   drops).
+    // - From any state to DISCONNECTING (when commanded to
+    // - disconnect).
+    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
+    // - from the network).
+    enum ConnectionState
+    {
+      CONNECTING_TO_NETWORK = 0x00,
+      WAITING_FOR_NETWORK_CONNECTION = 0x01,
+      CONNECTING_TO_SERVER = 0x02,
+      CONNECTED = 0x03,
+      DISCONNECTING = 0x04,
+      DISCONNECTED = 0x05,
+    };
+
     // Set up the Wifi board.
     void begin(byte radioBuffer[],
                unsigned long radioBufferLength,
@@ -83,36 +113,6 @@ class ESAT_WifiClass
       SET_SERVER_PORT = 0x13,
       READ_CONFIGURATION = 0x20,
       WRITE_CONFIGURATION = 0x21,
-    };
-
-    // Possible states of the connection state machine.
-    // State transitions:
-    // - From any state to CONNECTING_TO_NETWORK (when commanded to
-    // - connect).
-    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
-    //   (right after configuring the Wifi interface to connect to the
-    //   network).
-    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
-    //   (when the network connection is established).
-    // - From CONNECTING_TO_SERVER to CONNECTED (when the
-    //   client-to-server connection is established).
-    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
-    //   connection drops).
-    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
-    //   connection stays active, but the client-to-server connection
-    //   drops).
-    // - From any state to DISCONNECTING (when commanded to
-    // - disconnect).
-    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
-    // - from the network).
-    enum ConnectionState
-    {
-      CONNECTING_TO_NETWORK,
-      WAITING_FOR_NETWORK_CONNECTION,
-      CONNECTING_TO_SERVER,
-      CONNECTED,
-      DISCONNECTING,
-      DISCONNECTED,
     };
 
     // Unique identifier of the Wifi board for telemetry and
