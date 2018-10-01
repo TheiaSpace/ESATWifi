@@ -187,6 +187,11 @@ void ESAT_WifiClass::handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet)
   ESAT_WifiConfiguration.writeConfiguration();
 }
 
+ESAT_WifiClass::ConnectionState ESAT_WifiClass::readConnectionState() const
+{
+  return connectionState;
+}
+
 boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
 {
   if (connectionState != CONNECTED)

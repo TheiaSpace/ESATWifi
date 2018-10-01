@@ -84,6 +84,9 @@ class ESAT_WifiClass
     // Handle a telecommand.
     void handleTelecommand(ESAT_CCSDSPacket& packet);
 
+    // Return the current connection state.
+    ConnectionState readConnectionState() const;
+
     // Fill the packet with data read from the radio interface.
     // Return true if there was a new packet; otherwise return false.
     boolean readPacketFromRadio(ESAT_CCSDSPacket& packet);
