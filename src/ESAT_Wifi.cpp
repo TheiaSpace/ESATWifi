@@ -20,6 +20,7 @@
 
 #include "ESAT_Wifi.h"
 #include "ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
@@ -37,6 +38,8 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
 {
   enabledTelemetry.clearAll();
   pendingTelemetry.clearAll();
+  addTelemetry(ESAT_WifiConnectionStateTelemetry);
+  enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   connectionState = DISCONNECTED;
