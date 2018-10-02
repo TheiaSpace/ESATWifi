@@ -45,6 +45,11 @@ functionality.
 Persistent configuration storage.
 
 
+# ESAT_Wifi-telecommands directory
+
+Telecommands of the ESAT Wifi board.
+
+
 # ESAT_Wifi-telemetry directory
 
 Telemetry packets of the ESAT Wifi board.

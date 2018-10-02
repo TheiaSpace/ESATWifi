@@ -23,8 +23,10 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
+#include <ESAT_CCSDSPacketConsumer.h>
 #include <ESAT_CCSDSPacketContents.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
+#include <ESAT_CCSDSTelecommandPacketHandler.h>
 #include <ESAT_CCSDSTelemetryPacketBuilder.h>
 #include <ESAT_FlagContainer.h>
 #include <ESAT_SoftwareClock.h>
@@ -78,6 +80,9 @@ class ESAT_WifiClass
       DISCONNECTED = 0x05,
     };
 
+    // Register a telecommand handler.
+    void addTelecommand(ESAT_CCSDSPacketConsumer& telecommand);
+
     // Register a telemetry packet.
     // The telemetry packet will be disabled by default;
     // use enableTelemetry() to enable it.
@@ -90,9 +95,17 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
+    // Connect to the network and ground segment server.
+    // This will take several calls to update().
+    void connect();
+
     // Disable the generation of the telemetry packet with the given
     // identifier.
     void disableTelemetry(byte identifier);
+
+    // Disconnect from the network and ground segment server.
+    // This will take one call to update().
+    void disconnect();
 
     // Enable the generation of the telemetry packet with the given
     // identifier.
@@ -126,19 +139,6 @@ class ESAT_WifiClass
     void writePacketToSerial(ESAT_CCSDSPacket& packet);
 
   private:
-    // Commands handled by the Wifi board.
-    enum CommandCode
-    {
-      CONNECT = 0x00,
-      DISCONNECT = 0x01,
-      SET_NETWORK_SSID = 0x10,
-      SET_NETWORK_PASSPHRASE = 0x11,
-      SET_SERVER_ADDRESS = 0x12,
-      SET_SERVER_PORT = 0x13,
-      READ_CONFIGURATION = 0x20,
-      WRITE_CONFIGURATION = 0x21,
-    };
-
     // Unique identifier of the Wifi board for telemetry and
     // telecommand purposes.
     static const word APPLICATION_PROCESS_IDENTIFIER = 3;
@@ -185,6 +185,10 @@ class ESAT_WifiClass
     // radio.
     ESAT_CCSDSPacketFromKISSFrameReader serialReader;
 
+    // Use this for handling telecommand packets.
+    ESAT_CCSDSTelecommandPacketHandler telecommandPacketHandler =
+      ESAT_CCSDSTelecommandPacketHandler(APPLICATION_PROCESS_IDENTIFIER);
+
     // Use this for building telemetry packets.
     ESAT_CCSDSTelemetryPacketBuilder telemetryPacketBuilder =
       ESAT_CCSDSTelemetryPacketBuilder(APPLICATION_PROCESS_IDENTIFIER,
@@ -200,33 +204,7 @@ class ESAT_WifiClass
     void connectToServer();
 
     // Disconnect from the wireless network and ground station server.
-    void disconnect();
-
-    // Handle a telecommand for connecting to the network and server.
-    void handleConnectCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for disconnecting from the network and server.
-    void handleDisconnectCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for setting the SSID of the network.
-    void handleSetNetworkSSIDCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for setting the passphrase of the network.
-    void handleSetNetworkPassphraseCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for setting the address of the ground
-    // segment server.
-    void handleSetServerAddressCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for setting the port of the ground segment
-    // server.
-    void handleSetServerPortCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for reading the configuration.
-    void handleReadConfigurationCommand(ESAT_CCSDSPacket& packet);
-
-    // Handle a telecommand for writing the configuration.
-    void handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet);
+    void disconnectFromNetworkAndServer();
 
     // Reconnect to the server if disconnected from the server or to
     // the network if disconnected from the network.
