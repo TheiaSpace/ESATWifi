@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
-#include "ESAT_Wifi.h"
+#include "ESAT_Wifi-peripherals/ESAT_WifiRadio.h"
 
 const ESAT_SemanticVersionNumber ESAT_WifiDisconnectTelecommandClass::INTERFACE_VERSION_NUMBER(2, 0, 0);
 
@@ -55,7 +55,7 @@ boolean ESAT_WifiDisconnectTelecommandClass::consume(ESAT_CCSDSPacket packet)
 boolean ESAT_WifiDisconnectTelecommandClass::handle(ESAT_CCSDSPacket packet) const
 {
   (void) packet; // Unused.
-  ESAT_Wifi.disconnect();
+  ESAT_WifiRadio.disconnect();
   return true;
 }
 

@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
-#include "ESAT_Wifi.h"
+#include "ESAT_Wifi-peripherals/ESAT_WifiRadio.h"
 
 boolean ESAT_WifiConnectionStateTelemetryClass::available()
 {
@@ -33,7 +33,7 @@ byte ESAT_WifiConnectionStateTelemetryClass::packetIdentifier()
 
 boolean ESAT_WifiConnectionStateTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 {
-  packet.writeByte(ESAT_Wifi.readConnectionState());
+  packet.writeByte(ESAT_WifiRadio.readConnectionState());
   if (packet.triedToWriteBeyondCapacity())
   {
     return false;

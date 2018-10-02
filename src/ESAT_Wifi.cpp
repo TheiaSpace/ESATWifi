@@ -20,6 +20,7 @@
 
 #include "ESAT_Wifi.h"
 #include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-peripherals/ESAT_WifiRadio.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
@@ -63,12 +64,9 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
-  connectionState = DISCONNECTED;
-  networkConnectionTimeoutMilliseconds =
-    1000 * ((unsigned long) networkConnectionTimeoutSeconds);
-  radioReader = ESAT_CCSDSPacketFromKISSFrameReader(client,
-                                                    radioBuffer,
-                                                    radioBufferLength);
+  ESAT_WifiRadio.begin(radioBuffer,
+                       radioBufferLength,
+                       networkConnectionTimeoutSeconds);
   serialReader = ESAT_CCSDSPacketFromKISSFrameReader(Serial,
                                                      serialBuffer,
                                                      serialBufferLength);
@@ -78,58 +76,9 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
 }
 
-void ESAT_WifiClass::connect()
-{
-  connectionState = CONNECTING_TO_NETWORK;
-}
-
-void ESAT_WifiClass::connectToNetwork()
-{
-  disconnectFromNetworkAndServer();
-  (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
-                    ESAT_WifiConfiguration.networkPassphrase);
-  connectionState = WAITING_FOR_NETWORK_CONNECTION;
-  networkConnectionStartTimeMilliseconds = millis();
-}
-
-void ESAT_WifiClass::connectToServer()
-{
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    if (client.connect(ESAT_WifiConfiguration.serverAddress,
-                       ESAT_WifiConfiguration.serverPort))
-    {
-      connectionState = CONNECTED;
-    }
-    else
-    {
-      connectionState = CONNECTING_TO_SERVER;
-    }
-  }
-  else
-  {
-    connectionState = CONNECTING_TO_NETWORK;
-  }
-}
-
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
 {
   enabledTelemetry.clear(identifier);
-}
-
-void ESAT_WifiClass::disconnect()
-{
-  connectionState = DISCONNECTING;
-}
-
-void ESAT_WifiClass::disconnectFromNetworkAndServer()
-{
-  if (client.connected())
-  {
-    client.stop();
-  }
-  (void) WiFi.disconnect(true);
-  connectionState = DISCONNECTED;
 }
 
 void ESAT_WifiClass::enableTelemetry(const byte identifier)
@@ -143,18 +92,9 @@ void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
   (void) telecommandPacketHandler.handle(packet);
 }
 
-ESAT_WifiClass::ConnectionState ESAT_WifiClass::readConnectionState() const
-{
-  return connectionState;
-}
-
 boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
 {
-  if (connectionState != CONNECTED)
-  {
-    return false;
-  }
-  return radioReader.read(packet);
+  return ESAT_WifiRadio.read(packet);
 }
 
 boolean ESAT_WifiClass::readPacketFromSerial(ESAT_CCSDSPacket& packet)
@@ -176,21 +116,6 @@ boolean ESAT_WifiClass::readTelemetry(ESAT_CCSDSPacket& packet)
   }
 }
 
-void ESAT_WifiClass::reconnectIfDisconnected()
-{
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    connectionState = CONNECTING_TO_NETWORK;
-    return;
-  }
-  if (!client.connected())
-  {
-    connectionState = CONNECTING_TO_SERVER;
-    return;
-  }
-  connectionState = CONNECTED;
-}
-
 void ESAT_WifiClass::resetTelemetryQueue()
 {
   ESAT_Wifi.pendingTelemetry =
@@ -200,29 +125,8 @@ void ESAT_WifiClass::resetTelemetryQueue()
 
 void ESAT_WifiClass::update()
 {
-  switch (connectionState)
-  {
-    case CONNECTING_TO_NETWORK:
-      connectToNetwork();
-      break;
-    case WAITING_FOR_NETWORK_CONNECTION:
-      waitForNetworkConnection();
-      break;
-    case CONNECTING_TO_SERVER:
-      connectToServer();
-      break;
-    case CONNECTED:
-      reconnectIfDisconnected();
-      break;
-    case DISCONNECTING:
-      disconnectFromNetworkAndServer();
-      break;
-    case DISCONNECTED:
-      break;
-    default:
-      break;
-  }
-  if (connectionState == CONNECTED)
+  ESAT_WifiRadio.update();
+  if (ESAT_WifiRadio.readConnectionState() == ESAT_WifiRadio.CONNECTED)
   {
     digitalWrite(NOT_CONNECTED_SIGNAL_PIN, LOW);
   }
@@ -232,32 +136,9 @@ void ESAT_WifiClass::update()
   }
 }
 
-void ESAT_WifiClass::waitForNetworkConnection()
-{
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    connectionState = CONNECTING_TO_SERVER;
-  }
-  else
-  {
-    connectionState = WAITING_FOR_NETWORK_CONNECTION;
-    const unsigned long currentTime = millis();
-    const unsigned long ellapsedTime =
-      currentTime - networkConnectionStartTimeMilliseconds;
-    if (ellapsedTime > networkConnectionTimeoutMilliseconds)
-    {
-      connectionState = CONNECTING_TO_NETWORK;
-    }
-  }
-}
-
 void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 {
-  if (connectionState == CONNECTED)
-  {
-    ESAT_CCSDSPacketToKISSFrameWriter radioWriter(client);
-    (void) radioWriter.bufferedWrite(packet);
-  }
+  ESAT_WifiRadio.write(packet);
 }
 
 void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)

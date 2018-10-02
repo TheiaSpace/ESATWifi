@@ -50,36 +50,6 @@
 class ESAT_WifiClass
 {
   public:
-    // Possible states of the connection state machine.
-    // State transitions:
-    // - From any state to CONNECTING_TO_NETWORK (when commanded to
-    // - connect).
-    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
-    //   (right after configuring the Wifi interface to connect to the
-    //   network).
-    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
-    //   (when the network connection is established).
-    // - From CONNECTING_TO_SERVER to CONNECTED (when the
-    //   client-to-server connection is established).
-    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
-    //   connection drops).
-    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
-    //   connection stays active, but the client-to-server connection
-    //   drops).
-    // - From any state to DISCONNECTING (when commanded to
-    // - disconnect).
-    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
-    // - from the network).
-    enum ConnectionState
-    {
-      CONNECTING_TO_NETWORK = 0x00,
-      WAITING_FOR_NETWORK_CONNECTION = 0x01,
-      CONNECTING_TO_SERVER = 0x02,
-      CONNECTED = 0x03,
-      DISCONNECTING = 0x04,
-      DISCONNECTED = 0x05,
-    };
-
     // Register a telecommand handler.
     void addTelecommand(ESAT_CCSDSPacketConsumer& telecommand);
 
@@ -95,17 +65,9 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
-    // Connect to the network and ground segment server.
-    // This will take several calls to update().
-    void connect();
-
     // Disable the generation of the telemetry packet with the given
     // identifier.
     void disableTelemetry(byte identifier);
-
-    // Disconnect from the network and ground segment server.
-    // This will take one call to update().
-    void disconnect();
 
     // Enable the generation of the telemetry packet with the given
     // identifier.
@@ -113,9 +75,6 @@ class ESAT_WifiClass
 
     // Handle a telecommand.
     void handleTelecommand(ESAT_CCSDSPacket& packet);
-
-    // Return the current connection state.
-    ConnectionState readConnectionState() const;
 
     // Fill the packet with data read from the radio interface.
     // Return true if there was a new packet; otherwise return false.
@@ -157,32 +116,14 @@ class ESAT_WifiClass
     // List of enabled telemetry packet identifiers.
     ESAT_FlagContainer enabledTelemetry;
 
-    // Use this client to connect to the ground segment server.
-    WiFiClient client;
-
     // Use this clock for timekeeping.
     ESAT_SoftwareClock clock;
-
-    // Current state of the connection state machine.
-    ConnectionState connectionState;
-
-    // Time when the previous connection attempt started.
-    unsigned long networkConnectionStartTimeMilliseconds;
-
-    // Timeout in milliseconds for each network connection attempt.
-    // Every time the connection attempt is unsuccessful for longer
-    // than the timeout, try connect again.
-    unsigned long networkConnectionTimeoutMilliseconds;
 
     // List of pending telemetry packet identifiers.
     ESAT_FlagContainer pendingTelemetry;
 
     // Use this to read CCSDS packets from KISS frames coming from
-    // radio.
-    ESAT_CCSDSPacketFromKISSFrameReader radioReader;
-
-    // Use this to read CCSDS packets from KISS frames coming from
-    // radio.
+    // serial.
     ESAT_CCSDSPacketFromKISSFrameReader serialReader;
 
     // Use this for handling telecommand packets.
@@ -196,25 +137,8 @@ class ESAT_WifiClass
                                        MINOR_VERSION_NUMBER,
                                        PATCH_VERSION_NUMBER,
                                        clock);
-
-    // Connect to the wireless network.
-    void connectToNetwork();
-
-    // Connect to the ground segment server.
-    void connectToServer();
-
-    // Disconnect from the wireless network and ground station server.
-    void disconnectFromNetworkAndServer();
-
-    // Reconnect to the server if disconnected from the server or to
-    // the network if disconnected from the network.
-    void reconnectIfDisconnected();
-
     // Reset the telemetry queue.
     static void resetTelemetryQueue();
-
-    // Check that the network connection is established.
-    void waitForNetworkConnection();
 };
 
 extern ESAT_WifiClass ESAT_Wifi;
