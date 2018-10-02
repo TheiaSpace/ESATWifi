@@ -27,6 +27,7 @@
 
 ESAT_WifiClass	KEYWORD1
 ESAT_WifiConfigurationClass	KEYWORD1
+ESAT_WifiConnectionStateTelemetryClass	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -38,6 +39,7 @@ ESAT_WifiConfigurationClass	KEYWORD1
 
 ESAT_Wifi	KEYWORD2
 ESAT_WifiConfiguration	KEYWORD2
+ESAT_WifiConnectionStateTelemetry	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
