@@ -26,6 +26,7 @@
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
+  enabledTelemetry.clear(telemetry.packetIdentifier());
 }
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
