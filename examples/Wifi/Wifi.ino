@@ -59,6 +59,10 @@ void loop()
 {
   byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
   ESAT_CCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
+  if (ESAT_Wifi.readTelemetry(packet))
+  {
+    ESAT_Wifi.writePacketToSerial(packet);
+  }
   if (ESAT_Wifi.readPacketFromRadio(packet))
   {
     const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
