@@ -36,6 +36,7 @@ ESAT_WifiSetNetworkPassphraseTelecommandClass	KEYWORD1
 ESAT_WifiSetNetworkSSIDTelecommandClass	KEYWORD1
 ESAT_WifiSetServerAddressTelecommandClass	KEYWORD1
 ESAT_WifiSetServerPortTelecommandClass	KEYWORD1
+ESAT_WifiSetTimeTelecommandClass	KEYWORD1
 ESAT_WifiWriteConfigurationTelecommandClass	KEYWORD1
 
 #######################################
@@ -57,6 +58,7 @@ ESAT_WifiSetNetworkPassphraseTelecommand	KEYWORD2
 ESAT_WifiSetNetworkSSIDTelecommand	KEYWORD2
 ESAT_WifiSetServerAddressTelecommand	KEYWORD2
 ESAT_WifiSetServerPortTelecommand	KEYWORD2
+ESAT_WifiSetTimeTelecommand	KEYWORD2
 ESAT_WifiWriteConfigurationTelecommand	KEYWORD2
 
 #######################################

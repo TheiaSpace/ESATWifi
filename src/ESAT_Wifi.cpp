@@ -28,6 +28,7 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerPortTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
 #include <ESAT_Buffer.h>
@@ -62,6 +63,7 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   addTelecommand(ESAT_WifiSetServerPortTelecommand);
   addTelecommand(ESAT_WifiReadConfigurationTelecommand);
   addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
+  addTelecommand(ESAT_WifiSetTimeTelecommand);
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   ESAT_WifiRadio.begin(radioBuffer,
@@ -121,6 +123,11 @@ void ESAT_WifiClass::resetTelemetryQueue()
   ESAT_Wifi.pendingTelemetry =
     (ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available())
     & ESAT_Wifi.enabledTelemetry;
+}
+
+void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
+{
+  clock.write(timestamp);
 }
 
 void ESAT_WifiClass::update()

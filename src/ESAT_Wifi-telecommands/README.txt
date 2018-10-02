@@ -69,3 +69,8 @@ configuration.
 
 Telecommand handler for WIFI_WRITE_CONFIGURATION (0x21): write the
 configuration.
+
+
+# ESAT_WifiSetTimeTelecommand
+
+Telecommand handler for WIFI_SET_TIME (0x30): set the real-time clock.
