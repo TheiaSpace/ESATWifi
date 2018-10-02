@@ -24,6 +24,11 @@
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
+void ESAT_WifiClass::addTelecommand(ESAT_CCSDSPacketConsumer& telecommand)
+{
+  telecommandPacketHandler.add(telecommand);
+}
+
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
