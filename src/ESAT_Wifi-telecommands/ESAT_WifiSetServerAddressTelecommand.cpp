@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
-#include "ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
 
 const ESAT_SemanticVersionNumber ESAT_WifiSetServerAddressTelecommandClass::INTERFACE_VERSION_NUMBER(2, 0, 0);
 

@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Wifi.h"
-#include "ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"

@@ -30,8 +30,8 @@ ESP8266 Module as the target board.
 See the example Wifi program (examples/Wifi/Wifi.ino).  This program
 uses the modules of the Wifi library.
 
-The src/ directory contains the Wifi library as well as several
-subdirectories:
+The src/ directory contains the Wifi library (ESAT_Wifi) as well as
+several subdirectories:
 
 
 # ESAT_Wifi
@@ -40,9 +40,9 @@ This is the main library that provides the Wifi communications
 functionality.
 
 
-# ESAT_WifiConfiguration
+# ESAT_Wifi-peripherals directory
 
-Persistent configuration storage.
+Peripherals of the ESAT Wifi board.
 
 
 # ESAT_Wifi-telecommands directory
