@@ -20,6 +20,14 @@
 
 #include "ESAT_Wifi.h"
 #include "ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkPassphraseTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetServerPortTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
@@ -45,6 +53,14 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   pendingTelemetry.clearAll();
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
+  addTelecommand(ESAT_WifiConnectTelecommand);
+  addTelecommand(ESAT_WifiDisconnectTelecommand);
+  addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
+  addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
+  addTelecommand(ESAT_WifiSetServerAddressTelecommand);
+  addTelecommand(ESAT_WifiSetServerPortTelecommand);
+  addTelecommand(ESAT_WifiReadConfigurationTelecommand);
+  addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   connectionState = DISCONNECTED;
@@ -124,105 +140,7 @@ void ESAT_WifiClass::enableTelemetry(const byte identifier)
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 {
   packet.rewind();
-  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
-  if (primaryHeader.packetType != primaryHeader.TELECOMMAND)
-  {
-    return;
-  }
-  if (primaryHeader.applicationProcessIdentifier
-      != APPLICATION_PROCESS_IDENTIFIER)
-  {
-    return;
-  }
-  if (primaryHeader.packetDataLength < ESAT_CCSDSSecondaryHeader::LENGTH)
-  {
-    return;
-  }
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (secondaryHeader.majorVersionNumber < MAJOR_VERSION_NUMBER)
-  {
-    return;
-  }
-  switch (secondaryHeader.packetIdentifier)
-  {
-    case CONNECT:
-      handleConnectCommand(packet);
-      break;
-    case DISCONNECT:
-      handleDisconnectCommand(packet);
-      break;
-    case SET_NETWORK_SSID:
-      handleSetNetworkSSIDCommand(packet);
-      break;
-    case SET_NETWORK_PASSPHRASE:
-      handleSetNetworkPassphraseCommand(packet);
-      break;
-    case SET_SERVER_ADDRESS:
-      handleSetServerAddressCommand(packet);
-      break;
-    case SET_SERVER_PORT:
-      handleSetServerPortCommand(packet);
-      break;
-    case READ_CONFIGURATION:
-      handleReadConfigurationCommand(packet);
-      break;
-    case WRITE_CONFIGURATION:
-      handleWriteConfigurationCommand(packet);
-      break;
-    default:
-      break;
-  }
-}
-
-void ESAT_WifiClass::handleConnectCommand(ESAT_CCSDSPacket& packet)
-{
-  (void) packet; // Unused.
-  connectionState = CONNECTING_TO_NETWORK;
-}
-
-void ESAT_WifiClass::handleDisconnectCommand(ESAT_CCSDSPacket& packet)
-{
-  (void) packet; // Unused;
-  connectionState = DISCONNECTING;
-}
-
-void ESAT_WifiClass::handleSetNetworkSSIDCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_Buffer networkSSID((byte*) ESAT_WifiConfiguration.networkSSID,
-                          sizeof(ESAT_WifiConfiguration.networkSSID));
-  (void) networkSSID.readFrom(packet, networkSSID.capacity());
-}
-
-void ESAT_WifiClass::handleSetNetworkPassphraseCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_Buffer networkPassphrase((byte*) ESAT_WifiConfiguration.networkPassphrase,
-                                sizeof(ESAT_WifiConfiguration.networkPassphrase));
-  (void) networkPassphrase.readFrom(packet, networkPassphrase.capacity());
-}
-
-void ESAT_WifiClass::handleSetServerAddressCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_Buffer serverAddress((byte*) ESAT_WifiConfiguration.serverAddress,
-                            sizeof(ESAT_WifiConfiguration.serverAddress));
-  (void) serverAddress.readFrom(packet, serverAddress.capacity());
-}
-
-void ESAT_WifiClass::handleSetServerPortCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_WifiConfiguration.serverPort = packet.readWord();
-}
-
-void ESAT_WifiClass::handleReadConfigurationCommand(ESAT_CCSDSPacket& packet)
-{
-  (void) packet; // Unused;
-  ESAT_WifiConfiguration.readConfiguration();
-}
-
-void ESAT_WifiClass::handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet)
-{
-  (void) packet; // Unused;
-  ESAT_WifiConfiguration.writeConfiguration();
+  (void) telecommandPacketHandler.handle(packet);
 }
 
 ESAT_WifiClass::ConnectionState ESAT_WifiClass::readConnectionState() const
