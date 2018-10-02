@@ -35,6 +35,7 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
                            const byte networkConnectionTimeoutSeconds)
 {
   enabledTelemetry.clearAll();
+  pendingTelemetry.clearAll();
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   connectionState = DISCONNECTED;
