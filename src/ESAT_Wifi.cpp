@@ -57,9 +57,14 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
 }
 
+void ESAT_WifiClass::connect()
+{
+  connectionState = CONNECTING_TO_NETWORK;
+}
+
 void ESAT_WifiClass::connectToNetwork()
 {
-  disconnect();
+  disconnectFromNetworkAndServer();
   (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
                     ESAT_WifiConfiguration.networkPassphrase);
   connectionState = WAITING_FOR_NETWORK_CONNECTION;
@@ -92,6 +97,11 @@ void ESAT_WifiClass::disableTelemetry(const byte identifier)
 }
 
 void ESAT_WifiClass::disconnect()
+{
+  connectionState = DISCONNECTING;
+}
+
+void ESAT_WifiClass::disconnectFromNetworkAndServer()
 {
   if (client.connected())
   {
@@ -282,7 +292,7 @@ void ESAT_WifiClass::update()
       reconnectIfDisconnected();
       break;
     case DISCONNECTING:
-      disconnect();
+      disconnectFromNetworkAndServer();
       break;
     case DISCONNECTED:
       break;

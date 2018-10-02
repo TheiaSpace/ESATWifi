@@ -90,9 +90,17 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
+    // Connect to the network and ground segment server.
+    // This will take several calls to update().
+    void connect();
+
     // Disable the generation of the telemetry packet with the given
     // identifier.
     void disableTelemetry(byte identifier);
+
+    // Disconnect from the network and ground segment server.
+    // This will take one call to update().
+    void disconnect();
 
     // Enable the generation of the telemetry packet with the given
     // identifier.
@@ -200,7 +208,7 @@ class ESAT_WifiClass
     void connectToServer();
 
     // Disconnect from the wireless network and ground station server.
-    void disconnect();
+    void disconnectFromNetworkAndServer();
 
     // Handle a telecommand for connecting to the network and server.
     void handleConnectCommand(ESAT_CCSDSPacket& packet);
