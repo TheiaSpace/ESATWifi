@@ -23,6 +23,7 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
+#include <ESAT_CCSDSPacketContents.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
 #include <ESAT_CCSDSTelemetryPacketBuilder.h>
 #include <ESAT_FlagContainer.h>
@@ -76,6 +77,9 @@ class ESAT_WifiClass
       DISCONNECTING = 0x04,
       DISCONNECTED = 0x05,
     };
+
+    // Register a telemetry packet.
+    void addTelemetry(ESAT_CCSDSPacketContents& telemetry);
 
     // Set up the Wifi board.
     void begin(byte radioBuffer[],

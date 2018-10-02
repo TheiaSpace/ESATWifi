@@ -23,6 +23,11 @@
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
+void ESAT_WifiClass::addTelemetry(ESAT_CCSDSPacketContents& telemetry)
+{
+  telemetryPacketBuilder.add(telemetry);
+}
+
 void ESAT_WifiClass::begin(byte radioBuffer[],
                            unsigned long radioBufferLength,
                            byte serialBuffer[],
