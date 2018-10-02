@@ -88,6 +88,14 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
+    // Disable the generation of the telemetry packet with the given
+    // identifier.
+    void disableTelemetry(byte identifier);
+
+    // Enable the generation of the telemetry packet with the given
+    // identifier.
+    void enableTelemetry(byte identifier);
+
     // Handle a telecommand.
     void handleTelecommand(ESAT_CCSDSPacket& packet);
 
@@ -143,6 +151,9 @@ class ESAT_WifiClass
 
     // Line for signaling a telemetry queue reset condition.
     static const byte RESET_TELEMETRY_QUEUE_PIN = 2;
+
+    // List of enabled telemetry packet identifiers.
+    ESAT_FlagContainer enabledTelemetry;
 
     // Use this client to connect to the ground segment server.
     WiFiClient client;
