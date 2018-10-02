@@ -123,6 +123,11 @@ void ESAT_WifiClass::resetTelemetryQueue()
     & ESAT_Wifi.enabledTelemetry;
 }
 
+void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
+{
+  clock.write(timestamp);
+}
+
 void ESAT_WifiClass::update()
 {
   ESAT_WifiRadio.update();

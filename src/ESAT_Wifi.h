@@ -88,6 +88,9 @@ class ESAT_WifiClass
     // Return true if there was a new packet; otherwise return false.
     boolean readTelemetry(ESAT_CCSDSPacket& packet);
 
+    // Set the time of the real-time clock.
+    void setTime(ESAT_Timestamp timestamp);
+
     // Perform connection management and related tasks.
     void update();
 
