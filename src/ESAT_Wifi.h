@@ -137,6 +137,9 @@ class ESAT_WifiClass
     // Line for signaling that the Wifi board is not connected to the server.
     static const byte NOT_CONNECTED_SIGNAL_PIN = 0;
 
+    // Line for signaling a telemetry queue reset condition.
+    static const byte RESET_TELEMETRY_QUEUE_PIN = 2;
+
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 
@@ -211,6 +214,9 @@ class ESAT_WifiClass
     // Reconnect to the server if disconnected from the server or to
     // the network if disconnected from the network.
     void reconnectIfDisconnected();
+
+    // Reset the telemetry queue.
+    static void resetTelemetryQueue();
 
     // Check that the network connection is established.
     void waitForNetworkConnection();

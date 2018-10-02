@@ -42,6 +42,8 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
                                                      serialBufferLength);
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
+  pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
+  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
 }
 
 void ESAT_WifiClass::connectToNetwork()
@@ -233,6 +235,12 @@ void ESAT_WifiClass::reconnectIfDisconnected()
     return;
   }
   connectionState = CONNECTED;
+}
+
+void ESAT_WifiClass::resetTelemetryQueue()
+{
+  ESAT_Wifi.pendingTelemetry =
+    ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available();
 }
 
 void ESAT_WifiClass::update()
