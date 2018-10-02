@@ -24,3 +24,8 @@ ESAT_Wifi.
 # ESAT_WifiConfiguration
 
 Persistent configuration storage.
+
+
+# ESAT_WifiRadio
+
+Radio connection with the ground station server.
