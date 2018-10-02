@@ -23,7 +23,11 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
+#include <ESAT_CCSDSPacketContents.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
+#include <ESAT_CCSDSTelemetryPacketBuilder.h>
+#include <ESAT_FlagContainer.h>
+#include <ESAT_SoftwareClock.h>
 #include <ESP8266WiFi.h>
 
 // Wifi board module.
@@ -44,6 +48,41 @@
 class ESAT_WifiClass
 {
   public:
+    // Possible states of the connection state machine.
+    // State transitions:
+    // - From any state to CONNECTING_TO_NETWORK (when commanded to
+    // - connect).
+    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
+    //   (right after configuring the Wifi interface to connect to the
+    //   network).
+    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
+    //   (when the network connection is established).
+    // - From CONNECTING_TO_SERVER to CONNECTED (when the
+    //   client-to-server connection is established).
+    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
+    //   connection drops).
+    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
+    //   connection stays active, but the client-to-server connection
+    //   drops).
+    // - From any state to DISCONNECTING (when commanded to
+    // - disconnect).
+    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
+    // - from the network).
+    enum ConnectionState
+    {
+      CONNECTING_TO_NETWORK = 0x00,
+      WAITING_FOR_NETWORK_CONNECTION = 0x01,
+      CONNECTING_TO_SERVER = 0x02,
+      CONNECTED = 0x03,
+      DISCONNECTING = 0x04,
+      DISCONNECTED = 0x05,
+    };
+
+    // Register a telemetry packet.
+    // The telemetry packet will be disabled by default;
+    // use enableTelemetry() to enable it.
+    void addTelemetry(ESAT_CCSDSPacketContents& telemetry);
+
     // Set up the Wifi board.
     void begin(byte radioBuffer[],
                unsigned long radioBufferLength,
@@ -51,8 +90,19 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
+    // Disable the generation of the telemetry packet with the given
+    // identifier.
+    void disableTelemetry(byte identifier);
+
+    // Enable the generation of the telemetry packet with the given
+    // identifier.
+    void enableTelemetry(byte identifier);
+
     // Handle a telecommand.
     void handleTelecommand(ESAT_CCSDSPacket& packet);
+
+    // Return the current connection state.
+    ConnectionState readConnectionState() const;
 
     // Fill the packet with data read from the radio interface.
     // Return true if there was a new packet; otherwise return false.
@@ -61,6 +111,10 @@ class ESAT_WifiClass
     // Fill the packet with data read from the serial interface.
     // Return true if there was a new packet; otherwise return false.
     boolean readPacketFromSerial(ESAT_CCSDSPacket& packet);
+
+    // Fill a new ESAT Wifi board telemetry packet.
+    // Return true if there was a new packet; otherwise return false.
+    boolean readTelemetry(ESAT_CCSDSPacket& packet);
 
     // Perform connection management and related tasks.
     void update();
@@ -85,50 +139,29 @@ class ESAT_WifiClass
       WRITE_CONFIGURATION = 0x21,
     };
 
-    // Possible states of the connection state machine.
-    // State transitions:
-    // - From any state to CONNECTING_TO_NETWORK (when commanded to
-    // - connect).
-    // - From CONNECTING_TO_NETWORK to WAITING_FOR_NETWORK_CONNECTION
-    //   (right after configuring the Wifi interface to connect to the
-    //   network).
-    // - From WAITING_FOR_NETWORK_CONNECTION to CONNECTING_TO_SERVER
-    //   (when the network connection is established).
-    // - From CONNECTING_TO_SERVER to CONNECTED (when the
-    //   client-to-server connection is established).
-    // - From CONNECTED to CONNECTING_TO_NETWORK (if the network
-    //   connection drops).
-    // - From CONNECTED to CONNECTING_TO_SERVER (if the network
-    //   connection stays active, but the client-to-server connection
-    //   drops).
-    // - From any state to DISCONNECTING (when commanded to
-    // - disconnect).
-    // - From DISCONNECTING to DISCONNECTED (right after disconnecting
-    // - from the network).
-    enum ConnectionState
-    {
-      CONNECTING_TO_NETWORK,
-      WAITING_FOR_NETWORK_CONNECTION,
-      CONNECTING_TO_SERVER,
-      CONNECTED,
-      DISCONNECTING,
-      DISCONNECTED,
-    };
-
     // Unique identifier of the Wifi board for telemetry and
     // telecommand purposes.
     static const word APPLICATION_PROCESS_IDENTIFIER = 3;
 
     // Version numbers.
     static const byte MAJOR_VERSION_NUMBER = 2;
-    static const byte MINOR_VERSION_NUMBER = 0;
+    static const byte MINOR_VERSION_NUMBER = 1;
     static const byte PATCH_VERSION_NUMBER = 0;
 
     // Line for signaling that the Wifi board is not connected to the server.
     static const byte NOT_CONNECTED_SIGNAL_PIN = 0;
 
+    // Line for signaling a telemetry queue reset condition.
+    static const byte RESET_TELEMETRY_QUEUE_PIN = 2;
+
+    // List of enabled telemetry packet identifiers.
+    ESAT_FlagContainer enabledTelemetry;
+
     // Use this client to connect to the ground segment server.
     WiFiClient client;
+
+    // Use this clock for timekeeping.
+    ESAT_SoftwareClock clock;
 
     // Current state of the connection state machine.
     ConnectionState connectionState;
@@ -141,6 +174,9 @@ class ESAT_WifiClass
     // than the timeout, try connect again.
     unsigned long networkConnectionTimeoutMilliseconds;
 
+    // List of pending telemetry packet identifiers.
+    ESAT_FlagContainer pendingTelemetry;
+
     // Use this to read CCSDS packets from KISS frames coming from
     // radio.
     ESAT_CCSDSPacketFromKISSFrameReader radioReader;
@@ -148,6 +184,14 @@ class ESAT_WifiClass
     // Use this to read CCSDS packets from KISS frames coming from
     // radio.
     ESAT_CCSDSPacketFromKISSFrameReader serialReader;
+
+    // Use this for building telemetry packets.
+    ESAT_CCSDSTelemetryPacketBuilder telemetryPacketBuilder =
+      ESAT_CCSDSTelemetryPacketBuilder(APPLICATION_PROCESS_IDENTIFIER,
+                                       MAJOR_VERSION_NUMBER,
+                                       MINOR_VERSION_NUMBER,
+                                       PATCH_VERSION_NUMBER,
+                                       clock);
 
     // Connect to the wireless network.
     void connectToNetwork();
@@ -187,6 +231,9 @@ class ESAT_WifiClass
     // Reconnect to the server if disconnected from the server or to
     // the network if disconnected from the network.
     void reconnectIfDisconnected();
+
+    // Reset the telemetry queue.
+    static void resetTelemetryQueue();
 
     // Check that the network connection is established.
     void waitForNetworkConnection();

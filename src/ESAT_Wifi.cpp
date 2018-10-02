@@ -20,8 +20,15 @@
 
 #include "ESAT_Wifi.h"
 #include "ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
+
+void ESAT_WifiClass::addTelemetry(ESAT_CCSDSPacketContents& telemetry)
+{
+  telemetryPacketBuilder.add(telemetry);
+  enabledTelemetry.clear(telemetry.packetIdentifier());
+}
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
                            unsigned long radioBufferLength,
@@ -29,6 +36,10 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
                            unsigned long serialBufferLength,
                            const byte networkConnectionTimeoutSeconds)
 {
+  enabledTelemetry.clearAll();
+  pendingTelemetry.clearAll();
+  addTelemetry(ESAT_WifiConnectionStateTelemetry);
+  enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   connectionState = DISCONNECTED;
@@ -42,6 +53,8 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
                                                      serialBufferLength);
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
+  pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
+  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
 }
 
 void ESAT_WifiClass::connectToNetwork()
@@ -73,6 +86,11 @@ void ESAT_WifiClass::connectToServer()
   }
 }
 
+void ESAT_WifiClass::disableTelemetry(const byte identifier)
+{
+  enabledTelemetry.clear(identifier);
+}
+
 void ESAT_WifiClass::disconnect()
 {
   if (client.connected())
@@ -81,6 +99,11 @@ void ESAT_WifiClass::disconnect()
   }
   (void) WiFi.disconnect(true);
   connectionState = DISCONNECTED;
+}
+
+void ESAT_WifiClass::enableTelemetry(const byte identifier)
+{
+  enabledTelemetry.set(identifier);
 }
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
@@ -187,6 +210,11 @@ void ESAT_WifiClass::handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet)
   ESAT_WifiConfiguration.writeConfiguration();
 }
 
+ESAT_WifiClass::ConnectionState ESAT_WifiClass::readConnectionState() const
+{
+  return connectionState;
+}
+
 boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
 {
   if (connectionState != CONNECTED)
@@ -199,6 +227,20 @@ boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
 boolean ESAT_WifiClass::readPacketFromSerial(ESAT_CCSDSPacket& packet)
 {
   return serialReader.read(packet);
+}
+
+boolean ESAT_WifiClass::readTelemetry(ESAT_CCSDSPacket& packet)
+{
+  if (pendingTelemetry.available())
+  {
+    const byte identifier = byte(pendingTelemetry.readNext());
+    pendingTelemetry.clear(identifier);
+    return telemetryPacketBuilder.build(packet, identifier);
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void ESAT_WifiClass::reconnectIfDisconnected()
@@ -214,6 +256,13 @@ void ESAT_WifiClass::reconnectIfDisconnected()
     return;
   }
   connectionState = CONNECTED;
+}
+
+void ESAT_WifiClass::resetTelemetryQueue()
+{
+  ESAT_Wifi.pendingTelemetry =
+    (ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available())
+    & ESAT_Wifi.enabledTelemetry;
 }
 
 void ESAT_WifiClass::update()
