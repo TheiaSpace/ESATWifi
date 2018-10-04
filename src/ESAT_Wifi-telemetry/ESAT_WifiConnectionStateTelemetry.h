@@ -29,8 +29,8 @@
 class ESAT_WifiConnectionStateTelemetryClass: public ESAT_CCSDSTelemetryPacketContents
 {
   public:
-    // Return true: the ESAT Wifi board connection state telemetry packet
-    // is always available.
+    // Return true when a new telemetry packet is available; otherwise
+    // return false.
     boolean available();
 
     // Return the packet identifier.
