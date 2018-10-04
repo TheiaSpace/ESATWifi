@@ -19,5 +19,5 @@
  */
 
 #ifndef ESAT_WifiConfiguration_h
-#include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 #endif /* ESAT_WifiConfiguration_h */

@@ -29,4 +29,4 @@ functionality.
 
 # ESAT_WifiConfiguration.h
 
-This includes ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h
+This includes ESAT_Wifi-hardware/ESAT_WifiConfiguration.h

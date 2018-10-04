@@ -18,8 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESAT_Wifi-peripherals/ESAT_WifiRadio.h"
-#include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
 void ESAT_WifiRadioClass::begin(byte radioBuffer[],

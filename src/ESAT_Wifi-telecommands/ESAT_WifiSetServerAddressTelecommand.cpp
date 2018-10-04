@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
-#include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
 boolean ESAT_WifiSetServerAddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {

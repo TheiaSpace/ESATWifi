@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
-#include "ESAT_Wifi-peripherals/ESAT_WifiRadio.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
 
 boolean ESAT_WifiConnectionStateTelemetryClass::available()
 {
