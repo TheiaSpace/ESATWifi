@@ -34,17 +34,16 @@ class ESAT_WifiConnectionStateTelemetryClass: public ESAT_CCSDSTelemetryPacketCo
     boolean available();
 
     // Return the packet identifier.
-    byte packetIdentifier();
+    byte packetIdentifier()
+    {
+      return 0x00;
+    }
 
     // Fill the user data field of the given packet.
     // The write pointer of the packet is already at the start
     // of the user data field.
     // Return true on success; otherwise return false.
     boolean fillUserData(ESAT_CCSDSPacket& packet);
-
-  private:
-    // ESAT Wifi board connection state telemetry packet identifier.
-    static const byte PACKET_IDENTIFIER = 0;
 };
 
 // Global instance of ESAT_WifiConnectionStateTelemetry.  ESAT_Wifi uses this
