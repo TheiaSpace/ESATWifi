@@ -35,16 +35,16 @@ Telecommand handler for WIFI_DISCONNECT (0x01): disconnect from the
 network and ground station server.
 
 
-# ESAT_WifiSetNetworkSSIDTelecommand
-
-Telecommand handler for WIFI_SET_NETWORK_SSID (0x10): set the network
-SSID.
-
-
 # ESAT_WifiSetNetworkPassphraseTelecommand
 
 Telecommand handler for WIFI_SET_NETWORK_PASSPHRASE (0x11): set the
 network passphrase.
+
+
+# ESAT_WifiSetNetworkSSIDTelecommand
+
+Telecommand handler for WIFI_SET_NETWORK_SSID (0x10): set the network
+SSID.
 
 
 # ESAT_WifiSetServerAddressTelecommand
