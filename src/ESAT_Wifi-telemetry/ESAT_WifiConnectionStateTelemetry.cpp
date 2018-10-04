@@ -26,11 +26,6 @@ boolean ESAT_WifiConnectionStateTelemetryClass::available()
   return true;
 }
 
-byte ESAT_WifiConnectionStateTelemetryClass::packetIdentifier()
-{
-  return PACKET_IDENTIFIER;
-}
-
 boolean ESAT_WifiConnectionStateTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 {
   packet.writeByte(ESAT_WifiRadio.readConnectionState());
