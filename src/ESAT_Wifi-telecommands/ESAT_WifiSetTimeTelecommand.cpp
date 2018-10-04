@@ -21,38 +21,7 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
 #include "ESAT_Wifi.h"
 
-const ESAT_SemanticVersionNumber ESAT_WifiSetTimeTelecommandClass::INTERFACE_VERSION_NUMBER(2, 1, 0);
-
-boolean ESAT_WifiSetTimeTelecommandClass::accept(const ESAT_CCSDSSecondaryHeader secondaryHeader) const
-{
-  if (!INTERFACE_VERSION_NUMBER.isForwardCompatibleWith(secondaryHeader.majorVersionNumber,
-                                                        secondaryHeader.minorVersionNumber,
-                                                        secondaryHeader.patchVersionNumber))
-  {
-    return false;
-  }
-  if (secondaryHeader.packetIdentifier != WIFI_SET_TIME)
-  {
-    return false;
-  }
-  return true;
-}
-
-boolean ESAT_WifiSetTimeTelecommandClass::consume(ESAT_CCSDSPacket packet)
-{
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (accept(secondaryHeader))
-  {
-    return handle(packet);
-  }
-  else
-  {
-    return false;
-  }
-}
-
-boolean ESAT_WifiSetTimeTelecommandClass::handle(ESAT_CCSDSPacket packet) const
+boolean ESAT_WifiSetTimeTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   const ESAT_Timestamp timestamp = packet.readTimestamp();
   if (packet.triedToReadBeyondLength())

@@ -21,38 +21,7 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
 #include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
 
-const ESAT_SemanticVersionNumber ESAT_WifiSetServerAddressTelecommandClass::INTERFACE_VERSION_NUMBER(2, 0, 0);
-
-boolean ESAT_WifiSetServerAddressTelecommandClass::accept(const ESAT_CCSDSSecondaryHeader secondaryHeader) const
-{
-  if (!INTERFACE_VERSION_NUMBER.isForwardCompatibleWith(secondaryHeader.majorVersionNumber,
-                                                        secondaryHeader.minorVersionNumber,
-                                                        secondaryHeader.patchVersionNumber))
-  {
-    return false;
-  }
-  if (secondaryHeader.packetIdentifier != WIFI_SET_SERVER_ADDRESS)
-  {
-    return false;
-  }
-  return true;
-}
-
-boolean ESAT_WifiSetServerAddressTelecommandClass::consume(ESAT_CCSDSPacket packet)
-{
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (accept(secondaryHeader))
-  {
-    return handle(packet);
-  }
-  else
-  {
-    return false;
-  }
-}
-
-boolean ESAT_WifiSetServerAddressTelecommandClass::handle(ESAT_CCSDSPacket packet) const
+boolean ESAT_WifiSetServerAddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer serverAddress((byte*) ESAT_WifiConfiguration.serverAddress,
                             sizeof(ESAT_WifiConfiguration.serverAddress));

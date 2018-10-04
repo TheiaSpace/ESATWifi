@@ -34,9 +34,9 @@
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
-void ESAT_WifiClass::addTelecommand(ESAT_CCSDSPacketConsumer& telecommand)
+void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand)
 {
-  telecommandPacketHandler.add(telecommand);
+  telecommandPacketDispatcher.add(telecommand);
 }
 
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSPacketContents& telemetry)
@@ -91,7 +91,7 @@ void ESAT_WifiClass::enableTelemetry(const byte identifier)
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 {
   packet.rewind();
-  (void) telecommandPacketHandler.handle(packet);
+  (void) telecommandPacketDispatcher.dispatch(packet);
 }
 
 boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
