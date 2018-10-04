@@ -39,7 +39,7 @@ void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecomm
   telecommandPacketDispatcher.add(telecommand);
 }
 
-void ESAT_WifiClass::addTelemetry(ESAT_CCSDSPacketContents& telemetry)
+void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
   enabledTelemetry.clear(telemetry.packetIdentifier());

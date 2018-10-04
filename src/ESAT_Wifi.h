@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
-#include <ESAT_CCSDSPacketContents.h>
+#include <ESAT_CCSDSTelemetryPacketContents.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
 #include <ESAT_CCSDSTelecommandPacketDispatcher.h>
 #include <ESAT_CCSDSTelecommandPacketHandler.h>
@@ -56,7 +56,7 @@ class ESAT_WifiClass
     // Register a telemetry packet.
     // The telemetry packet will be disabled by default;
     // use enableTelemetry() to enable it.
-    void addTelemetry(ESAT_CCSDSPacketContents& telemetry);
+    void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
 
     // Set up the Wifi board.
     void begin(byte radioBuffer[],

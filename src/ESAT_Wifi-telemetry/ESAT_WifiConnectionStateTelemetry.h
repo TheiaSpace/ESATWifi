@@ -22,11 +22,11 @@
 #define ESAT_WifiConnectionStateTelemetry_h
 
 #include <Arduino.h>
-#include <ESAT_CCSDSPacketContents.h>
+#include <ESAT_CCSDSTelemetryPacketContents.h>
 
 // ESAT Wifi board connection state telemetry packet contents.
 // ESAT_Wifi uses this.
-class ESAT_WifiConnectionStateTelemetryClass: public ESAT_CCSDSPacketContents
+class ESAT_WifiConnectionStateTelemetryClass: public ESAT_CCSDSTelemetryPacketContents
 {
   public:
     // Return true: the ESAT Wifi board connection state telemetry packet
