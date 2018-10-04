@@ -21,38 +21,7 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
 #include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
 
-const ESAT_SemanticVersionNumber ESAT_WifiSetNetworkSSIDTelecommandClass::INTERFACE_VERSION_NUMBER(2, 0, 0);
-
-boolean ESAT_WifiSetNetworkSSIDTelecommandClass::accept(const ESAT_CCSDSSecondaryHeader secondaryHeader) const
-{
-  if (!INTERFACE_VERSION_NUMBER.isForwardCompatibleWith(secondaryHeader.majorVersionNumber,
-                                                        secondaryHeader.minorVersionNumber,
-                                                        secondaryHeader.patchVersionNumber))
-  {
-    return false;
-  }
-  if (secondaryHeader.packetIdentifier != WIFI_SET_NETWORK_SSID)
-  {
-    return false;
-  }
-  return true;
-}
-
-boolean ESAT_WifiSetNetworkSSIDTelecommandClass::consume(ESAT_CCSDSPacket packet)
-{
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (accept(secondaryHeader))
-  {
-    return handle(packet);
-  }
-  else
-  {
-    return false;
-  }
-}
-
-boolean ESAT_WifiSetNetworkSSIDTelecommandClass::handle(ESAT_CCSDSPacket packet) const
+boolean ESAT_WifiSetNetworkSSIDTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer networkSSID((byte*) ESAT_WifiConfiguration.networkSSID,
                           sizeof(ESAT_WifiConfiguration.networkSSID));

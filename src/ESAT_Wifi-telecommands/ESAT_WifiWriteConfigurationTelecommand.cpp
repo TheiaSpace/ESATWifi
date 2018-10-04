@@ -21,38 +21,7 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-peripherals/ESAT_WifiConfiguration.h"
 
-const ESAT_SemanticVersionNumber ESAT_WifiWriteConfigurationTelecommandClass::INTERFACE_VERSION_NUMBER(2, 0, 0);
-
-boolean ESAT_WifiWriteConfigurationTelecommandClass::accept(const ESAT_CCSDSSecondaryHeader secondaryHeader) const
-{
-  if (!INTERFACE_VERSION_NUMBER.isForwardCompatibleWith(secondaryHeader.majorVersionNumber,
-                                                        secondaryHeader.minorVersionNumber,
-                                                        secondaryHeader.patchVersionNumber))
-  {
-    return false;
-  }
-  if (secondaryHeader.packetIdentifier != WIFI_WRITE_CONFIGURATION)
-  {
-    return false;
-  }
-  return true;
-}
-
-boolean ESAT_WifiWriteConfigurationTelecommandClass::consume(ESAT_CCSDSPacket packet)
-{
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (accept(secondaryHeader))
-  {
-    return handle(packet);
-  }
-  else
-  {
-    return false;
-  }
-}
-
-boolean ESAT_WifiWriteConfigurationTelecommandClass::handle(ESAT_CCSDSPacket packet) const
+boolean ESAT_WifiWriteConfigurationTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   (void) packet; // Unused.
   ESAT_WifiConfiguration.writeConfiguration();

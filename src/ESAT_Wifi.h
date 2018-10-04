@@ -23,9 +23,9 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
-#include <ESAT_CCSDSPacketConsumer.h>
 #include <ESAT_CCSDSPacketContents.h>
 #include <ESAT_CCSDSPacketFromKISSFrameReader.h>
+#include <ESAT_CCSDSTelecommandPacketDispatcher.h>
 #include <ESAT_CCSDSTelecommandPacketHandler.h>
 #include <ESAT_CCSDSTelemetryPacketBuilder.h>
 #include <ESAT_FlagContainer.h>
@@ -51,7 +51,7 @@ class ESAT_WifiClass
 {
   public:
     // Register a telecommand handler.
-    void addTelecommand(ESAT_CCSDSPacketConsumer& telecommand);
+    void addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand);
 
     // Register a telemetry packet.
     // The telemetry packet will be disabled by default;
@@ -130,8 +130,8 @@ class ESAT_WifiClass
     ESAT_CCSDSPacketFromKISSFrameReader serialReader;
 
     // Use this for handling telecommand packets.
-    ESAT_CCSDSTelecommandPacketHandler telecommandPacketHandler =
-      ESAT_CCSDSTelecommandPacketHandler(APPLICATION_PROCESS_IDENTIFIER);
+    ESAT_CCSDSTelecommandPacketDispatcher telecommandPacketDispatcher =
+      ESAT_CCSDSTelecommandPacketDispatcher(APPLICATION_PROCESS_IDENTIFIER);
 
     // Use this for building telemetry packets.
     ESAT_CCSDSTelemetryPacketBuilder telemetryPacketBuilder =
