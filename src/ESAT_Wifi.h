@@ -59,6 +59,12 @@ class ESAT_WifiClass
     void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
 
     // Set up the Wifi board.
+    // Use the radio buffer to store packets coming from the
+    // radio/wifi interface.
+    // Use the serial buffer to store packets coming from the
+    // serial interface.
+    // When trying to connect to the network, restart the process
+    // if it takes longer that the network connection timeout.
     void begin(byte radioBuffer[],
                unsigned long radioBufferLength,
                byte serialBuffer[],

@@ -29,6 +29,7 @@ void ESAT_WifiRadioClass::begin(byte radioBuffer[],
   connectionState = DISCONNECTED;
   networkConnectionTimeoutMilliseconds =
     1000 * ((unsigned long) networkConnectionTimeoutSeconds);
+  // We pass around packets in KISS frames.
   radioReader = ESAT_CCSDSPacketFromKISSFrameReader(client,
                                                     radioBuffer,
                                                     radioBufferLength);
@@ -161,6 +162,7 @@ void ESAT_WifiRadioClass::write(ESAT_CCSDSPacket packet)
 {
   if (connectionState == CONNECTED)
   {
+    // We pass around packets in KISS frames.
     ESAT_CCSDSPacketToKISSFrameWriter radioWriter(client);
     (void) radioWriter.bufferedWrite(packet);
   }
