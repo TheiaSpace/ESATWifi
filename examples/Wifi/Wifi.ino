@@ -68,16 +68,14 @@ void loop()
   }
   if (ESAT_Wifi.readPacketFromRadio(packet))
   {
-    const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
-    if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
+    if (packet.isTelecommand())
     {
       ESAT_Wifi.writePacketToSerial(packet);
     }
   }
   if (ESAT_Wifi.readPacketFromSerial(packet))
   {
-    const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
-    if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
+    if (packet.isTelecommand())
     {
       ESAT_Wifi.handleTelecommand(packet);
     }
