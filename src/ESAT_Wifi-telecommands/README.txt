@@ -80,3 +80,9 @@ Telecommand handler for WIFI_SET_TIME (0x30): set the real-time clock.
 
 Telecommand handler for WIFI_ENABLE_TELEMETRY (0x40): enable the
 generation of a telemetry packet.
+
+
+# ESAT_DisableTelemetryTelecommand
+
+Telecommand handler for WIFI_DISABLE_TELEMETRY (0x41): disable the
+generation of a telemetry packet.

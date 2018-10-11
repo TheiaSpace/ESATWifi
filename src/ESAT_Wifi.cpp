@@ -22,6 +22,7 @@
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
@@ -66,6 +67,7 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
   addTelecommand(ESAT_WifiSetTimeTelecommand);
   addTelecommand(ESAT_WifiEnableTelemetryTelecommand);
+  addTelecommand(ESAT_WifiDisableTelemetryTelecommand);
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   ESAT_WifiRadio.begin(radioBuffer,

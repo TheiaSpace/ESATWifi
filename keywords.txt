@@ -29,6 +29,7 @@ ESAT_WifiClass	KEYWORD1
 ESAT_WifiConfigurationClass	KEYWORD1
 ESAT_WifiConnectTelecommandClass	KEYWORD1
 ESAT_WifiConnectionStateTelemetryClass	KEYWORD1
+ESAT_WifiDisableTelemetryTelecommandClass	KEYWORD1
 ESAT_WifiDisconnectTelecommandClass	KEYWORD1
 ESAT_WifiEnableTelemetryTelecommandClass	KEYWORD1
 ESAT_WifiRadioClass	KEYWORD1
@@ -52,6 +53,7 @@ ESAT_Wifi	KEYWORD2
 ESAT_WifiConfiguration	KEYWORD2
 ESAT_WifiConnectionStateTelemetry	KEYWORD2
 ESAT_WifiConnectTelecommand	KEYWORD2
+ESAT_WifiDisableTelemetryTelecommand	KEYWORD2
 ESAT_WifiDisconnectTelecommand	KEYWORD2
 ESAT_WifiEnableTelemetryTelecommand	KEYWORD2
 ESAT_WifiRadio	KEYWORD2
