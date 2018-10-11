@@ -48,26 +48,26 @@ void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 }
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
-                           unsigned long radioBufferLength,
+                           const unsigned long radioBufferLength,
                            byte serialBuffer[],
-                           unsigned long serialBufferLength,
+                           const unsigned long serialBufferLength,
                            const byte networkConnectionTimeoutSeconds)
 {
-  enabledTelemetry.clearAll();
-  pendingTelemetry.clearAll();
-  addTelemetry(ESAT_WifiConnectionStateTelemetry);
-  enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
-  addTelecommand(ESAT_WifiConnectTelecommand);
-  addTelecommand(ESAT_WifiDisconnectTelecommand);
-  addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
-  addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
-  addTelecommand(ESAT_WifiSetServerAddressTelecommand);
-  addTelecommand(ESAT_WifiSetServerPortTelecommand);
-  addTelecommand(ESAT_WifiReadConfigurationTelecommand);
-  addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
-  addTelecommand(ESAT_WifiSetTimeTelecommand);
-  addTelecommand(ESAT_WifiEnableTelemetryTelecommand);
-  addTelecommand(ESAT_WifiDisableTelemetryTelecommand);
+  beginTelemetry();
+  beginTelecommands();
+  beginHardware(radioBuffer,
+                radioBufferLength,
+                serialBuffer,
+                serialBufferLength,
+                networkConnectionTimeoutSeconds);
+}
+
+void ESAT_WifiClass::beginHardware(byte radioBuffer[],
+                                   const unsigned long radioBufferLength,
+                                   byte serialBuffer[],
+                                   const unsigned long serialBufferLength,
+                                   const byte networkConnectionTimeoutSeconds)
+{
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
   ESAT_WifiRadio.begin(radioBuffer,
@@ -80,6 +80,27 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
   pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
   attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
+}
+
+void ESAT_WifiClass::beginTelecommands()
+{
+  addTelecommand(ESAT_WifiConnectTelecommand);
+  addTelecommand(ESAT_WifiDisconnectTelecommand);
+  addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
+  addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
+  addTelecommand(ESAT_WifiSetServerAddressTelecommand);
+  addTelecommand(ESAT_WifiSetServerPortTelecommand);
+  addTelecommand(ESAT_WifiReadConfigurationTelecommand);
+  addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
+  addTelecommand(ESAT_WifiSetTimeTelecommand);
+  addTelecommand(ESAT_WifiEnableTelemetryTelecommand);
+  addTelecommand(ESAT_WifiDisableTelemetryTelecommand);
+}
+
+void ESAT_WifiClass::beginTelemetry()
+{
+  addTelemetry(ESAT_WifiConnectionStateTelemetry);
+  enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
 }
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)

@@ -140,6 +140,25 @@ class ESAT_WifiClass
                                        MINOR_VERSION_NUMBER,
                                        PATCH_VERSION_NUMBER,
                                        clock);
+    // Configure the hardware.
+    // Use the radio buffer to store packets coming from the
+    // radio/wifi interface.
+    // Use the serial buffer to store packets coming from the
+    // serial interface.
+    // When trying to connect to the network, restart the process
+    // if it takes longer that the network connection timeout.
+    void beginHardware(byte radioBuffer[],
+                       unsigned long radioBufferLength,
+                       byte serialBuffer[],
+                       unsigned long serialBufferLength,
+                       byte networkConnectionTimeoutSeconds);
+
+    // Configure the telecommand handlers.
+    void beginTelecommands();
+
+    // Configure the telemetry packets.
+    void beginTelemetry();
+
     // Reset the telemetry queue.
     static void resetTelemetryQueue();
 };
