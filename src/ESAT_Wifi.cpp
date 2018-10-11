@@ -73,9 +73,15 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
   ESAT_WifiRadio.begin(radioBuffer,
                        radioBufferLength,
                        networkConnectionTimeoutSeconds);
+  // We pass packets around the serial interface in KISS frames.
   serialReader = ESAT_CCSDSPacketFromKISSFrameReader(Serial,
                                                      serialBuffer,
                                                      serialBufferLength);
+  // We use two pins to control the flow of packets through the serial
+  // interface:
+  // - one to signal the on-board computer that we aren't connected
+  //   and we cannot accept many packets;
+  // - one to accept telemetry requests from the on-board computer.
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
   pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
@@ -115,7 +121,8 @@ void ESAT_WifiClass::enableTelemetry(const byte identifier)
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 {
-  packet.rewind();
+  // We hide the complexity of handling telecommands with a
+  // telecommand packet dispatcher.
   (void) telecommandPacketDispatcher.dispatch(packet);
 }
 
@@ -131,6 +138,9 @@ boolean ESAT_WifiClass::readPacketFromSerial(ESAT_CCSDSPacket& packet)
 
 boolean ESAT_WifiClass::readTelemetry(ESAT_CCSDSPacket& packet)
 {
+  // We hide the complexity of building telemetry packets with a
+  // telemetry packet builder.
+  // We build telemetry packets as long as they are pending.
   if (pendingTelemetry.available())
   {
     const byte identifier = byte(pendingTelemetry.readNext());
@@ -157,6 +167,9 @@ void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
 
 void ESAT_WifiClass::update()
 {
+  // ESAT_WifiRadio handles the state of the radio/wifi interface.
+  // After that, we must notify the on-board computer about our
+  // connection state.
   ESAT_WifiRadio.update();
   if (ESAT_WifiRadio.readConnectionState() == ESAT_WifiRadio.CONNECTED)
   {
@@ -175,6 +188,7 @@ void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)
 {
+  // Packets are passed around in KISS frames.
   ESAT_CCSDSPacketToKISSFrameWriter serialWriter(Serial);
   (void) serialWriter.unbufferedWrite(packet);
 }
