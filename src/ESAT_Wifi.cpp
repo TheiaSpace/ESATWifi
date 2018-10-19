@@ -44,7 +44,7 @@ void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecomm
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
-  enabledTelemetry.clear(telemetry.packetIdentifier());
+  enableTelemetry(telemetry.packetIdentifier());
 }
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
