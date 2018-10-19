@@ -54,8 +54,8 @@ class ESAT_WifiClass
     void addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand);
 
     // Register a telemetry packet.
-    // The telemetry packet will be disabled by default;
-    // use enableTelemetry() to enable it.
+    // The telemetry packet will be enabled by default;
+    // it can be disabled with disableTelemetry().
     void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
 
     // Set up the Wifi board.
