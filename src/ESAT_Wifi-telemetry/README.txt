@@ -13,20 +13,16 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Theia Space's ESAT Wifi library.  If not, see
+along with Theia Space's ESAT EPS library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-This directory contains the ESAT_Wifi module as well as simple headers
-that include files from the subdirectories and are preserved for
-backward-compatibility.
+Wifi telemetry packet contents objects fill telemetry packets.  Each
+telemetry packet contents object implements the
+ESAT_CCSDSPacketContents interface from ESATUtil and fills one
+telemetry packet.  They are used by ESAT_Wifi.
 
 
-# ESAT_Wifi
+# ESAT_WifiConnectionStateTelemetry
 
-This is the main library that provides the Wifi communications
-functionality.
-
-# ESAT_WifiConfiguration.h
-
-This includes ESAT_Wifi-hardware/ESAT_WifiConfiguration.h
+Fill the ESAT_CONNECTION_STATE (0x00) telemetry packet.

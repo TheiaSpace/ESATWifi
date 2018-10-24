@@ -18,6 +18,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+
+boolean ESAT_WifiSetServerAddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  ESAT_Buffer serverAddress((byte*) ESAT_WifiConfiguration.serverAddress,
+                            sizeof(ESAT_WifiConfiguration.serverAddress));
+  (void) serverAddress.readFrom(packet, serverAddress.capacity());
+  return true;
+}
+
+ESAT_WifiSetServerAddressTelecommandClass ESAT_WifiSetServerAddressTelecommand;

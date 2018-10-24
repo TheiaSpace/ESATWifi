@@ -18,6 +18,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkPassphraseTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+
+boolean ESAT_WifiSetNetworkPassphraseTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  ESAT_Buffer networkPassphrase((byte*) ESAT_WifiConfiguration.networkPassphrase,
+                                sizeof(ESAT_WifiConfiguration.networkPassphrase));
+  (void) networkPassphrase.readFrom(packet, networkPassphrase.capacity());
+  return true;
+}
+
+ESAT_WifiSetNetworkPassphraseTelecommandClass ESAT_WifiSetNetworkPassphraseTelecommand;

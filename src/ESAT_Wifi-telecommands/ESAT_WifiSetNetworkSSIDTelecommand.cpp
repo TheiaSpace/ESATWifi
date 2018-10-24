@@ -18,6 +18,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+
+boolean ESAT_WifiSetNetworkSSIDTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  ESAT_Buffer networkSSID((byte*) ESAT_WifiConfiguration.networkSSID,
+                          sizeof(ESAT_WifiConfiguration.networkSSID));
+  (void) networkSSID.readFrom(packet, networkSSID.capacity());
+  return true;
+}
+
+ESAT_WifiSetNetworkSSIDTelecommandClass ESAT_WifiSetNetworkSSIDTelecommand;

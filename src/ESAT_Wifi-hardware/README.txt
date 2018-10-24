@@ -17,16 +17,15 @@ along with Theia Space's ESAT Wifi library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-This directory contains the ESAT_Wifi module as well as simple headers
-that include files from the subdirectories and are preserved for
-backward-compatibility.
+Drivers for peripherals of the ESAT Wifi board.  They are used by
+ESAT_Wifi.
 
 
-# ESAT_Wifi
+# ESAT_WifiConfiguration
 
-This is the main library that provides the Wifi communications
-functionality.
+Persistent configuration storage.
 
-# ESAT_WifiConfiguration.h
 
-This includes ESAT_Wifi-hardware/ESAT_WifiConfiguration.h
+# ESAT_WifiRadio
+
+Radio connection with the ground station server.

@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Wifi library.
  *
  * Theia Space's ESAT Wifi library is free software: you can
@@ -17,232 +19,159 @@
  */
 
 #include "ESAT_Wifi.h"
-#include "ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkPassphraseTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetServerPortTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
 #include <ESAT_Buffer.h>
-#include <ESAT_KISSStream.h>
+#include <ESAT_CCSDSPacketToKISSFrameWriter.h>
+
+void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand)
+{
+  telecommandPacketDispatcher.add(telecommand);
+}
+
+void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
+{
+  telemetryPacketBuilder.add(telemetry);
+  enableTelemetry(telemetry.packetIdentifier());
+}
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
-                           unsigned long radioBufferLength,
+                           const unsigned long radioBufferLength,
                            byte serialBuffer[],
-                           unsigned long serialBufferLength,
+                           const unsigned long serialBufferLength,
                            const byte networkConnectionTimeoutSeconds)
+{
+  beginTelemetry();
+  beginTelecommands();
+  beginHardware(radioBuffer,
+                radioBufferLength,
+                serialBuffer,
+                serialBufferLength,
+                networkConnectionTimeoutSeconds);
+}
+
+void ESAT_WifiClass::beginHardware(byte radioBuffer[],
+                                   const unsigned long radioBufferLength,
+                                   byte serialBuffer[],
+                                   const unsigned long serialBufferLength,
+                                   const byte networkConnectionTimeoutSeconds)
 {
   ESAT_WifiConfiguration.begin();
   ESAT_WifiConfiguration.readConfiguration();
-  connectionState = DISCONNECTED;
-  networkConnectionTimeoutMilliseconds =
-    1000 * ((unsigned long) networkConnectionTimeoutSeconds);
-  radioDecoder = ESAT_KISSStream(client, serialBuffer, serialBufferLength);
-  serialDecoder = ESAT_KISSStream(Serial, serialBuffer, serialBufferLength);
+  ESAT_WifiRadio.begin(radioBuffer,
+                       radioBufferLength,
+                       networkConnectionTimeoutSeconds);
+  // We pass packets around the serial interface in KISS frames.
+  serialReader = ESAT_CCSDSPacketFromKISSFrameReader(Serial,
+                                                     serialBuffer,
+                                                     serialBufferLength);
+  // We use two pins to control the flow of packets through the serial
+  // interface:
+  // - one to signal the on-board computer that we aren't connected
+  //   and we cannot accept many packets;
+  // - one to accept telemetry requests from the on-board computer.
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
+  pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
+  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
 }
 
-void ESAT_WifiClass::connectToNetwork()
+void ESAT_WifiClass::beginTelecommands()
 {
-  disconnect();
-  (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
-                    ESAT_WifiConfiguration.networkPassphrase);
-  connectionState = WAITING_FOR_NETWORK_CONNECTION;
-  networkConnectionStartTimeMilliseconds = millis();
+  addTelecommand(ESAT_WifiConnectTelecommand);
+  addTelecommand(ESAT_WifiDisconnectTelecommand);
+  addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
+  addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
+  addTelecommand(ESAT_WifiSetServerAddressTelecommand);
+  addTelecommand(ESAT_WifiSetServerPortTelecommand);
+  addTelecommand(ESAT_WifiReadConfigurationTelecommand);
+  addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
+  addTelecommand(ESAT_WifiSetTimeTelecommand);
+  addTelecommand(ESAT_WifiEnableTelemetryTelecommand);
+  addTelecommand(ESAT_WifiDisableTelemetryTelecommand);
 }
 
-void ESAT_WifiClass::connectToServer()
+void ESAT_WifiClass::beginTelemetry()
 {
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    if (client.connect(ESAT_WifiConfiguration.serverAddress,
-                       ESAT_WifiConfiguration.serverPort))
-    {
-      connectionState = CONNECTED;
-    }
-    else
-    {
-      connectionState = CONNECTING_TO_SERVER;
-    }
-  }
-  else
-  {
-    connectionState = CONNECTING_TO_NETWORK;
-  }
+  addTelemetry(ESAT_WifiConnectionStateTelemetry);
+  enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
 }
 
-void ESAT_WifiClass::disconnect()
+void ESAT_WifiClass::disableTelemetry(const byte identifier)
 {
-  if (client.connected())
-  {
-    client.stop();
-  }
-  (void) WiFi.disconnect(true);
-  connectionState = DISCONNECTED;
+  enabledTelemetry.clear(identifier);
+}
+
+void ESAT_WifiClass::enableTelemetry(const byte identifier)
+{
+  enabledTelemetry.set(identifier);
 }
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 {
-  packet.rewind();
-  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
-  if (primaryHeader.packetType != primaryHeader.TELECOMMAND)
-  {
-    return;
-  }
-  if (primaryHeader.applicationProcessIdentifier
-      != APPLICATION_PROCESS_IDENTIFIER)
-  {
-    return;
-  }
-  if (primaryHeader.packetDataLength < ESAT_CCSDSSecondaryHeader::LENGTH)
-  {
-    return;
-  }
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (secondaryHeader.majorVersionNumber < MAJOR_VERSION_NUMBER)
-  {
-    return;
-  }
-  switch (secondaryHeader.packetIdentifier)
-  {
-    case CONNECT:
-      handleConnectCommand(packet);
-      break;
-    case DISCONNECT:
-      handleDisconnectCommand(packet);
-      break;
-    case SET_NETWORK_SSID:
-      handleSetNetworkSSIDCommand(packet);
-      break;
-    case SET_NETWORK_PASSPHRASE:
-      handleSetNetworkPassphraseCommand(packet);
-      break;
-    case SET_SERVER_ADDRESS:
-      handleSetServerAddressCommand(packet);
-      break;
-    case SET_SERVER_PORT:
-      handleSetServerPortCommand(packet);
-      break;
-    case READ_CONFIGURATION:
-      handleReadConfigurationCommand(packet);
-      break;
-    case WRITE_CONFIGURATION:
-      handleWriteConfigurationCommand(packet);
-      break;
-    default:
-      break;
-  }
-}
-
-void ESAT_WifiClass::handleConnectCommand(ESAT_CCSDSPacket& packet)
-{
-  connectionState = CONNECTING_TO_NETWORK;
-}
-
-void ESAT_WifiClass::handleDisconnectCommand(ESAT_CCSDSPacket& packet)
-{
-  connectionState = DISCONNECTING;
-}
-
-void ESAT_WifiClass::handleSetNetworkSSIDCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_Buffer networkSSID((byte*) ESAT_WifiConfiguration.networkSSID,
-                          sizeof(ESAT_WifiConfiguration.networkSSID));
-  (void) networkSSID.readFrom(packet, networkSSID.capacity());
-}
-
-void ESAT_WifiClass::handleSetNetworkPassphraseCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_Buffer networkPassphrase((byte*) ESAT_WifiConfiguration.networkPassphrase,
-                                sizeof(ESAT_WifiConfiguration.networkPassphrase));
-  (void) networkPassphrase.readFrom(packet, networkPassphrase.capacity());
-}
-
-void ESAT_WifiClass::handleSetServerAddressCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_Buffer serverAddress((byte*) ESAT_WifiConfiguration.serverAddress,
-                            sizeof(ESAT_WifiConfiguration.serverAddress));
-  (void) serverAddress.readFrom(packet, serverAddress.capacity());
-}
-
-void ESAT_WifiClass::handleSetServerPortCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_WifiConfiguration.serverPort = packet.readWord();
-}
-
-void ESAT_WifiClass::handleReadConfigurationCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_WifiConfiguration.readConfiguration();
-}
-
-void ESAT_WifiClass::handleWriteConfigurationCommand(ESAT_CCSDSPacket& packet)
-{
-  ESAT_WifiConfiguration.writeConfiguration();
+  // We hide the complexity of handling telecommands with a
+  // telecommand packet dispatcher.
+  (void) telecommandPacketDispatcher.dispatch(packet);
 }
 
 boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
 {
-  if (connectionState != CONNECTED)
-  {
-    return false;
-  }
-  const boolean gotFrame = radioDecoder.receiveFrame();
-  if (!gotFrame)
-  {
-    return false;
-  }
-  const boolean gotPacket = packet.readFrom(radioDecoder);
-  return gotPacket;
+  return ESAT_WifiRadio.read(packet);
 }
 
 boolean ESAT_WifiClass::readPacketFromSerial(ESAT_CCSDSPacket& packet)
 {
-  const boolean gotFrame = serialDecoder.receiveFrame();
-  if (!gotFrame)
+  return serialReader.read(packet);
+}
+
+boolean ESAT_WifiClass::readTelemetry(ESAT_CCSDSPacket& packet)
+{
+  // We hide the complexity of building telemetry packets with a
+  // telemetry packet builder.
+  // We build telemetry packets as long as they are pending.
+  if (pendingTelemetry.available())
+  {
+    const byte identifier = byte(pendingTelemetry.readNext());
+    pendingTelemetry.clear(identifier);
+    return telemetryPacketBuilder.build(packet, identifier);
+  }
+  else
   {
     return false;
   }
-  const boolean gotPacket = packet.readFrom(serialDecoder);
-  return gotPacket;
 }
 
-void ESAT_WifiClass::reconnectIfDisconnected()
+void ESAT_WifiClass::resetTelemetryQueue()
 {
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    connectionState = CONNECTING_TO_NETWORK;
-    return;
-  }
-  if (!client.connected())
-  {
-    connectionState = CONNECTING_TO_SERVER;
-    return;
-  }
-  connectionState = CONNECTED;
+  ESAT_Wifi.pendingTelemetry =
+    (ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available())
+    & ESAT_Wifi.enabledTelemetry;
+}
+
+void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
+{
+  clock.write(timestamp);
 }
 
 void ESAT_WifiClass::update()
 {
-  switch (connectionState)
-  {
-    case CONNECTING_TO_NETWORK:
-      connectToNetwork();
-      break;
-    case WAITING_FOR_NETWORK_CONNECTION:
-      waitForNetworkConnection();
-      break;
-    case CONNECTING_TO_SERVER:
-      connectToServer();
-      break;
-    case CONNECTED:
-      reconnectIfDisconnected();
-      break;
-    case DISCONNECTING:
-      disconnect();
-      break;
-    case DISCONNECTED:
-      break;
-    default:
-      break;
-  }
-  if (connectionState == CONNECTED)
+  // ESAT_WifiRadio handles the state of the radio/wifi interface.
+  // After that, we must notify the on-board computer about our
+  // connection state.
+  ESAT_WifiRadio.update();
+  if (ESAT_WifiRadio.readConnectionState() == ESAT_WifiRadio.CONNECTED)
   {
     digitalWrite(NOT_CONNECTED_SIGNAL_PIN, LOW);
   }
@@ -252,50 +181,16 @@ void ESAT_WifiClass::update()
   }
 }
 
-void ESAT_WifiClass::waitForNetworkConnection()
-{
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    connectionState = CONNECTING_TO_SERVER;
-  }
-  else
-  {
-    connectionState = WAITING_FOR_NETWORK_CONNECTION;
-    const unsigned long currentTime = millis();
-    const unsigned long ellapsedTime =
-      currentTime - networkConnectionStartTimeMilliseconds;
-    if (ellapsedTime > networkConnectionTimeoutMilliseconds)
-    {
-      connectionState = CONNECTING_TO_NETWORK;
-    }
-  }
-}
-
 void ESAT_WifiClass::writePacketToRadio(ESAT_CCSDSPacket& packet)
 {
-  if (connectionState == CONNECTED)
-  {
-    packet.rewind();
-    const unsigned long encoderBufferLength =
-      ESAT_KISSStream::frameLength(packet.length());
-    byte encoderBuffer[encoderBufferLength];
-    ESAT_KISSStream encoder(client, encoderBuffer, sizeof(encoderBuffer));
-    (void) encoder.beginFrame();
-    (void) packet.writeTo(encoder);
-    (void) encoder.endFrame();
-  }
+  ESAT_WifiRadio.write(packet);
 }
 
 void ESAT_WifiClass::writePacketToSerial(ESAT_CCSDSPacket& packet)
 {
-  packet.rewind();
-  const unsigned long encoderBufferLength =
-    ESAT_KISSStream::frameLength(packet.length());
-  byte encoderBuffer[encoderBufferLength];
-  ESAT_KISSStream encoder(Serial, encoderBuffer, sizeof(encoderBuffer));
-  (void) encoder.beginFrame();
-  (void) packet.writeTo(encoder);
-  (void) encoder.endFrame();
+  // Packets are passed around in KISS frames.
+  ESAT_CCSDSPacketToKISSFrameWriter serialWriter(Serial);
+  (void) serialWriter.unbufferedWrite(packet);
 }
 
 ESAT_WifiClass ESAT_Wifi;

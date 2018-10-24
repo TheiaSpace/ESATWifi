@@ -18,6 +18,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetServerPortTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+
+boolean ESAT_WifiSetServerPortTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  ESAT_WifiConfiguration.serverPort = packet.readWord();
+  return true;
+}
+
+ESAT_WifiSetServerPortTelecommandClass ESAT_WifiSetServerPortTelecommand;

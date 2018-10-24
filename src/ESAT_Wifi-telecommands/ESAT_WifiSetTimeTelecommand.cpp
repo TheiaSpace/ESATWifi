@@ -18,6 +18,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
-#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
+#include "ESAT_Wifi.h"
+
+boolean ESAT_WifiSetTimeTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  const ESAT_Timestamp timestamp = packet.readTimestamp();
+  if (packet.triedToReadBeyondLength())
+  {
+    (void) timestamp; // Ignored.
+    return false;
+  }
+  else
+  {
+    ESAT_Wifi.setTime(timestamp);
+    return true;
+  }
+}
+
+ESAT_WifiSetTimeTelecommandClass ESAT_WifiSetTimeTelecommand;

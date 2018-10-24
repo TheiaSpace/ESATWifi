@@ -18,6 +18,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
-#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+#include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
+
+boolean ESAT_WifiDisconnectTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  (void) packet; // Unused.
+  ESAT_WifiRadio.disconnect();
+  return true;
+}
+
+ESAT_WifiDisconnectTelecommandClass ESAT_WifiDisconnectTelecommand;

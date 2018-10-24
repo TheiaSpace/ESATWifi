@@ -18,6 +18,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiConfiguration_h
-#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
-#endif /* ESAT_WifiConfiguration_h */
+#include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
+#include "ESAT_Wifi.h"
+
+boolean ESAT_WifiEnableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+{
+  const byte identifier = packet.readByte();
+  if (packet.triedToReadBeyondLength())
+  {
+    (void) identifier; // Unused.
+    return false;
+  }
+  else
+  {
+    ESAT_Wifi.enableTelemetry(identifier);
+    return true;
+  }
+}
+
+ESAT_WifiEnableTelemetryTelecommandClass ESAT_WifiEnableTelemetryTelecommand;
