@@ -171,7 +171,7 @@ class ESAT_WifiClass
     void beginTelemetry();
 
     // Reset the telemetry queue.
-    static void resetTelemetryQueue();
+    void resetTelemetryQueue();
 
     // Mark the telemetry queue for reset.
     // This function must always live in RAM,
