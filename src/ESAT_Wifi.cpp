@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -85,7 +85,9 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
   pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
-  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
+  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN,
+                  signalTelemetryQueueReset,
+                  FALLING);
 }
 
 void ESAT_WifiClass::beginTelecommands()
@@ -160,6 +162,16 @@ void ESAT_WifiClass::resetTelemetryQueue()
     & ESAT_Wifi.enabledTelemetry;
 }
 
+void ESAT_WifiClass::signalTelemetryQueueReset()
+{
+  // This interrupt handler just signals that the telemetry queue must
+  // be reset instead of actually resetting the telemetry queue.  This
+  // way, the interrupt handler is as fast as it gets and, in addition,
+  // it doesn't call any other function that may lie out of RAM.
+  // ESAT_Wifi.update() will reset the telemetry queue when necessary.
+  ESAT_Wifi.mustResetTelemetryQueue = true;
+}
+
 void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
 {
   clock.write(timestamp);
@@ -167,9 +179,15 @@ void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
 
 void ESAT_WifiClass::update()
 {
+  // The telemetry queue must be reset when needed.
   // ESAT_WifiRadio handles the state of the radio/wifi interface.
   // After that, we must notify the on-board computer about our
   // connection state.
+  if (mustResetTelemetryQueue)
+  {
+    resetTelemetryQueue();
+    mustResetTelemetryQueue = false;
+  }
   ESAT_WifiRadio.update();
   if (ESAT_WifiRadio.readConnectionState() == ESAT_WifiRadio.CONNECTED)
   {
