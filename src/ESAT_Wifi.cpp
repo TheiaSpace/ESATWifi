@@ -164,6 +164,11 @@ void ESAT_WifiClass::resetTelemetryQueue()
 
 void ESAT_WifiClass::signalTelemetryQueueReset()
 {
+  // This interrupt handler just signals that the telemetry queue must
+  // be reset instead of actually resetting the telemetry queue.  This
+  // way, the interrupt handler is as fast as it gets and, in addition,
+  // it doesn't call any other function that may lie out of RAM.
+  // ESAT_Wifi.update() will reset the telemetry queue when necessary.
   ESAT_Wifi.mustResetTelemetryQueue = true;
 }
 
