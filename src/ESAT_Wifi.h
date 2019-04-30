@@ -128,6 +128,11 @@ class ESAT_WifiClass
     // Use this clock for timekeeping.
     ESAT_SoftwareClock clock;
 
+    // True when the telemetry queue must be reset; false otherwise.
+    // This variable is volatile because it can change in response to
+    // interrupts.
+    volatile boolean mustResetTelemetryQueue;
+
     // List of pending telemetry packet identifiers.
     ESAT_FlagContainer pendingTelemetry;
 
@@ -167,6 +172,11 @@ class ESAT_WifiClass
 
     // Reset the telemetry queue.
     static void resetTelemetryQueue();
+
+    // Mark the telemetry queue for reset.
+    // This function must always live in RAM,
+    // so mark it with ICACHE_RAM_ATTR.
+    static void ICACHE_RAM_ATTR signalTelemetryQueueReset();
 };
 
 extern ESAT_WifiClass ESAT_Wifi;

@@ -85,7 +85,9 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
   pinMode(NOT_CONNECTED_SIGNAL_PIN, OUTPUT);
   digitalWrite(NOT_CONNECTED_SIGNAL_PIN, HIGH);
   pinMode(RESET_TELEMETRY_QUEUE_PIN, INPUT_PULLUP);
-  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN, resetTelemetryQueue, FALLING);
+  attachInterrupt(RESET_TELEMETRY_QUEUE_PIN,
+                  signalTelemetryQueueReset,
+                  FALLING);
 }
 
 void ESAT_WifiClass::beginTelecommands()
@@ -160,6 +162,11 @@ void ESAT_WifiClass::resetTelemetryQueue()
     & ESAT_Wifi.enabledTelemetry;
 }
 
+void ESAT_WifiClass::signalTelemetryQueueReset()
+{
+  ESAT_Wifi.mustResetTelemetryQueue = true;
+}
+
 void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
 {
   clock.write(timestamp);
@@ -167,9 +174,15 @@ void ESAT_WifiClass::setTime(const ESAT_Timestamp timestamp)
 
 void ESAT_WifiClass::update()
 {
+  // The telemetry queue must be reset when needed.
   // ESAT_WifiRadio handles the state of the radio/wifi interface.
   // After that, we must notify the on-board computer about our
   // connection state.
+  if (mustResetTelemetryQueue)
+  {
+    resetTelemetryQueue();
+    mustResetTelemetryQueue = false;
+  }
   ESAT_WifiRadio.update();
   if (ESAT_WifiRadio.readConnectionState() == ESAT_WifiRadio.CONNECTED)
   {
