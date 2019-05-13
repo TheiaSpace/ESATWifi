@@ -33,6 +33,7 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiNetworkInformationTelemetry.h"
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
@@ -109,6 +110,8 @@ void ESAT_WifiClass::beginTelemetry()
 {
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiNetworkInformationTelemetry);
+  disableTelemetry(ESAT_WifiNetworkInformationTelemetry.packetIdentifier());
 }
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
