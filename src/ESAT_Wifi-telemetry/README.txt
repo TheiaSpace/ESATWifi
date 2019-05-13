@@ -1,4 +1,4 @@
-Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT Wifi library.
 
@@ -26,3 +26,8 @@ telemetry packet.  They are used by ESAT_Wifi.
 # ESAT_WifiConnectionStateTelemetry
 
 Fill the ESAT_CONNECTION_STATE (0x00) telemetry packet.
+
+
+# ESAT_WifiNetworkInformationTelemetry
+
+Fill the ESAT_WIFI_NETWORK_INFORMATION (0x01) telemetry packet.
