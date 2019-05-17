@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -36,6 +36,16 @@
 //   Used as an argument to WiFiClient.connect().
 // - serverPort: the port of the ground segment server.
 //   Used as an argument to WiFiClient.connect().
+// - hostIPAddress: the address of the ESAT.
+//   Used as an argument to WiFi.config (only if DHCP mode is enabled).
+// - subnetMask: the current subnetwork mask.
+//   Used as an argument to WiFi.config (only if DHCP mode is enabled).
+// - gatewayIPAddress: the address of the network default router.
+//   Used as an argument to WiFi.config (only if DHCP mode is enabled).
+// - hostConfigurationMode: the host IP configuration mode (static or DHCP).
+//   Used by ESAT_WifiRadio.connectToNetwork to configure or not static IP.
+// - hostname: the name provided to identify the connected ESAT.
+//   Used as an argument to wiFi.hostname()
 // The configuration parameters can be stored in the EEPROM in order
 // to have persistency between reboots.
 // Before loading the configuration parameters from storage or storing
@@ -47,6 +57,17 @@
 class ESAT_WifiConfigurationClass
 {
   public:
+  
+    // Enum type for storing the host nework configuration mode (static or dynamic).
+    enum HostModeConfigurationType
+    {
+	    DYNAMIC_HOST_CONFIGURATION_MODE = 0, 
+	    STATIC_HOST_CONFIGURATION_MODE
+    };
+	
+    //TODO
+	//SORT properly
+  
     // Maximum length of the SSID of the wireless network.
     static const word NETWORK_SSID_LENGTH = 32;
 
@@ -55,19 +76,46 @@ class ESAT_WifiConfigurationClass
 
     // Length of the ground segment server address.
     static const word SERVER_ADDRESS_LENGTH = 64;
+	
+	// Length of the server port parameter.
+    static const word SERVER_PORT_LENGTH = 2;
+	
+	// Length of any IP address.
+	static const word IP_ADDRESS_LENGTH = 4;
+	
+	// Length of the host configuration mode paramenter;
+	static const word HOST_CONFIGURATION_MODE_LENGTH = 1;
+	
+	// Length of the ESAT hostname.
+	static const word HOSTNAME_LENGTH = 32;
+
+	// Connect to the wireless network with this SSID.
+    char networkSSID[NETWORK_SSID_LENGTH+1];
 
     // Connect to the wireless network using this passphrase.
-    char networkPassphrase[NETWORK_PASSPHRASE_LENGTH];
+    char networkPassphrase[NETWORK_PASSPHRASE_LENGTH+1];
 
     // Connect to this ground segment server host address.
-    char serverAddress[SERVER_ADDRESS_LENGTH];
+    char serverAddress[SERVER_ADDRESS_LENGTH+1];
 
     // Connect to this port of the ground segment server.
     word serverPort;
-
-    // Connect to the wireless network with this SSID.
-    char networkSSID[NETWORK_SSID_LENGTH];
-
+	
+	// Use this IP adddress to manually connect to the wireless network.
+	byte hostAddress[IP_ADDRESS_LENGTH];
+	
+	// Use this subnet mask to manually connect to the wireless network.
+	byte subnetMask[IP_ADDRESS_LENGTH];
+	
+	// Use this IP address as default adddress for routing packets.
+	byte gatewayAddress[IP_ADDRESS_LENGTH];
+	
+	// Use this variable to store whether host network parameters are manually or self configured.
+	HostModeConfigurationType hostConfigurationMode; 
+	
+	// Use this name to identify the host.
+	char hostname[HOSTNAME_LENGTH+1];	
+	
     // Set up the configuration storage.
     void begin();
 
@@ -95,16 +143,46 @@ class ESAT_WifiConfigurationClass
     static const word SERVER_PORT_OFFSET =
       SERVER_ADDRESS_OFFSET
       + SERVER_ADDRESS_LENGTH;
-
-    // Length of the server port parameter.
-    static const word SERVER_PORT_LENGTH = 2;
-
+	  
+	// Offset of the host address paramenter in the storage.
+	static const word HOST_ADDRESS_OFFSET =
+	  SERVER_PORT_OFFSET
+	  + SERVER_PORT_LENGTH;
+	  
+	// Offset of the subnet mask parameter in the storage.
+	static const word SUBNET_MASK_OFFSET =
+	  HOST_ADDRESS_OFFSET
+	  + IP_ADDRESS_LENGTH;
+	  
+	// Offset of the default gateway address paramenter in the storage.
+	static const word GATEWAY_ADDRESS_OFFSET =
+	  SUBNET_MASK_OFFSET
+	  + IP_ADDRESS_LENGTH;
+	  
+	// Ofset of the host configuration mode paramenter in the storage.
+	static const word HOST_CONFIGURATION_MODE_OFFSET =
+	  GATEWAY_ADDRESS_OFFSET
+      + IP_ADDRESS_LENGTH;	  	
+	  
+	// Offset of the ESAT hostname address parameter in the storage.
+	static const word HOSTNAME_OFFSET = 
+	  HOST_CONFIGURATION_MODE_OFFSET
+	  + HOST_CONFIGURATION_MODE_LENGTH;
+	  
     // Total length of the configuration.
     static const word CONFIGURATION_LENGTH =
       NETWORK_SSID_LENGTH
       + NETWORK_PASSPHRASE_LENGTH
       + SERVER_ADDRESS_LENGTH
-      + SERVER_PORT_LENGTH;
+      + SERVER_PORT_LENGTH
+	  + IP_ADDRESS_LENGTH
+	  + IP_ADDRESS_LENGTH
+	  + IP_ADDRESS_LENGTH
+	  + HOST_CONFIGURATION_MODE_LENGTH
+	  + HOSTNAME_LENGTH;
+
+	// Read a multiple char configuration string.
+	void readString(char* outputBuffer, word length, word offset);
 
     // Read the passphrase of the wireless network.
     // Part of the configuration.
@@ -121,7 +199,30 @@ class ESAT_WifiConfigurationClass
     // Read the port of the ground segment server.
     // Part of the configuration.
     void readServerPort();
-
+	
+	// Read the address of the host.
+	// Part of the configuration.
+	void readHostAddress();
+	
+	// Read the subnetwork mask.
+	// Part of the configuration.
+	void readSubnetMask();
+	
+	// Read the address of the default gateway.
+	// Part of the configuration.
+	void readGatewayAddress();
+	
+	// Read the host configuration mode parameter.
+	// Part of the configuration.
+	void readHostConfigurationMode();
+	
+	// Read the hostname.
+	// Part of the configuration.
+	void readHostname();
+	
+	// Write a multiple char configuration string.
+	void writeString(char* inputBuffer, word length, word offset);
+	
     // Write the passphrase of the wireless network.
     // Part of the configuration.
     void writeNetworkPassphrase();
@@ -137,6 +238,27 @@ class ESAT_WifiConfigurationClass
     // Write the port of the ground segment server.
     // Part of the configuration.
     void writeServerPort();
+	
+	// Write the address of the host.
+	// Part of the configuration.
+	void writeHostAddress();
+	
+	// Write the subnetwork mask.
+	// Part of the configuration.
+	void writeSubnetMask();
+	
+	// Write the address of the default gateway.
+	// Part of the configuration.
+	void writeGatewayAddress();
+	
+	// Write the host configuration mode parameter.
+	// Part of the configuration.
+	void writeHostConfigurationMode();
+	
+	// Write the hostname.
+	// Part of the configuration.
+	void writeHostname();
+	
 };
 
 // Global instance of the Wifi configuration library.

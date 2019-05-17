@@ -47,11 +47,17 @@ class ESAT_WifiNetworkInformationTelemetryClass: public ESAT_CCSDSTelemetryPacke
     boolean fillUserData(ESAT_CCSDSPacket& packet);
 
   private:
+	// Write the used Wifi radio channel.
+	void writeChannel(ESAT_CCSDSPacket& packet);
+  
     // Write the DNS IP addresses to the given packet.
     void writeDNSIPAddresses(ESAT_CCSDSPacket& packet);
 
     // Write the gateway IP address to the given packet.
     void writeGatewayIPAddress(ESAT_CCSDSPacket& packet);
+	
+	// Write host name to the given packet.
+	void writeHostName(ESAT_CCSDSPacket& packet);
 
     // Write the given IP address to the given packet.
     void writeIPAddress(IPAddress address, ESAT_CCSDSPacket& packet);
@@ -64,12 +70,19 @@ class ESAT_WifiNetworkInformationTelemetryClass: public ESAT_CCSDSTelemetryPacke
 
     // Write the MAC address to the given packet.
     void writeMACAddress(ESAT_CCSDSPacket& packet);
+	
+	// Write the received signal strength indicator to the given packet.
+	void writeRSSI(ESAT_CCSDSPacket& packet);
 
     // Write the SSID to the given packet.
     void writeSSID(ESAT_CCSDSPacket& packet);
+	
+	// Write the 32 first characters from the given string to the given packet.
+	void writeString(String str, ESAT_CCSDSPacket& packet);
 
     // Write the subnet mask to the given packet.
-    void writeSubnetMask(ESAT_CCSDSPacket& packet);
+    void writeSubnetMask(ESAT_CCSDSPacket& packet);	
+
 };
 
 // Global instance of ESAT_WifiNetworkInformationTelemetry.  ESAT_Wifi uses this

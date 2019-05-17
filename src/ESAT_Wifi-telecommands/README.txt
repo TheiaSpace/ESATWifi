@@ -1,4 +1,4 @@
-Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+﻿Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT Wifi library.
 
@@ -35,16 +35,16 @@ Telecommand handler for WIFI_DISCONNECT (0x01): disconnect from the
 network and ground station server.
 
 
-# ESAT_WifiSetNetworkPassphraseTelecommand
-
-Telecommand handler for WIFI_SET_NETWORK_PASSPHRASE (0x11): set the
-network passphrase.
-
-
 # ESAT_WifiSetNetworkSSIDTelecommand
 
 Telecommand handler for WIFI_SET_NETWORK_SSID (0x10): set the network
 SSID.
+
+
+# ESAT_WifiSetNetworkPassphraseTelecommand
+
+Telecommand handler for WIFI_SET_NETWORK_PASSPHRASE (0x11): set the
+network passphrase.
 
 
 # ESAT_WifiSetServerAddressTelecommand
@@ -57,6 +57,42 @@ server address.
 
 Telecommand handler for WIFI_SET_SERVER_PORT (0x13): set the
 server port.
+
+
+# ESAT_WifiSetHostAddressTelecommand
+
+Telecommand handler for WIFI_SET_HOST_ADDRESS (0x14): set the
+static host IP address.
+
+
+# ESAT_WifiSetSubnetMaskTelecommand
+
+Telecommand handler for WIFI_SET_SUBNET_MASK (0x15): set the
+static subnet mask.
+
+
+# ESAT_WifiSetGatewayAddressTelecommand
+
+Telecommand handler for WIFI_SET_GATEWAY_ADDRESS (0x16): set the
+static default gateway IP address.
+
+
+# ESAT_WifiSetHostnameTelecommand
+
+Telecommand handler for WIFI_SET_HOSTNAME (0x17): set the
+hostname.
+
+
+# ESAT_WifiSetDHCPModeTelecommand
+
+Telecommand handler for  WIFI_SET_DHCP_MODE (0x18): set the
+wifi IP address configuration to dynamic.
+
+
+# ESAT_WifiSetStaticIPModeTelecommand
+
+Telecommand handler for  WIFI_SET_STATIC_IP_MODE (0x19): set the
+wifi IP address configuration to static (user defined).
 
 
 # ESAT_WifiReadConfigurationTelecommand

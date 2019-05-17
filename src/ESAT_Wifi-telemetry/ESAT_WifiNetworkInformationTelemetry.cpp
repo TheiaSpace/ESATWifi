@@ -20,6 +20,7 @@
 
 #include "ESAT_Wifi-telemetry/ESAT_WifiNetworkInformationTelemetry.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
 boolean ESAT_WifiNetworkInformationTelemetryClass::available()
 {
@@ -28,14 +29,23 @@ boolean ESAT_WifiNetworkInformationTelemetryClass::available()
 
 boolean ESAT_WifiNetworkInformationTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 {
+  packet.writeByte(0xFF);
   writeIsConnected(packet);
   writeMACAddress(packet);
+  writeHostName(packet);
   writeSSID(packet);
   writeLocalIPAddress(packet);
   writeSubnetMask(packet);
   writeGatewayIPAddress(packet);
-  writeDNSIPAddresses(packet);
+  //writeDNSIPAddresses(packet);
+  writeRSSI(packet);
+  writeChannel(packet);
   return true;
+}
+
+void ESAT_WifiNetworkInformationTelemetryClass::writeChannel(ESAT_CCSDSPacket& packet)
+{
+	packet.writeByte((byte) WiFi.channel());
 }
 
 void ESAT_WifiNetworkInformationTelemetryClass::writeDNSIPAddresses(ESAT_CCSDSPacket& packet)
@@ -64,6 +74,12 @@ void ESAT_WifiNetworkInformationTelemetryClass::writeIPAddress(const IPAddress a
   }
 }
 
+void ESAT_WifiNetworkInformationTelemetryClass::writeHostName(ESAT_CCSDSPacket& packet)
+{
+	writeString(WiFi.hostname(),
+				packet);
+}
+
 void ESAT_WifiNetworkInformationTelemetryClass::writeIsConnected(ESAT_CCSDSPacket& packet)
 {
   packet.writeBoolean(WiFi.isConnected());
@@ -86,13 +102,24 @@ void ESAT_WifiNetworkInformationTelemetryClass::writeMACAddress(ESAT_CCSDSPacket
   }
 }
 
+void ESAT_WifiNetworkInformationTelemetryClass::writeRSSI(ESAT_CCSDSPacket& packet)
+{
+  packet.writeByte((byte) WiFi.RSSI());
+}
+
 void ESAT_WifiNetworkInformationTelemetryClass::writeSSID(ESAT_CCSDSPacket& packet)
 {
-  const byte ssidLength = 32;
-  const String ssid = WiFi.SSID();
-  for (int index = 0; index < ssidLength; index = index + 1)
+  writeString(WiFi.SSID(),
+			  packet);
+}
+
+void ESAT_WifiNetworkInformationTelemetryClass::writeString(const String str,
+															ESAT_CCSDSPacket& packet)
+{
+  const byte length = 32;
+  for (int index = 0; index < length; index = index + 1)
   {
-    packet.writeChar(ssid.charAt(index));
+    packet.writeChar(str.charAt(index));
   }
 }
 
@@ -101,6 +128,5 @@ void ESAT_WifiNetworkInformationTelemetryClass::writeSubnetMask(ESAT_CCSDSPacket
   writeIPAddress(WiFi.subnetMask(),
                  packet);
 }
-
 
 ESAT_WifiNetworkInformationTelemetryClass ESAT_WifiNetworkInformationTelemetry;

@@ -26,10 +26,16 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDHCPModeTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetGatewayAddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetHostAddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetHostnameTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkPassphraseTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerPortTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetStaticIPModeTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetSubnetMaskTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
@@ -95,10 +101,16 @@ void ESAT_WifiClass::beginTelecommands()
 {
   addTelecommand(ESAT_WifiConnectTelecommand);
   addTelecommand(ESAT_WifiDisconnectTelecommand);
+  addTelecommand(ESAT_WifiSetDHCPModeTelecommand);
+  addTelecommand(ESAT_WifiSetGatewayAddressTelecommand);
+  addTelecommand(ESAT_WifiSetHostAddressTelecommand);
+  addTelecommand(ESAT_WifiSetHostnameTelecommand);  
   addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
   addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
   addTelecommand(ESAT_WifiSetServerAddressTelecommand);
   addTelecommand(ESAT_WifiSetServerPortTelecommand);
+  addTelecommand(ESAT_WifiSetStaticIPModeTelecommand);
+  addTelecommand(ESAT_WifiSetSubnetMaskTelecommand);
   addTelecommand(ESAT_WifiReadConfigurationTelecommand);
   addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
   addTelecommand(ESAT_WifiSetTimeTelecommand);
@@ -111,7 +123,7 @@ void ESAT_WifiClass::beginTelemetry()
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiNetworkInformationTelemetry);
-  disableTelemetry(ESAT_WifiNetworkInformationTelemetry.packetIdentifier());
+  enableTelemetry(ESAT_WifiNetworkInformationTelemetry.packetIdentifier());
 }
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
