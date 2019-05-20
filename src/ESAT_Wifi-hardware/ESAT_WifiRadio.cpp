@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -44,7 +44,7 @@ void ESAT_WifiRadioClass::connectToNetwork()
 {
   disconnectFromNetworkAndServer();
   // If static mode is set, IP seetings are required to be configured
-  // previous to begin(). Otherwise DHCP will be selected. Therefore
+  // previously to begin(). Otherwise DHCP will be selected. Therefore,
   // DHCP mode telemetry will feeedback the value stored in EEPROM
   // instead of the own WiFi driver setting.
   if (ESAT_WifiConfiguration.hostConfigurationMode == 

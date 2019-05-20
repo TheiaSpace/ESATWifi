@@ -112,13 +112,26 @@ configuration.
 Telecommand handler for WIFI_SET_TIME (0x30): set the real-time clock.
 
 
-# ESAT_EnableTelemetryTelecommand
+# ESAT_WifiEnableTelemetryTelecommand
 
 Telecommand handler for WIFI_ENABLE_TELEMETRY (0x40): enable the
 generation of a telemetry packet.
 
 
-# ESAT_DisableTelemetryTelecommand
+# ESAT_WifiDisableTelemetryTelecommand
 
 Telecommand handler for WIFI_DISABLE_TELEMETRY (0x41): disable the
 generation of a telemetry packet.
+
+
+# ESAT_WifiEnableStandaloneModeTelecommand
+
+Telecommand handler for WIFI_ENABLE_STANDALONE_MODE (0x42): enable the
+wifi telecommands and telemetry self handling witout OBC.
+
+
+# ESAT_WifiDisableStandaloneModeTelecommand
+
+Telecommand handler for WIFI_DISABLE_STANDALONE_MODE (0x43): disable the
+wifi telecommands and telemetry self handling witout OBC.
+
