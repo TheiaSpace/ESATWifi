@@ -39,38 +39,12 @@ void ESAT_WifiConfigurationClass::readConfiguration()
   readHostname();
 }
 
-void ESAT_WifiConfigurationClass::readString(char* outputBuffer, const word length, const word offset)
+void ESAT_WifiConfigurationClass::readGatewayAddress()
 {
-	for (word i = 0; i < length; i++)
-	{
-		outputBuffer[i] = EEPROM.read(offset + i);
-	}
-}
-
-void ESAT_WifiConfigurationClass::readNetworkPassphrase()
-{
-  readString(networkPassphrase, NETWORK_PASSPHRASE_LENGTH, NETWORK_PASSPHRASE_OFFSET);
-  networkPassphrase[NETWORK_PASSPHRASE_LENGTH] = 0; // Ensure that last char* string is 0.
-}
-
-void ESAT_WifiConfigurationClass::readNetworkSSID()
-{
-  readString(networkSSID, NETWORK_SSID_LENGTH, NETWORK_SSID_OFFSET);
-  networkSSID[NETWORK_SSID_LENGTH] = 0; // Ensure that last char* string is 0.
-}
-
-void ESAT_WifiConfigurationClass::readServerAddress()
-{
-  readString(serverAddress, SERVER_ADDRESS_LENGTH, SERVER_ADDRESS_OFFSET);
-  serverAddress[SERVER_ADDRESS_LENGTH] = 0; // Ensure that last char* string is 0.
-
-}
-
-void ESAT_WifiConfigurationClass::readServerPort()
-{
-  const byte highByte = EEPROM.read(SERVER_PORT_OFFSET);
-  const byte lowByte = EEPROM.read(SERVER_PORT_OFFSET + 1);
-  serverPort = word(highByte, lowByte);
+  gatewayAddress[0]=EEPROM.read(GATEWAY_ADDRESS_OFFSET);
+  gatewayAddress[1]=EEPROM.read(GATEWAY_ADDRESS_OFFSET+1);
+  gatewayAddress[2]=EEPROM.read(GATEWAY_ADDRESS_OFFSET+2);
+  gatewayAddress[3]=EEPROM.read(GATEWAY_ADDRESS_OFFSET+3);
 }
 
 void ESAT_WifiConfigurationClass::readHostAddress()
@@ -79,22 +53,6 @@ void ESAT_WifiConfigurationClass::readHostAddress()
   hostAddress[1]=EEPROM.read(HOST_ADDRESS_OFFSET+1);
   hostAddress[2]=EEPROM.read(HOST_ADDRESS_OFFSET+2);
   hostAddress[3]=EEPROM.read(HOST_ADDRESS_OFFSET+3);
-}
-
-void ESAT_WifiConfigurationClass::readSubnetMask()
-{
-  subnetMask[0]=EEPROM.read(SUBNET_MASK_OFFSET);
-  subnetMask[1]=EEPROM.read(SUBNET_MASK_OFFSET+1);
-  subnetMask[2]=EEPROM.read(SUBNET_MASK_OFFSET+2);
-  subnetMask[3]=EEPROM.read(SUBNET_MASK_OFFSET+3);
-}
-
-void ESAT_WifiConfigurationClass::readGatewayAddress()
-{
-  gatewayAddress[0]=EEPROM.read(GATEWAY_ADDRESS_OFFSET);
-  gatewayAddress[1]=EEPROM.read(GATEWAY_ADDRESS_OFFSET+1);
-  gatewayAddress[2]=EEPROM.read(GATEWAY_ADDRESS_OFFSET+2);
-  gatewayAddress[3]=EEPROM.read(GATEWAY_ADDRESS_OFFSET+3);
 }
 
 void ESAT_WifiConfigurationClass::readHostConfigurationMode()
@@ -121,6 +79,48 @@ void ESAT_WifiConfigurationClass::readHostname()
   hostname[HOSTNAME_LENGTH] = 0; // Ensure that last char* string is 0.
 }
 
+void ESAT_WifiConfigurationClass::readNetworkSSID()
+{
+  readString(networkSSID, NETWORK_SSID_LENGTH, NETWORK_SSID_OFFSET);
+  networkSSID[NETWORK_SSID_LENGTH] = 0; // Ensure that last char* string is 0.
+}
+
+void ESAT_WifiConfigurationClass::readNetworkPassphrase()
+{
+  readString(networkPassphrase, NETWORK_PASSPHRASE_LENGTH, NETWORK_PASSPHRASE_OFFSET);
+  networkPassphrase[NETWORK_PASSPHRASE_LENGTH] = 0; // Ensure that last char* string is 0.
+}
+
+void ESAT_WifiConfigurationClass::readServerAddress()
+{
+  readString(serverAddress, SERVER_ADDRESS_LENGTH, SERVER_ADDRESS_OFFSET);
+  serverAddress[SERVER_ADDRESS_LENGTH] = 0; // Ensure that last char* string is 0.
+
+}
+
+void ESAT_WifiConfigurationClass::readServerPort()
+{
+  const byte highByte = EEPROM.read(SERVER_PORT_OFFSET);
+  const byte lowByte = EEPROM.read(SERVER_PORT_OFFSET + 1);
+  serverPort = word(highByte, lowByte);
+}
+
+void ESAT_WifiConfigurationClass::readString(char* outputBuffer, const word length, const word offset)
+{
+	for (word i = 0; i < length; i++)
+	{
+		outputBuffer[i] = EEPROM.read(offset + i);
+	}
+}
+
+void ESAT_WifiConfigurationClass::readSubnetMask()
+{
+  subnetMask[0]=EEPROM.read(SUBNET_MASK_OFFSET);
+  subnetMask[1]=EEPROM.read(SUBNET_MASK_OFFSET+1);
+  subnetMask[2]=EEPROM.read(SUBNET_MASK_OFFSET+2);
+  subnetMask[3]=EEPROM.read(SUBNET_MASK_OFFSET+3);
+}
+
 void ESAT_WifiConfigurationClass::writeConfiguration()
 {
   writeNetworkSSID();
@@ -134,35 +134,12 @@ void ESAT_WifiConfigurationClass::writeConfiguration()
   writeHostname();
 }
 
-void ESAT_WifiConfigurationClass::writeString(char* inputBuffer, const word length, const word offset)
+void ESAT_WifiConfigurationClass::writeGatewayAddress()
 {
-	for (word i = 0; i < length; i++)
-	{
-		EEPROM.write(offset + i, 
-					 inputBuffer[i]);
-	}
-	EEPROM.commit();
-}
-
-void ESAT_WifiConfigurationClass::writeNetworkPassphrase()
-{
-  writeString(networkPassphrase, NETWORK_PASSPHRASE_LENGTH, NETWORK_PASSPHRASE_OFFSET);
-}
-
-void ESAT_WifiConfigurationClass::writeNetworkSSID()
-{
-  writeString(networkSSID, NETWORK_SSID_LENGTH, NETWORK_SSID_OFFSET);
-}
-
-void ESAT_WifiConfigurationClass::writeServerAddress()
-{
-  writeString(serverAddress, SERVER_ADDRESS_LENGTH, SERVER_ADDRESS_OFFSET);
-}
-
-void ESAT_WifiConfigurationClass::writeServerPort()
-{
-  EEPROM.write(SERVER_PORT_OFFSET, highByte(serverPort));
-  EEPROM.write(SERVER_PORT_OFFSET + 1, lowByte(serverPort));
+  EEPROM.write(GATEWAY_ADDRESS_OFFSET, gatewayAddress[0]);
+  EEPROM.write(GATEWAY_ADDRESS_OFFSET + 1, gatewayAddress[1]);
+  EEPROM.write(GATEWAY_ADDRESS_OFFSET + 2, gatewayAddress[2]);
+  EEPROM.write(GATEWAY_ADDRESS_OFFSET + 3, gatewayAddress[3]);
   EEPROM.commit();
 }
 
@@ -172,24 +149,6 @@ void ESAT_WifiConfigurationClass::writeHostAddress()
   EEPROM.write(HOST_ADDRESS_OFFSET + 1, hostAddress[1]);
   EEPROM.write(HOST_ADDRESS_OFFSET + 2, hostAddress[2]);
   EEPROM.write(HOST_ADDRESS_OFFSET + 3, hostAddress[3]);
-  EEPROM.commit();
-}
-
-void ESAT_WifiConfigurationClass::writeSubnetMask()
-{
-  EEPROM.write(SUBNET_MASK_OFFSET, subnetMask[0]);
-  EEPROM.write(SUBNET_MASK_OFFSET + 1, subnetMask[1]);
-  EEPROM.write(SUBNET_MASK_OFFSET + 2, subnetMask[2]);
-  EEPROM.write(SUBNET_MASK_OFFSET + 3, subnetMask[3]);
-  EEPROM.commit();
-}
-
-void ESAT_WifiConfigurationClass::writeGatewayAddress()
-{
-  EEPROM.write(GATEWAY_ADDRESS_OFFSET, gatewayAddress[0]);
-  EEPROM.write(GATEWAY_ADDRESS_OFFSET + 1, gatewayAddress[1]);
-  EEPROM.write(GATEWAY_ADDRESS_OFFSET + 2, gatewayAddress[2]);
-  EEPROM.write(GATEWAY_ADDRESS_OFFSET + 3, gatewayAddress[3]);
   EEPROM.commit();
 }
 
@@ -215,6 +174,47 @@ void ESAT_WifiConfigurationClass::writeHostConfigurationMode()
 void ESAT_WifiConfigurationClass::writeHostname()
 {
 	writeString(hostname, HOSTNAME_LENGTH, HOSTNAME_OFFSET);
+}
+
+void ESAT_WifiConfigurationClass::writeNetworkPassphrase()
+{
+  writeString(networkPassphrase, NETWORK_PASSPHRASE_LENGTH, NETWORK_PASSPHRASE_OFFSET);
+}
+
+void ESAT_WifiConfigurationClass::writeNetworkSSID()
+{
+  writeString(networkSSID, NETWORK_SSID_LENGTH, NETWORK_SSID_OFFSET);
+}
+
+void ESAT_WifiConfigurationClass::writeServerAddress()
+{
+  writeString(serverAddress, SERVER_ADDRESS_LENGTH, SERVER_ADDRESS_OFFSET);
+}
+
+void ESAT_WifiConfigurationClass::writeServerPort()
+{
+  EEPROM.write(SERVER_PORT_OFFSET, highByte(serverPort));
+  EEPROM.write(SERVER_PORT_OFFSET + 1, lowByte(serverPort));
+  EEPROM.commit();
+}
+
+void ESAT_WifiConfigurationClass::writeSubnetMask()
+{
+  EEPROM.write(SUBNET_MASK_OFFSET, subnetMask[0]);
+  EEPROM.write(SUBNET_MASK_OFFSET + 1, subnetMask[1]);
+  EEPROM.write(SUBNET_MASK_OFFSET + 2, subnetMask[2]);
+  EEPROM.write(SUBNET_MASK_OFFSET + 3, subnetMask[3]);
+  EEPROM.commit();
+}
+
+void ESAT_WifiConfigurationClass::writeString(char* inputBuffer, const word length, const word offset)
+{
+	for (word i = 0; i < length; i++)
+	{
+		EEPROM.write(offset + i, 
+					 inputBuffer[i]);
+	}
+	EEPROM.commit();
 }
 
 ESAT_WifiConfigurationClass ESAT_WifiConfiguration;
