@@ -21,6 +21,9 @@
 #include "ESAT_Wifi.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisableStandaloneModeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
@@ -29,6 +32,8 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetDHCPModeTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDomainNameSystemServer1AddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDomainNameSystemServer2AddressTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetGatewayAddressTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetHostAddressTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetHostnameTelecommand.h"
@@ -41,7 +46,11 @@
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
-#include "ESAT_Wifi-telemetry/ESAT_WifiNetworkInformationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiHostnameTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiNetworkAndTransportConfigurationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANConfigurationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANConfigurationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANStatusTelemetry.h"
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
@@ -113,9 +122,14 @@ void ESAT_WifiClass::beginSoftware()
 
 void ESAT_WifiClass::beginTelecommands()
 {
+  addTelecommand(ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand);
+  addTelecommand(ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand);
+  addTelecommand(ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand);
   addTelecommand(ESAT_WifiConnectTelecommand);
   addTelecommand(ESAT_WifiDisconnectTelecommand);
   addTelecommand(ESAT_WifiSetDHCPModeTelecommand);
+  addTelecommand(ESAT_WifiSetDomainNameSystemServer1AddressTelecommand);
+  addTelecommand(ESAT_WifiSetDomainNameSystemServer2AddressTelecommand);
   addTelecommand(ESAT_WifiSetGatewayAddressTelecommand);
   addTelecommand(ESAT_WifiSetHostAddressTelecommand);
   addTelecommand(ESAT_WifiSetHostnameTelecommand);  
@@ -138,8 +152,14 @@ void ESAT_WifiClass::beginTelemetry()
 {
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
-  addTelemetry(ESAT_WifiNetworkInformationTelemetry);
-  enableTelemetry(ESAT_WifiNetworkInformationTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiWLANStatusTelemetry);
+  enableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiWLANConfigurationTelemetry);
+  enableTelemetry(ESAT_WifiWLANConfigurationTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry);
+  enableTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiHostnameTelemetry);
+  enableTelemetry(ESAT_WifiHostnameTelemetry.packetIdentifier());
 }
 
 void ESAT_WifiClass::disableSelfProcessingWifiTelecommands()

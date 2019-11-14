@@ -77,21 +77,33 @@ Telecommand handler for WIFI_SET_GATEWAY_ADDRESS (0x16): set the
 static default gateway IP address.
 
 
+# ESAT_WifiSetDomainNameSystemServer1AddressTelecommand
+
+Telecommand handler for WIFI_SET_DOMAIN_NAME_SYSTEM_SERVER_1_ADDRESS (0x17): set the
+domain name system server 1 IP address.
+
+
+# ESAT_WifiSetDomainNameSystemServer2AddressTelecommand
+
+Telecommand handler for WIFI_SET_DOMAIN_NAME_SYSTEM_SERVER_2_ADDRESS (0x18): set the
+domain name system server 2 IP address.
+
+
 # ESAT_WifiSetHostnameTelecommand
 
-Telecommand handler for WIFI_SET_HOSTNAME (0x17): set the
+Telecommand handler for WIFI_SET_HOSTNAME (0x19): set the
 hostname.
 
 
 # ESAT_WifiSetDHCPModeTelecommand
 
-Telecommand handler for  WIFI_SET_DHCP_MODE (0x18): set the
+Telecommand handler for  WIFI_SET_DHCP_MODE (0x1A): set the
 wifi IP address configuration to dynamic.
 
 
 # ESAT_WifiSetStaticIPModeTelecommand
 
-Telecommand handler for  WIFI_SET_STATIC_IP_MODE (0x19): set the
+Telecommand handler for  WIFI_SET_STATIC_IP_MODE (0x1B): set the
 wifi IP address configuration to static (user defined).
 
 
@@ -134,4 +146,21 @@ wifi telecommands and telemetry self handling witout OBC.
 
 Telecommand handler for WIFI_DISABLE_STANDALONE_MODE (0x43): disable the
 wifi telecommands and telemetry self handling witout OBC.
+
+
+# ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand
+
+Telecommand handler for WIFI_CONFIGURE_HOSTNAME_TELEMETRY_DELIVERY (0x44): set the
+delivery mode (continous or under request) of HOSTNAME_TELEMETRY packet.
+
+
+# ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand
+
+Telecommand handler for WIFI_CONFIGURE_WLAN_CONFIGURATION_TELEMETRY_DELIVERY (0x45): set the
+delivery mode (continous or under request) of WLAN_CONFIGURATION_TELEMETRY packet.
+
+# ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand
+
+Telecommand handler for WIFI_CONFIGURE_NETWORK_AND_TRANSPORT_INFORMATION_TELEMETRY_DELIVERY (0x46): set the
+delivery mode (continous or under request) of NETWORK_AND_TRANSPORT_CONFIGURATION_TELEMETRY packet.
 

@@ -85,6 +85,12 @@ class ESAT_WifiConfigurationClass
 
     // Length of the server port parameter.
     static const word SERVER_PORT_LENGTH = 2;
+    
+    // Use this IP address as DNS server 1 address.
+    byte domainNameSystemServer1Address[IP_ADDRESS_LENGTH];
+
+    // Use this IP address as DNS server 2 address.
+    byte domainNameSystemServer2Address[IP_ADDRESS_LENGTH];
 
     // Use this IP address as default adddress for routing packets.
     byte gatewayAddress[IP_ADDRESS_LENGTH];
@@ -155,11 +161,21 @@ class ESAT_WifiConfigurationClass
     static const word GATEWAY_ADDRESS_OFFSET =
       SUBNET_MASK_OFFSET
       + IP_ADDRESS_LENGTH;
+      
+    // Offset of the DNS server 1 address parameter in the storage.
+    static  const word DNS_1_ADDRESS_OFFSET = 
+      GATEWAY_ADDRESS_OFFSET
+        + IP_ADDRESS_LENGTH;
+        
+    // Offset of the DNS server 2 address parameter in the storage.
+    static  const word DNS_2_ADDRESS_OFFSET = 
+      DNS_1_ADDRESS_OFFSET
+        + IP_ADDRESS_LENGTH;
   
     // Ofset of the host configuration mode paramenter in the storage.
     static const word HOST_CONFIGURATION_MODE_OFFSET =
-      GATEWAY_ADDRESS_OFFSET
-       + IP_ADDRESS_LENGTH;	  	
+      DNS_2_ADDRESS_OFFSET
+       + IP_ADDRESS_LENGTH;
   
     // Offset of the ESAT hostname address parameter in the storage.
     static const word HOSTNAME_OFFSET = 
@@ -175,8 +191,18 @@ class ESAT_WifiConfigurationClass
       + IP_ADDRESS_LENGTH
       + IP_ADDRESS_LENGTH
       + IP_ADDRESS_LENGTH
+      + IP_ADDRESS_LENGTH
+      + IP_ADDRESS_LENGTH
       + HOST_CONFIGURATION_MODE_LENGTH
       + HOSTNAME_LENGTH;
+      
+    // Read the address of the first DNS server.
+    // Part of the configuration.
+    void readDNSServer1Address();
+    
+    // Read the address of the second DNS server.
+    // Part of the configuration.
+    void readDNSServer2Address();
       
     // Read the address of the default gateway.
     // Part of the configuration.
@@ -216,6 +242,14 @@ class ESAT_WifiConfigurationClass
     // Read the subnetwork mask.
     // Part of the configuration.
     void readSubnetMask();
+    
+    // Write the address of the first DNS server.
+    // Part of the configuration.
+    void writeDNSServer1Address();
+    
+    // Write the address of the second DNS server.
+    // Part of the configuration.
+    void writeDNSServer2Address();
     
     // Write the address of the default gateway.
     // Part of the configuration.

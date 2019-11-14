@@ -18,16 +18,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiSetDHCPModeTelecommand_h
-#define ESAT_WifiSetDHCPModeTelecommand_h
+#ifndef ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand_h
+#define ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand_h
 
 #include <Arduino.h>
 #include <ESAT_CCSDSTelecommandPacketHandler.h>
 #include <ESAT_SemanticVersionNumber.h>
 
-// Telecommand handler for WIFI_SET_DHCP_MODE.
+// Telecommand handler for WIFI_CONFIGURE_WLAN_CONFIGURATION_TELEMETRY_DELIVERY.
 // Used by ESAT_Wifi.
-class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHandler
+class ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass: public ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -42,7 +42,7 @@ class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHa
     // match.
     byte packetIdentifier()
     {
-      return 0x1A;
+      return 0x45;
     }
 
     // Return the version number of this telecommand handler.
@@ -55,8 +55,8 @@ class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHa
     }
 };
 
-// Global instance of ESAT_WifiSetDHCPModeTelecommandClass.
-// Used by ESAT...
-extern ESAT_WifiSetDHCPModeTelecommandClass ESAT_WifiSetDHCPModeTelecommand;
+// Global instance of ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass.
+// Used by ESAT_WifiSubsystem.
+extern ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand;
 
-#endif /* ESAT_WifiSetDHCPModeTelecommand_h */
+#endif /* ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand_h */

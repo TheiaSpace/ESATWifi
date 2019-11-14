@@ -18,16 +18,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiSetDHCPModeTelecommand_h
-#define ESAT_WifiSetDHCPModeTelecommand_h
+#ifndef ESAT_WifiSetDomainNameSystemServer2AddressTelecommand_h
+#define ESAT_WifiSetDomainNameSystemServer2AddressTelecommand_h
 
 #include <Arduino.h>
 #include <ESAT_CCSDSTelecommandPacketHandler.h>
 #include <ESAT_SemanticVersionNumber.h>
 
-// Telecommand handler for WIFI_SET_DHCP_MODE.
+// Telecommand handler for WIFI_SET_DOMAIN_NAME_SYSTEM_SERVER_2_ADDRESS.
 // Used by ESAT_Wifi.
-class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHandler
+class ESAT_WifiSetDomainNameSystemServer2AddressTelecommandClass: public ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -42,7 +42,7 @@ class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHa
     // match.
     byte packetIdentifier()
     {
-      return 0x1A;
+      return 0x18;
     }
 
     // Return the version number of this telecommand handler.
@@ -51,12 +51,13 @@ class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHa
     // is backward-compatible with the handler version number.
     ESAT_SemanticVersionNumber versionNumber()
     {
+      // TODO
       return ESAT_SemanticVersionNumber(2, 2, 0);
     }
 };
 
-// Global instance of ESAT_WifiSetDHCPModeTelecommandClass.
-// Used by ESAT...
-extern ESAT_WifiSetDHCPModeTelecommandClass ESAT_WifiSetDHCPModeTelecommand;
+// Global instance of ESAT_WifiSetDomainNameSystemServer2AddressTelecommandClass.
+// Used by ESAT_WifiSubsystem.
+extern ESAT_WifiSetDomainNameSystemServer2AddressTelecommandClass ESAT_WifiSetDomainNameSystemServer2AddressTelecommand;
 
-#endif /* ESAT_WifiSetDHCPModeTelecommand_h */
+#endif /* ESAT_WifiSetDomainNameSystemServer2AddressTelecommand_h */

@@ -18,16 +18,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiNetworkInformationTelemetry_h
-#define ESAT_WifiNetworkInformationTelemetry_h
+#ifndef ESAT_WifiNetworkAndTransportConfigurationTelemetry_h
+#define ESAT_WifiNetworkAndTransportConfigurationTelemetry_h
 
 #include <Arduino.h>
 #include <ESAT_CCSDSTelemetryPacketContents.h>
 #include <IPAddress.h>
 
-// ESAT Wifi board network parameters telemetry packet contents.
+// ESAT Wifi board TCP/IP parameters telemetry packet contents.
 // ESAT_Wifi uses this.
-class ESAT_WifiNetworkInformationTelemetryClass: public ESAT_CCSDSTelemetryPacketContents
+class ESAT_WifiNetworkAndTransportConfigurationTelemetryClass: public ESAT_CCSDSTelemetryPacketContents
 {
   public:
     // Return true when a new telemetry packet is available; otherwise
@@ -37,7 +37,7 @@ class ESAT_WifiNetworkInformationTelemetryClass: public ESAT_CCSDSTelemetryPacke
     // Return the packet identifier.
     byte packetIdentifier()
     {
-      return 0x01;
+      return 0x03;
     }
 
     // Fill the user data field of the given packet.
@@ -47,46 +47,31 @@ class ESAT_WifiNetworkInformationTelemetryClass: public ESAT_CCSDSTelemetryPacke
     boolean fillUserData(ESAT_CCSDSPacket& packet);
 
   private:
-	// Write the used Wifi radio channel.
-	void writeChannel(ESAT_CCSDSPacket& packet);
   
-    // Write the DNS IP addresses to the given packet.
+    // Writes the DNS IP addresses to the given packet.
     void writeDNSIPAddresses(ESAT_CCSDSPacket& packet);
 
-    // Write the gateway IP address to the given packet.
+    // Writes the gateway IP address to the given packet.
     void writeGatewayIPAddress(ESAT_CCSDSPacket& packet);
-	
-	// Write host name to the given packet.
-	void writeHostName(ESAT_CCSDSPacket& packet);
-
-    // Write the given IP address to the given packet.
+    
+    // Writes the given IP address to the given packet.
     void writeIPAddress(IPAddress address, ESAT_CCSDSPacket& packet);
 
-    // Write whether or not we are connected to the given packet.
-    void writeIsConnected(ESAT_CCSDSPacket& packet);
-
-    // Write the local IP address to the given packet.
+    // Writes the local IP address to the given packet.
     void writeLocalIPAddress(ESAT_CCSDSPacket& packet);
 
-    // Write the MAC address to the given packet.
-    void writeMACAddress(ESAT_CCSDSPacket& packet);
-	
-	// Write the received signal strength indicator to the given packet.
-	void writeRSSI(ESAT_CCSDSPacket& packet);
+    // Writes the configured server IP address.
+    void writeServerIPAddress(ESAT_CCSDSPacket& packet);
+    
+    // Writes the configured server connection port.
+    void writeServerPort(ESAT_CCSDSPacket& packet);
 
-    // Write the SSID to the given packet.
-    void writeSSID(ESAT_CCSDSPacket& packet);
-	
-	// Write the 32 first characters from the given string to the given packet.
-	void writeString(String str, ESAT_CCSDSPacket& packet);
-
-    // Write the subnet mask to the given packet.
+    // Writes the subnet mask to the given packet.
     void writeSubnetMask(ESAT_CCSDSPacket& packet);	
-
 };
 
-// Global instance of ESAT_WifiNetworkInformationTelemetry.  ESAT_Wifi uses this
-// to fill the ESAT Wifi board connection state telemetry packet.
-extern ESAT_WifiNetworkInformationTelemetryClass ESAT_WifiNetworkInformationTelemetry;
+// Global instance of ESAT_WifiNetworkAndTransportConfigurationTelemetry. ESAT_Wifi uses this
+// to fill the ESAT Wifi board network and transport information telemetry packet.
+extern ESAT_WifiNetworkAndTransportConfigurationTelemetryClass ESAT_WifiNetworkAndTransportConfigurationTelemetry;
 
-#endif /* ESAT_WifiNetworkInformationTelemetry_h */
+#endif /* ESAT_WifiNetworkAndTransportConfigurationTelemetry_h */

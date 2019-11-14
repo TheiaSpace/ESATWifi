@@ -42,7 +42,7 @@ class ESAT_WifiSetStaticIPModeTelecommandClass: public ESAT_CCSDSTelecommandPack
     // match.
     byte packetIdentifier()
     {
-      return 0x19;
+      return 0x1B;
     }
 
     // Return the version number of this telecommand handler.

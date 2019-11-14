@@ -44,16 +44,16 @@ void ESAT_WifiRadioClass::connectToNetwork()
 {
   disconnectFromNetworkAndServer();
   // If static mode is set, IP seetings are required to be configured
-  // previously to begin(). Otherwise DHCP will be selected. Therefore,
-  // DHCP mode telemetry will feeedback the value stored in EEPROM
-  // instead of the own WiFi driver setting.
+  // previously to begin(). Otherwise DHCP will be selected.
   if (ESAT_WifiConfiguration.hostConfigurationMode == 
 	  ESAT_WifiConfigurationClass::STATIC_HOST_CONFIGURATION_MODE)
   {
 	  IPAddress ip((uint8_t*) ESAT_WifiConfiguration.hostAddress);
 	  IPAddress mask((uint8_t*) ESAT_WifiConfiguration.subnetMask);
 	  IPAddress gateway((uint8_t*) ESAT_WifiConfiguration.gatewayAddress);
-	 (void) WiFi.config(ip, gateway, mask);
+    IPAddress dns1((uint8_t* ESAT_WifiConfiguration.domainNameSystemServer1Address);
+    IPAddress dns2((uint8_t* ESAT_WifiConfiguration.domainNameSystemServer2Address);
+	 (void) WiFi.config(ip, gateway, mask, dns1, dns2);
   }
   (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
                     ESAT_WifiConfiguration.networkPassphrase);

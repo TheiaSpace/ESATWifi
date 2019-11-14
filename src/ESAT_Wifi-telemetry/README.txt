@@ -28,6 +28,22 @@ telemetry packet.  They are used by ESAT_Wifi.
 Fill the ESAT_CONNECTION_STATE (0x00) telemetry packet.
 
 
-# ESAT_WifiNetworkInformationTelemetry
+# ESAT_WifiWLANStatusTelemetry
 
-Fill the ESAT_WIFI_NETWORK_INFORMATION (0x01) telemetry packet.
+Fill the ESAT_WIFI_WLAN_STATUS (0x01) telemetry packet.
+
+
+# ESAT_WifiWLANConfigurationTelemetry
+
+Fill the ESAT_WIFI_WLAN_CONFIGURATION (0x02) telemetry packet.
+
+
+# ESAT_WifiNetworkAndTransportConfigurationTelemetry
+
+Fill the ESAT_WIFI_NETWORK_AND_TRANSPORT_CONFIGURATION (0x03) telemetry packet.
+
+
+# ESAT_WifiHostnameTelemetry
+
+Fill the ESAT_WIFI_HOSTNAME (0x04) telemetry packet.
+

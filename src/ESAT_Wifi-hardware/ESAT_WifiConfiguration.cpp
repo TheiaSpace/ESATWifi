@@ -35,8 +35,26 @@ void ESAT_WifiConfigurationClass::readConfiguration()
   readHostAddress();
   readSubnetMask();
   readGatewayAddress();
+  readDNSServer1Address();
+  readDNSServer2Address();
   readHostConfigurationMode();
   readHostname();
+}
+
+void ESAT_WifiConfigurationClass::readDNSServer1Address()
+{
+  domainNameSystemServer1Address[0]=EEPROM.read(DNS_1_ADDRESS_OFFSET);
+  domainNameSystemServer1Address[1]=EEPROM.read(DNS_1_ADDRESS_OFFSET+1);
+  domainNameSystemServer1Address[2]=EEPROM.read(DNS_1_ADDRESS_OFFSET+2);
+  domainNameSystemServer1Address[3]=EEPROM.read(DNS_1_ADDRESS_OFFSET+3);
+}
+
+void ESAT_WifiConfigurationClass::readDNSServer2Address()
+{
+  domainNameSystemServer2Address[0]=EEPROM.read(DNS_2_ADDRESS_OFFSET);
+  domainNameSystemServer2Address[1]=EEPROM.read(DNS_2_ADDRESS_OFFSET+1);
+  domainNameSystemServer2Address[2]=EEPROM.read(DNS_2_ADDRESS_OFFSET+2);
+  domainNameSystemServer2Address[3]=EEPROM.read(DNS_2_ADDRESS_OFFSET+3);
 }
 
 void ESAT_WifiConfigurationClass::readGatewayAddress()
@@ -130,8 +148,28 @@ void ESAT_WifiConfigurationClass::writeConfiguration()
   writeHostAddress();
   writeSubnetMask();
   writeGatewayAddress();
+  writeDNSServer1Address();
+  writeDNSServer2Address();
   writeHostConfigurationMode();
   writeHostname();
+}
+
+void ESAT_WifiConfigurationClass::writeDNSServer1Address()
+{
+  EEPROM.write(DNS_1_ADDRESS_OFFSET, domainNameSystemServer1Address[0]);
+  EEPROM.write(DNS_1_ADDRESS_OFFSET + 1, domainNameSystemServer1Address[1]);
+  EEPROM.write(DNS_1_ADDRESS_OFFSET + 2, domainNameSystemServer1Address[2]);
+  EEPROM.write(DNS_1_ADDRESS_OFFSET + 3, domainNameSystemServer1Address[3]);
+  EEPROM.commit();
+}
+
+void ESAT_WifiConfigurationClass::writeDNSServer2Address()
+{
+  EEPROM.write(DNS_2_ADDRESS_OFFSET, domainNameSystemServer2Address[0]);
+  EEPROM.write(DNS_2_ADDRESS_OFFSET + 1, domainNameSystemServer2Address[1]);
+  EEPROM.write(DNS_2_ADDRESS_OFFSET + 2, domainNameSystemServer2Address[2]);
+  EEPROM.write(DNS_2_ADDRESS_OFFSET + 3, domainNameSystemServer2Address[3]);
+  EEPROM.commit();
 }
 
 void ESAT_WifiConfigurationClass::writeGatewayAddress()
