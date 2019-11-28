@@ -109,14 +109,14 @@ wifi IP address configuration to static (user defined).
 
 # ESAT_WifiReadConfigurationTelecommand
 
-Telecommand handler for WIFI_READ_CONFIGURATION (0x20): read the
-configuration.
+Telecommand handler for WIFI_READ_CONFIGURATION (0x20): load the
+wifi settings from non-volatile memory.
 
 
 # ESAT_WifiWriteConfigurationTelecommand
 
-Telecommand handler for WIFI_WRITE_CONFIGURATION (0x21): write the
-configuration.
+Telecommand handler for WIFI_WRITE_CONFIGURATION (0x21): save the
+wifi settings to non-volatile memory.
 
 
 # ESAT_WifiSetTimeTelecommand
