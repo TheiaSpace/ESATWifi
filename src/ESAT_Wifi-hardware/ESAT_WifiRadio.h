@@ -60,6 +60,9 @@ class ESAT_WifiRadioClass
       DISCONNECTING = 0x04,
       DISCONNECTED = 0x05,
     };
+    
+    // Use this client to connect to the ground segment server.
+    WiFiClient client;
 
     // Set up the radio.
     // Use the buffer to store incoming packets from call
@@ -93,8 +96,6 @@ class ESAT_WifiRadioClass
     void write(ESAT_CCSDSPacket packet);
 
   private:
-    // Use this client to connect to the ground segment server.
-    WiFiClient client;
 
     // Current state of the connection state machine.
     ConnectionState connectionState;
