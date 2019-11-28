@@ -127,7 +127,7 @@ class ESAT_WifiConfigurationClass
 
     // Write the configuration.
     void writeConfiguration();
-
+    
   private:
     // Offset of the network SSID parameter in the storage.
     static const word NETWORK_SSID_OFFSET = 0;
