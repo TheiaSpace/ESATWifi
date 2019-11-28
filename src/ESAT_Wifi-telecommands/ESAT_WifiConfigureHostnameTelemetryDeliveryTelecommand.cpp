@@ -27,6 +27,7 @@ boolean ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommandClass::handleUserD
   if (packet.readBoolean())
   {
     ESAT_WifiHostnameTelemetry.enablePermanentDelivery();
+    (void) packet.readWord();
   }
   else
   {

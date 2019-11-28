@@ -27,6 +27,7 @@ boolean ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass::ha
   if (packet.readBoolean())
   {
     ESAT_WifiWLANConfigurationTelemetry.enablePermanentDelivery();
+    (void) packet.readWord();
   }
   else
   {

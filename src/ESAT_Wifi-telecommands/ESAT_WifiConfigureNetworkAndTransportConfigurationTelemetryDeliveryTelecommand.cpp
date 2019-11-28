@@ -27,6 +27,7 @@ boolean ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelec
   if (packet.readBoolean())
   {
     ESAT_WifiNetworkAndTransportConfigurationTelemetry.enablePermanentDelivery();
+    (void) packet.readWord();
   }
   else
   {
