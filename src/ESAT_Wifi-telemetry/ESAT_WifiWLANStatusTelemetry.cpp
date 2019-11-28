@@ -50,24 +50,20 @@ void ESAT_WifiWLANStatusTelemetryClass::writeWLANState(ESAT_CCSDSPacket& packet)
 {
   switch(wifi_station_get_connect_status())
   {
-    case STATION_CONNECTING: //Connecting
+    case STATION_WRONG_PASSWORD: //Wrong password
       packet.writeByte(1);
       return;
-    case STATION_WRONG_PASSWORD: //Wrong password
-      packet.writeByte(2);
-      return;
     case STATION_NO_AP_FOUND: // No access point
-      packet.writeByte(3);
+      packet.writeByte(2);
       return; 
-    case STATION_CONNECT_FAIL: // Failed
-      packet.writeByte(4);
+    case STATION_CONNECT_FAIL: // Other error
+      packet.writeByte(3);
       return;  
-    case STATION_GOT_IP:  // Connected
-      packet.writeByte(5);
-      return;      
-    case STATION_IDLE: //Idle
+    case STATION_CONNECTING: 
+    case STATION_GOT_IP:    
+    case STATION_IDLE:
     default:
-      packet.writeByte(0);
+      packet.writeByte(0); // No error
       return;
   }
 }
