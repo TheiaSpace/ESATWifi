@@ -24,7 +24,38 @@
 
 boolean ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::available()
 {
+  if (isPermanentDeliveryEnabled == false)
+  {
+    if (remainingDeliveries <= 0)
+    {
+      return false;
+    }
+  }
   return true;
+}
+
+void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::enablePermanentDelivery()
+{
+  isPermanentDeliveryEnabled = true;
+}
+
+void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::disablePermanentDelivery()
+{
+  isPermanentDeliveryEnabled = false;
+}
+
+void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::setRemainingDeliveries(word timesToBeDelivered)
+{
+  remainingDeliveries = timesToBeDelivered;
+  isPermanentDeliveryEnabled = false;
+}
+
+void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::decrementRemainingDeliveries()
+{
+  if (remainingDeliveries > 0)
+  {
+    remainingDeliveries = remainingDeliveries - 1;
+  }
 }
 
 boolean ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
@@ -36,6 +67,10 @@ boolean ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::fillUserData(ES
   writeIsDHCPEnabled(packet);
   writeServerIPAddress(packet);
   writeServerPort(packet);  
+  if (isPermanentDeliveryEnabled == false)
+  {
+    decrementRemainingDeliveries();
+  }
   return true;
 }
 
@@ -67,9 +102,7 @@ void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeIPAddress(con
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeIsDHCPEnabled(ESAT_CCSDSPacket& packet)
 {
-  // ESP8266 user_interface low lever function required. Precompilated.
-  // TODO
-  // Verify its proper workin. If not, change to EEPROM value feedback.
+  // Low level interface information.
   if (wifi_station_dhcpc_status() == DHCP_STARTED)
   {
     packet.writeByte(0);    
@@ -88,19 +121,20 @@ void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeLocalIPAddres
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeServerIPAddress(ESAT_CCSDSPacket& packet)
 {
-    writeIPAddress(client.remoteIP(),
+  writeIPAddress(ESAT_WifiRadio.client.remoteIP(),
                  packet);
 }
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeServerPort(ESAT_CCSDSPacket& packet)
 {
-  packet.writeWord((word) client.remotePort());
+   packet.writeWord((word) ESAT_WifiRadio.client.remotePort());
 }
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeSubnetMask(ESAT_CCSDSPacket& packet)
 {
   writeIPAddress(WiFi.subnetMask(),
                  packet);
+                 
 }
 
 ESAT_WifiNetworkAndTransportConfigurationTelemetryClass ESAT_WifiNetworkAndTransportConfigurationTelemetry;

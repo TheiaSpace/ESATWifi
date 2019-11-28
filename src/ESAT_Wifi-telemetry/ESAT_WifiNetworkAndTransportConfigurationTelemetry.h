@@ -45,8 +45,27 @@ class ESAT_WifiNetworkAndTransportConfigurationTelemetryClass: public ESAT_CCSDS
     // of the user data field.
     // Return true on success; otherwise return false.
     boolean fillUserData(ESAT_CCSDSPacket& packet);
+    
+    // Enables the continuous delivery of this telemetry.    
+    void enablePermanentDelivery();
+
+    // Decreases remaining deliveries counter by 1.
+    void decrementRemainingDeliveries();    
+
+    // Disables the continuous delivery of this telemetry.
+    void disablePermanentDelivery();
+    
+    // Configures this telemetry to be delivered only for certain times.
+    // Also clears permanent delivery flag.
+    void setRemainingDeliveries(word timesToBeDelivered); 
 
   private:
+  
+    // Enables the continuous delivery of this telemetry.
+    boolean isPermanentDeliveryEnabled = false;
+    
+    // Counts the times this telemetry has to be delivered.
+    word remainingDeliveries = 0;
   
     // Writes the DNS IP addresses to the given packet.
     void writeDNSIPAddresses(ESAT_CCSDSPacket& packet);
@@ -56,6 +75,9 @@ class ESAT_WifiNetworkAndTransportConfigurationTelemetryClass: public ESAT_CCSDS
     
     // Writes the given IP address to the given packet.
     void writeIPAddress(IPAddress address, ESAT_CCSDSPacket& packet);
+    
+    // Writes the DHCP enabled flag to the given packet.
+    void writeIsDHCPEnabled(ESAT_CCSDSPacket& packet);
 
     // Writes the local IP address to the given packet.
     void writeLocalIPAddress(ESAT_CCSDSPacket& packet);

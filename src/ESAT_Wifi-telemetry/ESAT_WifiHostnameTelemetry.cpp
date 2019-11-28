@@ -28,7 +28,7 @@ boolean ESAT_WifiHostnameTelemetryClass::available()
   {
     if (remainingDeliveries <= 0)
     {
-      return false
+      return false;
     }
   }
   return true;
@@ -44,7 +44,7 @@ void ESAT_WifiHostnameTelemetryClass::disablePermanentDelivery()
   isPermanentDeliveryEnabled = false;
 }
 
-void ESAT_WifiHostnameTelemetryClass::setRemainingDeliveries(word timesToBeDelivered);
+void ESAT_WifiHostnameTelemetryClass::setRemainingDeliveries(word timesToBeDelivered)
 {
   remainingDeliveries = timesToBeDelivered;
   isPermanentDeliveryEnabled = false;
@@ -61,6 +61,10 @@ void ESAT_WifiHostnameTelemetryClass::decrementRemainingDeliveries()
 boolean ESAT_WifiHostnameTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 { 
   writeHostname(packet);
+  if (isPermanentDeliveryEnabled == false)
+  {
+    decrementRemainingDeliveries();
+  }
   return true;
 }
 

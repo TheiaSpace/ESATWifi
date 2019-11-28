@@ -25,13 +25,48 @@
 
 boolean ESAT_WifiWLANConfigurationTelemetryClass::available()
 {
+  if (isPermanentDeliveryEnabled == false)
+  {
+    if (remainingDeliveries <= 0)
+    {
+      return false;
+    }
+  }
   return true;
+}
+
+void ESAT_WifiWLANConfigurationTelemetryClass::enablePermanentDelivery()
+{
+  isPermanentDeliveryEnabled = true;
+}
+
+void ESAT_WifiWLANConfigurationTelemetryClass::disablePermanentDelivery()
+{
+  isPermanentDeliveryEnabled = false;
+}
+
+void ESAT_WifiWLANConfigurationTelemetryClass::setRemainingDeliveries(word timesToBeDelivered)
+{
+  remainingDeliveries = timesToBeDelivered;
+  isPermanentDeliveryEnabled = false;
+}
+
+void ESAT_WifiWLANConfigurationTelemetryClass::decrementRemainingDeliveries()
+{
+  if (remainingDeliveries > 0)
+  {
+    remainingDeliveries = remainingDeliveries - 1;
+  }
 }
 
 boolean ESAT_WifiWLANConfigurationTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 { 
   writeSSID(packet);
   writeMACAddress(packet);
+  if (isPermanentDeliveryEnabled == false)
+  {
+    decrementRemainingDeliveries();
+  }
   return true;
 }
 
