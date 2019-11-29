@@ -20,12 +20,18 @@
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetHostnameTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
 
 boolean ESAT_WifiSetHostnameTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer hostname((byte*) ESAT_WifiConfiguration.hostname,
                           sizeof(ESAT_WifiConfiguration.hostname));
   (void) hostname.readFrom(packet, hostname.capacity());
+  // Hostname updates doesn't affect WiFi communications.
+  // Therefore, hostname is updated as soon as telecommand is received.
+  // However, changes won't be stored on non-volatile memory
+  // unless "Save settings" were pressed.
+  (void) WiFi.hostname(ESAT_WifiConfiguration.hostname);
   return true;
 }
 

@@ -20,6 +20,7 @@
 
 #include "ESAT_WifiConfiguration.h"
 #include <EEPROM.h>
+#include "ESAT_WifiRadio.h"
 
 void ESAT_WifiConfigurationClass::begin()
 {
@@ -39,6 +40,8 @@ void ESAT_WifiConfigurationClass::readConfiguration()
   readDNSServer2Address();
   readHostConfigurationMode();
   readHostname();
+  // Hostname is inocuous, so it is updated automatically.
+  (void) WiFi.hostname((char*) hostname);
 }
 
 void ESAT_WifiConfigurationClass::readDNSServer1Address()
