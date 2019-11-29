@@ -70,10 +70,12 @@ boolean ESAT_WifiHostnameTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiHostnameTelemetryClass::writeHostname(ESAT_CCSDSPacket& packet)
 {
-  const byte length = 32;
-  for (int index = 0; index < length; index = index + 1)
+  const byte length = 32;  
+  for (int index = 0;
+       index < length ;//&& ESAT_WifiConfiguration.hostname[index] != 0;
+       index = index + 1)
   {
-    packet.writeChar(WiFi.hostname().charAt(index));
+    packet.writeChar(ESAT_WifiConfiguration.hostname[index]);
   }        
 }
 
