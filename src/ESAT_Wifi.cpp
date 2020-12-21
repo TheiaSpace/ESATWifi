@@ -92,8 +92,6 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
                                    const unsigned long serialBufferLength,
                                    const byte networkConnectionTimeoutSeconds)
 {
-  ESAT_WifiConfiguration.begin();
-  ESAT_WifiConfiguration.readConfiguration();
   ESAT_WifiRadio.begin(radioBuffer,
                        radioBufferLength,
                        networkConnectionTimeoutSeconds);
@@ -116,6 +114,9 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
 
 void ESAT_WifiClass::beginSoftware()
 {
+    ESAT_WifiConfiguration.begin();
+    ESAT_WifiConfiguration.readConfiguration();
+    ESAT_WifiConfiguration.readWLANStatusTelemetryEnableFlag();
 	areWifiRadioTelecommandsSelfProcessed = false;
 	isTelemetryEnabledOnWifiRadio = false;
 }
@@ -153,7 +154,14 @@ void ESAT_WifiClass::beginTelemetry()
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiWLANStatusTelemetry);
-  enableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
+  if (ESAT_WifiConfiguration.isWLANStatusTelemetryEnabled)
+  {
+    enableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
+  }
+  else
+  {
+    disableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
+  }
   addTelemetry(ESAT_WifiWLANConfigurationTelemetry);
   enableTelemetry(ESAT_WifiWLANConfigurationTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry);

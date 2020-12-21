@@ -142,6 +142,18 @@ void ESAT_WifiConfigurationClass::readSubnetMask()
   subnetMask[3]=EEPROM.read(SUBNET_MASK_OFFSET+3);
 }
 
+void ESAT_WifiConfigurationClass::readWLANStatusTelemetryEnableFlag()
+{
+	if (EEPROM.read(WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET) == 1)
+	{
+		isWLANStatusTelemetryEnabled = true;
+	}
+	else
+	{
+		isWLANStatusTelemetryEnabled = false;
+	}
+}
+
 void ESAT_WifiConfigurationClass::writeConfiguration()
 {
   writeNetworkSSID();
@@ -257,5 +269,18 @@ void ESAT_WifiConfigurationClass::writeString(char* inputBuffer, const word leng
 	}
 	EEPROM.commit();
 }
+
+void ESAT_WifiConfigurationClass::writeWLANStatusTelemetryEnableFlag()
+{
+	if (isWLANStatusTelemetryEnabled)
+	{
+		EEPROM.write(WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET, 1);
+	}
+	else
+	{
+		EEPROM.write(WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET, 0);
+	}
+	EEPROM.commit();
+}		
 
 ESAT_WifiConfigurationClass ESAT_WifiConfiguration;

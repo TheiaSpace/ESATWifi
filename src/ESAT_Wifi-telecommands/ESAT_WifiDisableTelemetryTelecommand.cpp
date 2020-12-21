@@ -20,6 +20,8 @@
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
 #include "ESAT_Wifi.h"
+#include "../ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
+#include "../ESAT_Wifi-telemetry/ESAT_WifiWLANStatusTelemetry.h"
 
 boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
@@ -32,6 +34,11 @@ boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPack
   else
   {
     ESAT_Wifi.disableTelemetry(identifier);
+    if (identifier == ESAT_WifiWLANStatusTelemetry.packetIdentifier())
+    {
+        ESAT_WifiConfiguration.isWLANStatusTelemetryEnabled = false;
+        ESAT_WifiConfiguration.writeWLANStatusTelemetryEnableFlag();
+    }
     return true;
   }
 }

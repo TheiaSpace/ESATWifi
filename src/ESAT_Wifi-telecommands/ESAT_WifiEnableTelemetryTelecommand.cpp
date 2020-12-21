@@ -20,6 +20,9 @@
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
 #include "ESAT_Wifi.h"
+#include "../ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
+#include "../ESAT_Wifi-telemetry/ESAT_WifiWLANStatusTelemetry.h"
+
 
 boolean ESAT_WifiEnableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
@@ -32,6 +35,11 @@ boolean ESAT_WifiEnableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacke
   else
   {
     ESAT_Wifi.enableTelemetry(identifier);
+    if (identifier == ESAT_WifiWLANStatusTelemetry.packetIdentifier())
+    {
+        ESAT_WifiConfiguration.isWLANStatusTelemetryEnabled = true;
+        ESAT_WifiConfiguration.writeWLANStatusTelemetryEnableFlag();
+    }
     return true;
   }
 }
