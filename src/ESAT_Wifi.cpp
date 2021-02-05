@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018, 2019, 2020 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -116,7 +116,6 @@ void ESAT_WifiClass::beginSoftware()
 {
     ESAT_WifiConfiguration.begin();
     ESAT_WifiConfiguration.readConfiguration();
-    ESAT_WifiConfiguration.readWLANStatusTelemetryEnableFlag();
 	areWifiRadioTelecommandsSelfProcessed = false;
 	isTelemetryEnabledOnWifiRadio = false;
 }
@@ -151,17 +150,20 @@ void ESAT_WifiClass::beginTelecommands()
 
 void ESAT_WifiClass::beginTelemetry()
 {
+  for (int identifier = 0; identifier < 256; identifier = identifier + 1)
+  {
+    if (ESAT_WifiConfiguration.enabledTelemetry.read(identifier))
+    {
+      enableTelemetry(identifier);
+    }
+    else
+    {
+      disableTelemetry(identifier);
+    }
+  }
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiWLANStatusTelemetry);
-  if (ESAT_WifiConfiguration.isWLANStatusTelemetryEnabled)
-  {
-    enableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
-  }
-  else
-  {
-    disableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
-  }
   addTelemetry(ESAT_WifiWLANConfigurationTelemetry);
   enableTelemetry(ESAT_WifiWLANConfigurationTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry);

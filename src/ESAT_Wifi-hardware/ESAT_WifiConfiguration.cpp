@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019, 2020 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -40,6 +40,7 @@ void ESAT_WifiConfigurationClass::readConfiguration()
   readDNSServer2Address();
   readHostConfigurationMode();
   readHostname();
+  readEnabledTelemetry();
   // Hostname is inocuous, so it is updated automatically.
   (void) WiFi.hostname((char*) hostname);
 }
@@ -58,6 +59,26 @@ void ESAT_WifiConfigurationClass::readDNSServer2Address()
   domainNameSystemServer2Address[1]=EEPROM.read(DNS_2_ADDRESS_OFFSET+1);
   domainNameSystemServer2Address[2]=EEPROM.read(DNS_2_ADDRESS_OFFSET+2);
   domainNameSystemServer2Address[3]=EEPROM.read(DNS_2_ADDRESS_OFFSET+3);
+}
+
+void ESAT_WifiConfigurationClass::readEnabledTelemetry()
+{
+  for (int octet = 0; octet < ENABLED_TELEMETRY_LENGTH; octet = octet + 1)
+  {
+    const byte data = EEPROM.read(ENABLED_TELEMETRY_OFFSET + octet);
+    for (int bit = 0; bit < 8; bit = bit + 1)
+    {
+      const byte identifier = 8 * octet + bit;
+      if (bitRead(data, bit))
+      {
+        enabledTelemetry.set(identifier);
+      }
+      else
+      {
+        enabledTelemetry.clear(identifier);
+      }
+    }
+  }
 }
 
 void ESAT_WifiConfigurationClass::readGatewayAddress()
@@ -142,18 +163,6 @@ void ESAT_WifiConfigurationClass::readSubnetMask()
   subnetMask[3]=EEPROM.read(SUBNET_MASK_OFFSET+3);
 }
 
-void ESAT_WifiConfigurationClass::readWLANStatusTelemetryEnableFlag()
-{
-	if (EEPROM.read(WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET) == 1)
-	{
-		isWLANStatusTelemetryEnabled = true;
-	}
-	else
-	{
-		isWLANStatusTelemetryEnabled = false;
-	}
-}
-
 void ESAT_WifiConfigurationClass::writeConfiguration()
 {
   writeNetworkSSID();
@@ -167,6 +176,7 @@ void ESAT_WifiConfigurationClass::writeConfiguration()
   writeDNSServer2Address();
   writeHostConfigurationMode();
   writeHostname();
+  writeEnabledTelemetry();
 }
 
 void ESAT_WifiConfigurationClass::writeDNSServer1Address()
@@ -184,6 +194,32 @@ void ESAT_WifiConfigurationClass::writeDNSServer2Address()
   EEPROM.write(DNS_2_ADDRESS_OFFSET + 1, domainNameSystemServer2Address[1]);
   EEPROM.write(DNS_2_ADDRESS_OFFSET + 2, domainNameSystemServer2Address[2]);
   EEPROM.write(DNS_2_ADDRESS_OFFSET + 3, domainNameSystemServer2Address[3]);
+  EEPROM.commit();
+}
+
+void ESAT_WifiConfigurationClass::writeEnabledTelemetry()
+{
+  for (int octet = 0;
+       octet < ENABLED_TELEMETRY_LENGTH;
+       octet = octet + 1)
+  {
+    byte data;
+    for (int bit = 0;
+         bit < 8;
+         bit = bit + 1)
+    {
+      const int identifier = 8 * octet + bit;
+      if (enabledTelemetry.read(identifier))
+      {
+        bitSet(data, bit);
+      }
+      else
+      {
+        bitClear(data, bit);
+      }
+    }
+    EEPROM.write(ENABLED_TELEMETRY_OFFSET + octet, data);
+  }
   EEPROM.commit();
 }
 
@@ -269,18 +305,5 @@ void ESAT_WifiConfigurationClass::writeString(char* inputBuffer, const word leng
 	}
 	EEPROM.commit();
 }
-
-void ESAT_WifiConfigurationClass::writeWLANStatusTelemetryEnableFlag()
-{
-	if (isWLANStatusTelemetryEnabled)
-	{
-		EEPROM.write(WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET, 1);
-	}
-	else
-	{
-		EEPROM.write(WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET, 0);
-	}
-	EEPROM.commit();
-}		
 
 ESAT_WifiConfigurationClass ESAT_WifiConfiguration;

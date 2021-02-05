@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019, 2020 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -22,6 +22,7 @@
 #define ESAT_WifiConfiguration_h
 
 #include <Arduino.h>
+#include <ESAT_FlagContainer.h>
 
 // Wifi module configuration.
 // Use the global ESAT_WifiConfiguration object to access the
@@ -46,6 +47,8 @@
 //   Used by ESAT_WifiRadio.connectToNetwork to configure or not static IP.
 // - hostname: the name provided to identify the connected ESAT.
 //   Used as an argument to wiFi.hostname()
+// - enabledTelemetry: the list of enabled periodic telemetry packets.
+//   Some packets are enabled on startup regardless of this!
 // The configuration parameters can be stored in the EEPROM in order
 // to have persistency between reboots.
 // Before loading the configuration parameters from storage or storing
@@ -85,9 +88,9 @@ class ESAT_WifiConfigurationClass
 
     // Length of the server port parameter.
     static const word SERVER_PORT_LENGTH = 2;
-    
-    // Length of the WLAN status telemetry enable flag parametere.
-    static const word WLAN_STATUS_TELEMETRY_ENABLE_FLAG_LENGTH = 1;
+
+    // Length of the list of enabled telemetry packets.
+    static const word ENABLED_TELEMETRY_LENGTH = 32;
     
     // Use this IP address as DNS server 1 address.
     byte domainNameSystemServer1Address[IP_ADDRESS_LENGTH];
@@ -95,11 +98,11 @@ class ESAT_WifiConfigurationClass
     // Use this IP address as DNS server 2 address.
     byte domainNameSystemServer2Address[IP_ADDRESS_LENGTH];
 
+    // List of enabled telemetry packets.
+    ESAT_FlagContainer enabledTelemetry;
+
     // Use this IP address as default adddress for routing packets.
     byte gatewayAddress[IP_ADDRESS_LENGTH];
-    
-    // Controls if the WLAN status telemetry was enabled or disabled before.
-    boolean isWLANStatusTelemetryEnabled;
     
     // Use this IP adddress to manually connect to the wireless network.
     byte hostAddress[IP_ADDRESS_LENGTH];
@@ -130,18 +133,14 @@ class ESAT_WifiConfigurationClass
 
     // Read the configuration.
     void readConfiguration();
-    
-    // Read the WLAN status telemetry enable flag.
-    // Used to avoid spamming with this telemetry if not desired.
-    void readWLANStatusTelemetryEnableFlag();
 
     // Write the configuration.
     void writeConfiguration();
-        
-    // Write the WLAN status telemetry enable flag.
-    // Used to avoid spamming with this telemetry if not desired.
-    void writeWLANStatusTelemetryEnableFlag();
-    
+
+    // Write the list of enabled telemetry packets.
+    // Part of the configuration.
+    void writeEnabledTelemetry();
+
   private:
     // Offset of the network SSID parameter in the storage.
     static const word NETWORK_SSID_OFFSET = 0;
@@ -196,9 +195,8 @@ class ESAT_WifiConfigurationClass
       HOST_CONFIGURATION_MODE_OFFSET
       + HOST_CONFIGURATION_MODE_LENGTH;
       
-    // Offset of the ESAT WLAN status telemetry delivery enable flag
-    // in the storage.
-    static const word WLAN_STATUS_TELEMETRY_ENABLE_FLAG_OFFSET = 
+    // Offset of the enabled telemetry list in the storage.
+    static const word ENABLED_TELEMETRY_OFFSET = 
       HOSTNAME_OFFSET
       + HOSTNAME_LENGTH;
         
@@ -215,7 +213,7 @@ class ESAT_WifiConfigurationClass
       + IP_ADDRESS_LENGTH
       + HOST_CONFIGURATION_MODE_LENGTH
       + HOSTNAME_LENGTH
-      + WLAN_STATUS_TELEMETRY_ENABLE_FLAG_LENGTH;
+      + ENABLED_TELEMETRY_LENGTH;
       
     // Read the address of the first DNS server.
     // Part of the configuration.
@@ -224,6 +222,10 @@ class ESAT_WifiConfigurationClass
     // Read the address of the second DNS server.
     // Part of the configuration.
     void readDNSServer2Address();
+
+    // Read the list of enabled telemetry packets.
+    // Part of the configuration.
+    void readEnabledTelemetry();
       
     // Read the address of the default gateway.
     // Part of the configuration.
@@ -271,7 +273,7 @@ class ESAT_WifiConfigurationClass
     // Write the address of the second DNS server.
     // Part of the configuration.
     void writeDNSServer2Address();
-    
+
     // Write the address of the default gateway.
     // Part of the configuration.
     void writeGatewayAddress();
