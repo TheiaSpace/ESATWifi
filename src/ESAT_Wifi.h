@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -149,9 +149,6 @@ class ESAT_WifiClass
     
     // Flag for enabling standalone wifi telecommand processing.
     boolean areWifiRadioTelecommandsSelfProcessed;
-
-    // List of enabled telemetry packet identifiers.
-    ESAT_FlagContainer enabledTelemetry;
 
     // Flag for enabling wifi telemetry wifi radio delivery.
     boolean isTelemetryEnabledOnWifiRadio;	

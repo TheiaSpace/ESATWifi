@@ -150,17 +150,6 @@ void ESAT_WifiClass::beginTelecommands()
 
 void ESAT_WifiClass::beginTelemetry()
 {
-  for (int identifier = 0; identifier < 256; identifier = identifier + 1)
-  {
-    if (ESAT_WifiConfiguration.enabledTelemetry.read(identifier))
-    {
-      enableTelemetry(identifier);
-    }
-    else
-    {
-      disableTelemetry(identifier);
-    }
-  }
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiWLANStatusTelemetry);
@@ -179,7 +168,7 @@ void ESAT_WifiClass::disableSelfProcessingWifiTelecommands()
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
 {
-  enabledTelemetry.clear(identifier);
+  ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
 }
 
 void ESAT_WifiClass::disableWifiTelemetryRadioDelivery()
@@ -194,7 +183,7 @@ void ESAT_WifiClass::enableSelfProcessingWifiTelecommands()
 
 void ESAT_WifiClass::enableTelemetry(const byte identifier)
 {
-  enabledTelemetry.set(identifier);
+  ESAT_WifiConfiguration.enabledTelemetry.set(identifier);
 }
 
 void ESAT_WifiClass::enableWifiTelemetryRadioDelivery()
@@ -250,7 +239,7 @@ void ESAT_WifiClass::resetTelemetryQueue()
 {
   ESAT_Wifi.pendingTelemetry =
     (ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available())
-    & ESAT_Wifi.enabledTelemetry;
+    & ESAT_WifiConfiguration.enabledTelemetry;
 }
 
 void ESAT_WifiClass::signalTelemetryQueueReset()
