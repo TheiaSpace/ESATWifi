@@ -62,7 +62,6 @@ void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecomm
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
-  enableTelemetry(telemetry.packetIdentifier());
 }
 
 boolean ESAT_WifiClass::areWifiRadioTelecommandsSelfProcessingEnabled()
