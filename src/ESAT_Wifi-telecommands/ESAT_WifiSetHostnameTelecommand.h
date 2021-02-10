@@ -56,7 +56,7 @@ class ESAT_WifiSetHostnameTelecommandClass: public ESAT_CCSDSTelecommandPacketHa
 };
 
 // Global instance of ESAT_WifiSetHostnameTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetHostnameTelecommandClass ESAT_WifiSetHostnameTelecommand;
 
 #endif /* ESAT_WifiSetHostnameTelecommand_h */

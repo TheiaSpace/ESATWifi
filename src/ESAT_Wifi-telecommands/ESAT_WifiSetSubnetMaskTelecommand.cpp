@@ -24,7 +24,7 @@
 boolean ESAT_WifiSetSubnetMaskTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer subnetMask((byte*) ESAT_WifiConfiguration.subnetMask,
-                            sizeof(ESAT_WifiConfiguration.subnetMask));
+                         sizeof(ESAT_WifiConfiguration.subnetMask));
   (void) subnetMask.readFrom(packet, subnetMask.capacity());
   return true;
 }

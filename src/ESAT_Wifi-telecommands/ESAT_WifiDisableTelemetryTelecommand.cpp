@@ -20,7 +20,7 @@
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
 #include "ESAT_Wifi.h"
-#include "../ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
+#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
 boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {

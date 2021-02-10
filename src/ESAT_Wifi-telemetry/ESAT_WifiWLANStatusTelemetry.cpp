@@ -29,42 +29,46 @@ boolean ESAT_WifiWLANStatusTelemetryClass::available()
 }
 
 boolean ESAT_WifiWLANStatusTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
-{ 
+{
   writeWLANState(packet);
   writeChannel(packet);
-  writeRSSI(packet); 
+  writeRSSI(packet);
   return true;
 }
 
 void ESAT_WifiWLANStatusTelemetryClass::writeChannel(ESAT_CCSDSPacket& packet)
 {
-	packet.writeByte((byte) WiFi.channel());
+  packet.writeByte((byte) WiFi.channel());
 }
 
 void ESAT_WifiWLANStatusTelemetryClass::writeRSSI(ESAT_CCSDSPacket& packet)
 {
-  	packet.writeChar((signed char) WiFi.RSSI());
+  packet.writeChar((signed char) WiFi.RSSI());
 }
 
 void ESAT_WifiWLANStatusTelemetryClass::writeWLANState(ESAT_CCSDSPacket& packet)
 {
   switch(wifi_station_get_connect_status())
   {
-    case STATION_WRONG_PASSWORD: //Wrong password
+    case STATION_WRONG_PASSWORD: // Wrong password.
       packet.writeByte(1);
       return;
-    case STATION_NO_AP_FOUND: // No access point
+      break;
+    case STATION_NO_AP_FOUND: // No access point.
       packet.writeByte(2);
-      return; 
-    case STATION_CONNECT_FAIL: // Other error
+      return;
+      break;
+    case STATION_CONNECT_FAIL: // Other error.
       packet.writeByte(3);
-      return;  
-    case STATION_CONNECTING: 
-    case STATION_GOT_IP:    
+      return;
+      break;
+    case STATION_CONNECTING:
+    case STATION_GOT_IP:
     case STATION_IDLE:
     default:
-      packet.writeByte(0); // No error
+      packet.writeByte(0); // No error.
       return;
+      break;
   }
 }
 

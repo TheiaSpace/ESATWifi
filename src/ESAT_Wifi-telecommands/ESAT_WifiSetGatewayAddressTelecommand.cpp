@@ -24,7 +24,7 @@
 boolean ESAT_WifiSetGatewayAddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer gatewayAddress((byte*) ESAT_WifiConfiguration.gatewayAddress,
-                            sizeof(ESAT_WifiConfiguration.gatewayAddress));
+                             sizeof(ESAT_WifiConfiguration.gatewayAddress));
   (void) gatewayAddress.readFrom(packet, gatewayAddress.capacity());
   return true;
 }

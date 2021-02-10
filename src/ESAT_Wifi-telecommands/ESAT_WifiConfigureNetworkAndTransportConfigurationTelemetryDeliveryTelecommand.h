@@ -56,7 +56,7 @@ class ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecom
 };
 
 // Global instance of ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommandClass ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand;
 
 #endif /* ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand_h */

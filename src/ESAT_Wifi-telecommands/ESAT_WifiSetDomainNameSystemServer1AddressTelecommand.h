@@ -51,13 +51,12 @@ class ESAT_WifiSetDomainNameSystemServer1AddressTelecommandClass: public ESAT_CC
     // is backward-compatible with the handler version number.
     ESAT_SemanticVersionNumber versionNumber()
     {
-      // TODO
       return ESAT_SemanticVersionNumber(2, 2, 0);
     }
 };
 
 // Global instance of ESAT_WifiSetDomainNameSystemServer1AddressTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetDomainNameSystemServer1AddressTelecommandClass ESAT_WifiSetDomainNameSystemServer1AddressTelecommand;
 
 #endif /* ESAT_WifiSetDomainNameSystemServer1AddressTelecommand_h */

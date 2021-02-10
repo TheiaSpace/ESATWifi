@@ -25,7 +25,7 @@ boolean ESAT_WifiSetDHCPModeTelecommandClass::handleUserData(ESAT_CCSDSPacket pa
 {
   (void) packet.readByte();
   ESAT_WifiConfiguration.hostConfigurationMode = ESAT_WifiConfigurationClass::DYNAMIC_HOST_CONFIGURATION_MODE;
-  return true;  
+  return true;
 }
 
 ESAT_WifiSetDHCPModeTelecommandClass ESAT_WifiSetDHCPModeTelecommand;

@@ -56,7 +56,7 @@ class ESAT_WifiWriteConfigurationTelecommandClass: public ESAT_CCSDSTelecommandP
 };
 
 // Global instance of ESAT_WifiWriteConfigurationTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiWriteConfigurationTelecommandClass ESAT_WifiWriteConfigurationTelecommand;
 
 #endif /* ESAT_WifiWriteConfigurationTelecommand_h */

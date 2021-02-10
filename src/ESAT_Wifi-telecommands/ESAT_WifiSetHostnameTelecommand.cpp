@@ -25,7 +25,7 @@
 boolean ESAT_WifiSetHostnameTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer hostname((byte*) ESAT_WifiConfiguration.hostname,
-                          sizeof(ESAT_WifiConfiguration.hostname));
+                       sizeof(ESAT_WifiConfiguration.hostname));
   (void) hostname.readFrom(packet, hostname.capacity());
   // Hostname updates doesn't affect WiFi communications.
   // Therefore, hostname is updated as soon as telecommand is received.

@@ -25,7 +25,7 @@ boolean ESAT_WifiSetStaticIPModeTelecommandClass::handleUserData(ESAT_CCSDSPacke
 {
   (void) packet.readByte(); packet.readByte();
   ESAT_WifiConfiguration.hostConfigurationMode = ESAT_WifiConfigurationClass::STATIC_HOST_CONFIGURATION_MODE;
-  return true;  
+  return true;
 }
 
 ESAT_WifiSetStaticIPModeTelecommandClass ESAT_WifiSetStaticIPModeTelecommand;

@@ -66,7 +66,7 @@ void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 
 boolean ESAT_WifiClass::areWifiRadioTelecommandsSelfProcessingEnabled()
 {
-	return areWifiRadioTelecommandsSelfProcessed;
+  return areWifiRadioTelecommandsSelfProcessed;
 }
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
@@ -77,7 +77,7 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
 {
   beginSoftware();
   beginTelemetry();
-  beginTelecommands();  
+  beginTelecommands();
   beginHardware(radioBuffer,
                 radioBufferLength,
                 serialBuffer,
@@ -113,10 +113,10 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
 
 void ESAT_WifiClass::beginSoftware()
 {
-    ESAT_WifiConfiguration.begin();
-    ESAT_WifiConfiguration.readConfiguration();
-	areWifiRadioTelecommandsSelfProcessed = false;
-	isTelemetryEnabledOnWifiRadio = false;
+  ESAT_WifiConfiguration.begin();
+  ESAT_WifiConfiguration.readConfiguration();
+  areWifiRadioTelecommandsSelfProcessed = false;
+  isTelemetryEnabledOnWifiRadio = false;
 }
 
 void ESAT_WifiClass::beginTelecommands()
@@ -131,7 +131,7 @@ void ESAT_WifiClass::beginTelecommands()
   addTelecommand(ESAT_WifiSetDomainNameSystemServer2AddressTelecommand);
   addTelecommand(ESAT_WifiSetGatewayAddressTelecommand);
   addTelecommand(ESAT_WifiSetHostAddressTelecommand);
-  addTelecommand(ESAT_WifiSetHostnameTelecommand);  
+  addTelecommand(ESAT_WifiSetHostnameTelecommand);
   addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
   addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
   addTelecommand(ESAT_WifiSetServerAddressTelecommand);
@@ -162,7 +162,7 @@ void ESAT_WifiClass::beginTelemetry()
 
 void ESAT_WifiClass::disableSelfProcessingWifiTelecommands()
 {
-	areWifiRadioTelecommandsSelfProcessed = false;
+  areWifiRadioTelecommandsSelfProcessed = false;
 }
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
@@ -172,12 +172,12 @@ void ESAT_WifiClass::disableTelemetry(const byte identifier)
 
 void ESAT_WifiClass::disableWifiTelemetryRadioDelivery()
 {
-	isTelemetryEnabledOnWifiRadio = false;
+  isTelemetryEnabledOnWifiRadio = false;
 }
 
 void ESAT_WifiClass::enableSelfProcessingWifiTelecommands()
 {
-	areWifiRadioTelecommandsSelfProcessed = true;
+  areWifiRadioTelecommandsSelfProcessed = true;
 }
 
 void ESAT_WifiClass::enableTelemetry(const byte identifier)
@@ -187,7 +187,7 @@ void ESAT_WifiClass::enableTelemetry(const byte identifier)
 
 void ESAT_WifiClass::enableWifiTelemetryRadioDelivery()
 {
-	isTelemetryEnabledOnWifiRadio = true;
+  isTelemetryEnabledOnWifiRadio = true;
 }
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
@@ -199,8 +199,8 @@ void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
 
 boolean ESAT_WifiClass::isWifiTelecommand(ESAT_CCSDSPacket& packet)
 {
-	return telecommandPacketDispatcher.compatiblePacket(packet);
-}	
+  return telecommandPacketDispatcher.compatiblePacket(packet);
+}
 
 boolean ESAT_WifiClass::isWifiTelemetryRadioDeliveryEnabled()
 {

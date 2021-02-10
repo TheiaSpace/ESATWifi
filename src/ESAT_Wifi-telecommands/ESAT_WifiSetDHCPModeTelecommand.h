@@ -56,7 +56,7 @@ class ESAT_WifiSetDHCPModeTelecommandClass: public ESAT_CCSDSTelecommandPacketHa
 };
 
 // Global instance of ESAT_WifiSetDHCPModeTelecommandClass.
-// Used by ESAT...
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetDHCPModeTelecommandClass ESAT_WifiSetDHCPModeTelecommand;
 
 #endif /* ESAT_WifiSetDHCPModeTelecommand_h */

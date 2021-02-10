@@ -56,7 +56,7 @@ class ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommandClass: public ESAT_C
 };
 
 // Global instance of ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommandClass ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand;
 
 #endif /* ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand_h */

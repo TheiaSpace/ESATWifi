@@ -66,7 +66,7 @@ boolean ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::fillUserData(ES
   writeDNSIPAddresses(packet);
   writeIsDHCPEnabled(packet);
   writeServerIPAddress(packet);
-  writeServerPort(packet);  
+  writeServerPort(packet);
   if (isPermanentDeliveryEnabled == false)
   {
     decrementRemainingDeliveries();
@@ -91,7 +91,7 @@ void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeGatewayIPAddr
 }
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeIPAddress(const IPAddress address,
-                                                               ESAT_CCSDSPacket& packet)
+                                                                             ESAT_CCSDSPacket& packet)
 {
   const byte ipAddressLength = 4;
   for (int index = 0; index < ipAddressLength; index = index + 1)
@@ -105,7 +105,7 @@ void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeIsDHCPEnabled
   // Low level interface information.
   if (wifi_station_dhcpc_status() == DHCP_STARTED)
   {
-    packet.writeByte(0);    
+    packet.writeByte(0);
   }
   else
   {
@@ -127,14 +127,13 @@ void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeServerIPAddre
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeServerPort(ESAT_CCSDSPacket& packet)
 {
-   packet.writeWord((word) ESAT_WifiRadio.client.remotePort());
+  packet.writeWord((word) ESAT_WifiRadio.client.remotePort());
 }
 
 void ESAT_WifiNetworkAndTransportConfigurationTelemetryClass::writeSubnetMask(ESAT_CCSDSPacket& packet)
 {
   writeIPAddress(WiFi.subnetMask(),
                  packet);
-                 
 }
 
 ESAT_WifiNetworkAndTransportConfigurationTelemetryClass ESAT_WifiNetworkAndTransportConfigurationTelemetry;

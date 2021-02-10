@@ -60,23 +60,22 @@
 class ESAT_WifiConfigurationClass
 {
   public:
-  
     // Enum type for storing the host nework configuration mode (static or dynamic).
     enum HostModeConfigurationType
     {
-	    DYNAMIC_HOST_CONFIGURATION_MODE = 0, 
-	    STATIC_HOST_CONFIGURATION_MODE
+      DYNAMIC_HOST_CONFIGURATION_MODE = 0,
+      STATIC_HOST_CONFIGURATION_MODE
     };
-  
-     // Length of the host configuration mode paramenter;
+
+    // Length of the host configuration mode paramenter;
     static const word HOST_CONFIGURATION_MODE_LENGTH = 1;
 
     // Length of the ESAT hostname.
     static const word HOSTNAME_LENGTH = 32;
-    
+
      // Length of any IP address.
     static const word IP_ADDRESS_LENGTH = 4;
-    
+
     // Maximum length of the SSID of the wireless network.
     static const word NETWORK_SSID_LENGTH = 32;
 
@@ -91,7 +90,7 @@ class ESAT_WifiConfigurationClass
 
     // Length of the list of enabled telemetry packets.
     static const word ENABLED_TELEMETRY_LENGTH = 32;
-    
+
     // Use this IP address as DNS server 1 address.
     byte domainNameSystemServer1Address[IP_ADDRESS_LENGTH];
 
@@ -103,16 +102,16 @@ class ESAT_WifiConfigurationClass
 
     // Use this IP address as default adddress for routing packets.
     byte gatewayAddress[IP_ADDRESS_LENGTH];
-    
+
     // Use this IP adddress to manually connect to the wireless network.
     byte hostAddress[IP_ADDRESS_LENGTH];
-      
+
     // Use this variable to store whether host network parameters are manually or self configured.
-    HostModeConfigurationType hostConfigurationMode; 
-    
+    HostModeConfigurationType hostConfigurationMode;
+
     // Use this name to identify the host.
-    char hostname[HOSTNAME_LENGTH+1];	
-         
+    char hostname[HOSTNAME_LENGTH+1];
+
     // Connect to the wireless network with this SSID.
     char networkSSID[NETWORK_SSID_LENGTH+1];
 
@@ -164,42 +163,42 @@ class ESAT_WifiConfigurationClass
     static const word HOST_ADDRESS_OFFSET =
       SERVER_PORT_OFFSET
       + SERVER_PORT_LENGTH;
-  
+
     // Offset of the subnet mask parameter in the storage.
     static const word SUBNET_MASK_OFFSET =
       HOST_ADDRESS_OFFSET
       + IP_ADDRESS_LENGTH;
-  
+
     // Offset of the default gateway address paramenter in the storage.
     static const word GATEWAY_ADDRESS_OFFSET =
       SUBNET_MASK_OFFSET
       + IP_ADDRESS_LENGTH;
-      
+
     // Offset of the DNS server 1 address parameter in the storage.
-    static  const word DNS_1_ADDRESS_OFFSET = 
+    static  const word DNS_1_ADDRESS_OFFSET =
       GATEWAY_ADDRESS_OFFSET
         + IP_ADDRESS_LENGTH;
-        
+
     // Offset of the DNS server 2 address parameter in the storage.
-    static  const word DNS_2_ADDRESS_OFFSET = 
+    static  const word DNS_2_ADDRESS_OFFSET =
       DNS_1_ADDRESS_OFFSET
         + IP_ADDRESS_LENGTH;
-  
+
     // Ofset of the host configuration mode paramenter in the storage.
     static const word HOST_CONFIGURATION_MODE_OFFSET =
       DNS_2_ADDRESS_OFFSET
        + IP_ADDRESS_LENGTH;
-  
+
     // Offset of the ESAT hostname address parameter in the storage.
-    static const word HOSTNAME_OFFSET = 
+    static const word HOSTNAME_OFFSET =
       HOST_CONFIGURATION_MODE_OFFSET
       + HOST_CONFIGURATION_MODE_LENGTH;
-      
+
     // Offset of the enabled telemetry list in the storage.
-    static const word ENABLED_TELEMETRY_OFFSET = 
+    static const word ENABLED_TELEMETRY_OFFSET =
       HOSTNAME_OFFSET
       + HOSTNAME_LENGTH;
-        
+
     // Total length of the configuration.
     static const word CONFIGURATION_LENGTH =
       NETWORK_SSID_LENGTH
@@ -214,11 +213,11 @@ class ESAT_WifiConfigurationClass
       + HOST_CONFIGURATION_MODE_LENGTH
       + HOSTNAME_LENGTH
       + ENABLED_TELEMETRY_LENGTH;
-      
+
     // Read the address of the first DNS server.
     // Part of the configuration.
     void readDNSServer1Address();
-    
+
     // Read the address of the second DNS server.
     // Part of the configuration.
     void readDNSServer2Address();
@@ -226,7 +225,7 @@ class ESAT_WifiConfigurationClass
     // Read the list of enabled telemetry packets.
     // Part of the configuration.
     void readEnabledTelemetry();
-      
+
     // Read the address of the default gateway.
     // Part of the configuration.
     void readGatewayAddress();
@@ -234,7 +233,7 @@ class ESAT_WifiConfigurationClass
     // Read the address of the host.
     // Part of the configuration.
     void readHostAddress();
-    
+
     // Read the host configuration mode parameter.
     // Part of the configuration.
     void readHostConfigurationMode();
@@ -258,18 +257,18 @@ class ESAT_WifiConfigurationClass
     // Read the port of the ground segment server.
     // Part of the configuration.
     void readServerPort();
-    
+
     // Read a multiple char configuration string.
     void readString(char* outputBuffer, word length, word offset);
 
     // Read the subnetwork mask.
     // Part of the configuration.
-    void readSubnetMask();    
-   
+    void readSubnetMask();
+
     // Write the address of the first DNS server.
     // Part of the configuration.
     void writeDNSServer1Address();
-    
+
     // Write the address of the second DNS server.
     // Part of the configuration.
     void writeDNSServer2Address();
@@ -277,7 +276,7 @@ class ESAT_WifiConfigurationClass
     // Write the address of the default gateway.
     // Part of the configuration.
     void writeGatewayAddress();
-    
+
     // Write the address of the host.
     // Part of the configuration.
     void writeHostAddress();
@@ -305,13 +304,13 @@ class ESAT_WifiConfigurationClass
     // Write the port of the ground segment server.
     // Part of the configuration.
     void writeServerPort();
-        
+
     // Write a multiple char configuration string.
     void writeString(char* inputBuffer, word length, word offset);
 
     // Write the subnetwork mask.
     // Part of the configuration.
-    void writeSubnetMask();    
+    void writeSubnetMask();
 };
 
 // Global instance of the Wifi configuration library.

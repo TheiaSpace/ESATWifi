@@ -56,7 +56,7 @@ class ESAT_WifiSetSubnetMaskTelecommandClass: public ESAT_CCSDSTelecommandPacket
 };
 
 // Global instance of ESAT_WifiSetSubnetMaskTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetSubnetMaskTelecommandClass ESAT_WifiSetSubnetMaskTelecommand;
 
 #endif /* ESAT_WifiSetSubnetMaskTelecommand_h */
