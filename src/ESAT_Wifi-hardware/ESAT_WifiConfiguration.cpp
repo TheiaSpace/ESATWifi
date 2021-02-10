@@ -63,6 +63,10 @@ void ESAT_WifiConfigurationClass::readDNSServer2Address()
 
 void ESAT_WifiConfigurationClass::readEnabledTelemetry()
 {
+  // Read the list of enabled telemetry packets from EEPROM.  Bytes
+  // that have never been written have all bits set to 1; if we want
+  // never-enabled packets to be disabled by default, we must store
+  // enabled packets as 0s and disabled packets as 1s.
   for (int octet = 0; octet < ENABLED_TELEMETRY_LENGTH; octet = octet + 1)
   {
     const byte data = EEPROM.read(ENABLED_TELEMETRY_OFFSET + octet);
@@ -71,11 +75,11 @@ void ESAT_WifiConfigurationClass::readEnabledTelemetry()
       const byte identifier = 8 * octet + bit;
       if (bitRead(data, bit))
       {
-        enabledTelemetry.set(identifier);
+        enabledTelemetry.clear(identifier);
       }
       else
       {
-        enabledTelemetry.clear(identifier);
+        enabledTelemetry.set(identifier);
       }
     }
   }
@@ -199,6 +203,10 @@ void ESAT_WifiConfigurationClass::writeDNSServer2Address()
 
 void ESAT_WifiConfigurationClass::writeEnabledTelemetry()
 {
+  // Write the list of enabled telemetry packets to EEPROM.  Bytes
+  // that have never been written have all bits set to 1; if we want
+  // never-enabled packets to be disabled by default, we must store
+  // enabled packets as 0s and disabled packets as 1s.
   for (int octet = 0;
        octet < ENABLED_TELEMETRY_LENGTH;
        octet = octet + 1)
@@ -211,11 +219,11 @@ void ESAT_WifiConfigurationClass::writeEnabledTelemetry()
       const int identifier = 8 * octet + bit;
       if (enabledTelemetry.read(identifier))
       {
-        bitSet(data, bit);
+        bitClear(data, bit);
       }
       else
       {
-        bitClear(data, bit);
+        bitSet(data, bit);
       }
     }
     EEPROM.write(ENABLED_TELEMETRY_OFFSET + octet, data);
