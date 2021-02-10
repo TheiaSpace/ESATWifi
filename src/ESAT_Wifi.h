@@ -54,8 +54,9 @@ class ESAT_WifiClass
     void addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand);
 
     // Register a telemetry packet.
-    // The telemetry packet will be enabled by default;
-    // it can be disabled with disableTelemetry().
+    // The telemetry packet will be enabled or disabled depending on
+    // the stored configuration; it can be enabled with
+    // enableTelemetry() and disabled with disableTelemetry().
     void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
     
     // Check if wifi telecommands are self processed or not.
