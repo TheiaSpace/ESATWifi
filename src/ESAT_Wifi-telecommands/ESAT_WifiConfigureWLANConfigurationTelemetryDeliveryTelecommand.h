@@ -56,7 +56,7 @@ class ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass: publ
 };
 
 // Global instance of ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand;
 
 #endif /* ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand_h */

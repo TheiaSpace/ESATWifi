@@ -56,7 +56,7 @@ class ESAT_WifiSetStaticIPModeTelecommandClass: public ESAT_CCSDSTelecommandPack
 };
 
 // Global instance of ESAT_WifiSetStaticIPModeTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetStaticIPModeTelecommandClass ESAT_WifiSetStaticIPModeTelecommand;
 
 #endif /* ESAT_WifiSetStaticIPModeTelecommand_h */

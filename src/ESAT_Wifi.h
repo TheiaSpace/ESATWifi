@@ -58,7 +58,7 @@ class ESAT_WifiClass
     // the stored configuration; it can be enabled with
     // enableTelemetry() and disabled with disableTelemetry().
     void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
-    
+
     // Check if wifi telecommands are self processed or not.
     boolean areWifiRadioTelecommandsSelfProcessingEnabled();
 
@@ -75,36 +75,36 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
-    // Disable the processing of wifi telecommands received by wifi 
+    // Disable the processing of wifi telecommands received by wifi
     // radio without being passed to OBC before.
     void disableSelfProcessingWifiTelecommands();
 
     // Disable the generation of the telemetry packet with the given
     // identifier.
     void disableTelemetry(byte identifier);
-    
+
     // Disable the delivery of wifi telemetry by wifi radio without
     // relying on OBC.
     void disableWifiTelemetryRadioDelivery();
 
-    // Enable the processing of wifi telecommands received by wifi 
+    // Enable the processing of wifi telecommands received by wifi
     // radio witout being passed to OBC before.
     void enableSelfProcessingWifiTelecommands();
 
     // Enable the generation of the telemetry packet with the given
     // identifier.
     void enableTelemetry(byte identifier);
-    
-    // Enable the delivery of wifi telemetry by wifi radio witout
+
+    // Enable the delivery of wifi telemetry by wifi radio without
     // relying on OBC.
-    void enableWifiTelemetryRadioDelivery();		
+    void enableWifiTelemetryRadioDelivery();
 
     // Handle a telecommand.
     void handleTelecommand(ESAT_CCSDSPacket& packet);
 
     // Check if the packet is a telecommand for the wifi module.
-    boolean isWifiTelecommand(ESAT_CCSDSPacket& packet);	
-    
+    boolean isWifiTelecommand(ESAT_CCSDSPacket& packet);
+
     // Check if wifi telemetry is also delivered by radio.
     boolean isWifiTelemetryRadioDeliveryEnabled();
 
@@ -147,12 +147,12 @@ class ESAT_WifiClass
 
     // Line for signaling a telemetry queue reset condition.
     static const byte RESET_TELEMETRY_QUEUE_PIN = 2;
-    
+
     // Flag for enabling standalone wifi telecommand processing.
     boolean areWifiRadioTelecommandsSelfProcessed;
 
     // Flag for enabling wifi telemetry wifi radio delivery.
-    boolean isTelemetryEnabledOnWifiRadio;	
+    boolean isTelemetryEnabledOnWifiRadio;
 
     // Use this clock for timekeeping.
     ESAT_SoftwareClock clock;

@@ -60,7 +60,7 @@ class ESAT_WifiRadioClass
       DISCONNECTING = 0x04,
       DISCONNECTED = 0x05,
     };
-    
+
     // Use this client to connect to the ground segment server.
     WiFiClient client;
 

@@ -45,51 +45,50 @@ class ESAT_WifiNetworkAndTransportConfigurationTelemetryClass: public ESAT_CCSDS
     // of the user data field.
     // Return true on success; otherwise return false.
     boolean fillUserData(ESAT_CCSDSPacket& packet);
-    
-    // Enables the continuous delivery of this telemetry.    
+
+    // Enable the continuous delivery of this telemetry.
     void enablePermanentDelivery();
 
-    // Decreases remaining deliveries counter by 1.
-    void decrementRemainingDeliveries();    
+    // Decrease remaining deliveries counter by 1.
+    void decrementRemainingDeliveries();
 
-    // Disables the continuous delivery of this telemetry.
+    // Disable the continuous delivery of this telemetry.
     void disablePermanentDelivery();
-    
-    // Configures this telemetry to be delivered only for certain times.
+
+    // Configure this telemetry to be delivered only for certain times.
     // Also clears permanent delivery flag.
-    void setRemainingDeliveries(word timesToBeDelivered); 
+    void setRemainingDeliveries(word timesToBeDelivered);
 
   private:
-  
-    // Enables the continuous delivery of this telemetry.
+    // Enable the continuous delivery of this telemetry.
     boolean isPermanentDeliveryEnabled = false;
-    
-    // Counts the times this telemetry has to be delivered.
+
+    // Count the times this telemetry has to be delivered.
     word remainingDeliveries = 0;
-  
-    // Writes the DNS IP addresses to the given packet.
+
+    // Write the DNS IP addresses to the given packet.
     void writeDNSIPAddresses(ESAT_CCSDSPacket& packet);
 
-    // Writes the gateway IP address to the given packet.
+    // Write the gateway IP address to the given packet.
     void writeGatewayIPAddress(ESAT_CCSDSPacket& packet);
-    
-    // Writes the given IP address to the given packet.
+
+    // Write the given IP address to the given packet.
     void writeIPAddress(IPAddress address, ESAT_CCSDSPacket& packet);
-    
-    // Writes the DHCP enabled flag to the given packet.
+
+    // Write the DHCP enabled flag to the given packet.
     void writeIsDHCPEnabled(ESAT_CCSDSPacket& packet);
 
-    // Writes the local IP address to the given packet.
+    // Write the local IP address to the given packet.
     void writeLocalIPAddress(ESAT_CCSDSPacket& packet);
 
-    // Writes the configured server IP address.
+    // Write the configured server IP address.
     void writeServerIPAddress(ESAT_CCSDSPacket& packet);
-    
-    // Writes the configured server connection port.
+
+    // Write the configured server connection port.
     void writeServerPort(ESAT_CCSDSPacket& packet);
 
-    // Writes the subnet mask to the given packet.
-    void writeSubnetMask(ESAT_CCSDSPacket& packet);	
+    // Write the subnet mask to the given packet.
+    void writeSubnetMask(ESAT_CCSDSPacket& packet);
 };
 
 // Global instance of ESAT_WifiNetworkAndTransportConfigurationTelemetry. ESAT_Wifi uses this

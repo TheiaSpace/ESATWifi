@@ -56,7 +56,7 @@ class ESAT_WifiDisconnectTelecommandClass: public ESAT_CCSDSTelecommandPacketHan
 };
 
 // Global instance of ESAT_WifiDisconnectTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiDisconnectTelecommandClass ESAT_WifiDisconnectTelecommand;
 
 #endif /* ESAT_WifiDisconnectTelecommand_h */

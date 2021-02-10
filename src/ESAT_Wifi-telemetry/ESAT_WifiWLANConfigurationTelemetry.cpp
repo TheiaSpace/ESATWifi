@@ -60,7 +60,7 @@ void ESAT_WifiWLANConfigurationTelemetryClass::decrementRemainingDeliveries()
 }
 
 boolean ESAT_WifiWLANConfigurationTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
-{ 
+{
   writeSSID(packet);
   writeMACAddress(packet);
   if (isPermanentDeliveryEnabled == false)

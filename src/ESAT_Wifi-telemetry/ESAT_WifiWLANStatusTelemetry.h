@@ -46,25 +46,25 @@ class ESAT_WifiWLANStatusTelemetryClass: public ESAT_CCSDSTelemetryPacketContent
     boolean fillUserData(ESAT_CCSDSPacket& packet);
 
   private:
-    // Writes the used Wifi radio channel.
+    // Write the used Wifi radio channel.
     void writeChannel(ESAT_CCSDSPacket& packet);
 
-    // Writes whether or not we are connected to the given packet.
+    // Write whether or not we are connected to the given packet.
     void writeIsConnected(ESAT_CCSDSPacket& packet);
 
-    // Writes the MAC address to the given packet.
+    // Write the MAC address to the given packet.
     void writeMACAddress(ESAT_CCSDSPacket& packet);
 
-    // Writes the received signal strength indicator to the given packet.
+    // Write the received signal strength indicator to the given packet.
     void writeRSSI(ESAT_CCSDSPacket& packet);
 
-    // Writes the SSID to the given packet.
+    // Write the SSID to the given packet.
     void writeSSID(ESAT_CCSDSPacket& packet);
 
-    // Writes the 32 first characters from the given string to the given packet.
+    // Write the 32 first characters from the given string to the given packet.
     void writeString(String str, ESAT_CCSDSPacket& packet);
 
-    // Writes the wlan controller current state to the given packet.
+    // Write the wlan controller current state to the given packet.
     void writeWLANState(ESAT_CCSDSPacket& packet);
 };
 

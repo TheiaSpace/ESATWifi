@@ -24,7 +24,7 @@
 boolean ESAT_WifiSetHostAddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer hostAddress((byte*) ESAT_WifiConfiguration.hostAddress,
-                            sizeof(ESAT_WifiConfiguration.hostAddress));
+                          sizeof(ESAT_WifiConfiguration.hostAddress));
   (void) hostAddress.readFrom(packet, hostAddress.capacity());
   return true;
 }

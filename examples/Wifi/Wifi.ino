@@ -61,29 +61,29 @@ void setup()
 void loop()
 {
   byte packetDataBuffer[PACKET_DATA_BUFFER_LENGTH];
-  ESAT_CCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);  
+  ESAT_CCSDSPacket packet(packetDataBuffer, PACKET_DATA_BUFFER_LENGTH);
   if (ESAT_Wifi.readTelemetry(packet))
   {
     ESAT_Wifi.writePacketToSerial(packet);
-	if (ESAT_Wifi.isWifiTelemetryRadioDeliveryEnabled())
-	{
-		ESAT_Wifi.writePacketToRadio(packet);
-	}
-  }  
+    if (ESAT_Wifi.isWifiTelemetryRadioDeliveryEnabled())
+    {
+      ESAT_Wifi.writePacketToRadio(packet);
+    }
+  }
   if (ESAT_Wifi.readPacketFromRadio(packet))
   {
     if (packet.isTelecommand())
     {
-	  if (ESAT_Wifi.isWifiTelecommand(packet) && ESAT_Wifi.areWifiRadioTelecommandsSelfProcessingEnabled())
+      if (ESAT_Wifi.isWifiTelecommand(packet) && ESAT_Wifi.areWifiRadioTelecommandsSelfProcessingEnabled())
       {
         ESAT_Wifi.handleTelecommand(packet);
-	  }
+      }
       else
-	  {
+      {
         ESAT_Wifi.writePacketToSerial(packet);
-	  }
+      }
     }
-  }  
+  }
   if (ESAT_Wifi.readPacketFromSerial(packet))
   {
     if (packet.isTelecommand())

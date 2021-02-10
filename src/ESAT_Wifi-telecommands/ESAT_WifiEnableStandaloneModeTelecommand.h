@@ -56,7 +56,7 @@ class ESAT_WifiEnableStandaloneModeTelecommandClass: public ESAT_CCSDSTelecomman
 };
 
 // Global instance of ESAT_WifiEnableStandaloneModeTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiEnableStandaloneModeTelecommandClass ESAT_WifiEnableStandaloneModeTelecommand;
 
 #endif /* ESAT_WifiEnableStandaloneModeTelecommand_h */

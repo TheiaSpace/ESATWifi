@@ -59,7 +59,7 @@ void ESAT_WifiHostnameTelemetryClass::decrementRemainingDeliveries()
 }
 
 boolean ESAT_WifiHostnameTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
-{ 
+{
   writeHostname(packet);
   if (isPermanentDeliveryEnabled == false)
   {
@@ -70,13 +70,13 @@ boolean ESAT_WifiHostnameTelemetryClass::fillUserData(ESAT_CCSDSPacket& packet)
 
 void ESAT_WifiHostnameTelemetryClass::writeHostname(ESAT_CCSDSPacket& packet)
 {
-  const byte length = 32;  
+  const byte length = 32;
   for (int index = 0;
-       index < length ;//&& ESAT_WifiConfiguration.hostname[index] != 0;
+       index < length ;
        index = index + 1)
   {
     packet.writeChar(ESAT_WifiConfiguration.hostname[index]);
-  }        
+  }
 }
 
 ESAT_WifiHostnameTelemetryClass ESAT_WifiHostnameTelemetry;

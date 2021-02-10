@@ -24,7 +24,7 @@
 boolean ESAT_WifiSetDomainNameSystemServer2AddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
   ESAT_Buffer domainNameSystemServer2Address((byte*) ESAT_WifiConfiguration.domainNameSystemServer2Address,
-                            sizeof(ESAT_WifiConfiguration.domainNameSystemServer2Address));
+                                             sizeof(ESAT_WifiConfiguration.domainNameSystemServer2Address));
   (void) domainNameSystemServer2Address.readFrom(packet, domainNameSystemServer2Address.capacity());
   return true;
 }
