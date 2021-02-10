@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -40,6 +40,7 @@ void ESAT_WifiConfigurationClass::readConfiguration()
   readDNSServer2Address();
   readHostConfigurationMode();
   readHostname();
+  readEnabledTelemetry();
   // Hostname is inocuous, so it is updated automatically.
   (void) WiFi.hostname((char*) hostname);
 }
@@ -58,6 +59,30 @@ void ESAT_WifiConfigurationClass::readDNSServer2Address()
   domainNameSystemServer2Address[1]=EEPROM.read(DNS_2_ADDRESS_OFFSET+1);
   domainNameSystemServer2Address[2]=EEPROM.read(DNS_2_ADDRESS_OFFSET+2);
   domainNameSystemServer2Address[3]=EEPROM.read(DNS_2_ADDRESS_OFFSET+3);
+}
+
+void ESAT_WifiConfigurationClass::readEnabledTelemetry()
+{
+  // Read the list of enabled telemetry packets from EEPROM.  Bytes
+  // that have never been written have all bits set to 1; if we want
+  // never-enabled packets to be disabled by default, we must store
+  // enabled packets as 0s and disabled packets as 1s.
+  for (int octet = 0; octet < ENABLED_TELEMETRY_LENGTH; octet = octet + 1)
+  {
+    const byte data = EEPROM.read(ENABLED_TELEMETRY_OFFSET + octet);
+    for (int bit = 0; bit < 8; bit = bit + 1)
+    {
+      const byte identifier = 8 * octet + bit;
+      if (bitRead(data, bit))
+      {
+        enabledTelemetry.clear(identifier);
+      }
+      else
+      {
+        enabledTelemetry.set(identifier);
+      }
+    }
+  }
 }
 
 void ESAT_WifiConfigurationClass::readGatewayAddress()
@@ -155,6 +180,7 @@ void ESAT_WifiConfigurationClass::writeConfiguration()
   writeDNSServer2Address();
   writeHostConfigurationMode();
   writeHostname();
+  writeEnabledTelemetry();
 }
 
 void ESAT_WifiConfigurationClass::writeDNSServer1Address()
@@ -172,6 +198,36 @@ void ESAT_WifiConfigurationClass::writeDNSServer2Address()
   EEPROM.write(DNS_2_ADDRESS_OFFSET + 1, domainNameSystemServer2Address[1]);
   EEPROM.write(DNS_2_ADDRESS_OFFSET + 2, domainNameSystemServer2Address[2]);
   EEPROM.write(DNS_2_ADDRESS_OFFSET + 3, domainNameSystemServer2Address[3]);
+  EEPROM.commit();
+}
+
+void ESAT_WifiConfigurationClass::writeEnabledTelemetry()
+{
+  // Write the list of enabled telemetry packets to EEPROM.  Bytes
+  // that have never been written have all bits set to 1; if we want
+  // never-enabled packets to be disabled by default, we must store
+  // enabled packets as 0s and disabled packets as 1s.
+  for (int octet = 0;
+       octet < ENABLED_TELEMETRY_LENGTH;
+       octet = octet + 1)
+  {
+    byte data;
+    for (int bit = 0;
+         bit < 8;
+         bit = bit + 1)
+    {
+      const int identifier = 8 * octet + bit;
+      if (enabledTelemetry.read(identifier))
+      {
+        bitClear(data, bit);
+      }
+      else
+      {
+        bitSet(data, bit);
+      }
+    }
+    EEPROM.write(ENABLED_TELEMETRY_OFFSET + octet, data);
+  }
   EEPROM.commit();
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -62,7 +62,6 @@ void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecomm
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
-  enableTelemetry(telemetry.packetIdentifier());
 }
 
 boolean ESAT_WifiClass::areWifiRadioTelecommandsSelfProcessingEnabled()
@@ -92,8 +91,6 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
                                    const unsigned long serialBufferLength,
                                    const byte networkConnectionTimeoutSeconds)
 {
-  ESAT_WifiConfiguration.begin();
-  ESAT_WifiConfiguration.readConfiguration();
   ESAT_WifiRadio.begin(radioBuffer,
                        radioBufferLength,
                        networkConnectionTimeoutSeconds);
@@ -116,6 +113,8 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
 
 void ESAT_WifiClass::beginSoftware()
 {
+    ESAT_WifiConfiguration.begin();
+    ESAT_WifiConfiguration.readConfiguration();
 	areWifiRadioTelecommandsSelfProcessed = false;
 	isTelemetryEnabledOnWifiRadio = false;
 }
@@ -153,7 +152,6 @@ void ESAT_WifiClass::beginTelemetry()
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiWLANStatusTelemetry);
-  enableTelemetry(ESAT_WifiWLANStatusTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiWLANConfigurationTelemetry);
   enableTelemetry(ESAT_WifiWLANConfigurationTelemetry.packetIdentifier());
   addTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry);
@@ -169,7 +167,7 @@ void ESAT_WifiClass::disableSelfProcessingWifiTelecommands()
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
 {
-  enabledTelemetry.clear(identifier);
+  ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
 }
 
 void ESAT_WifiClass::disableWifiTelemetryRadioDelivery()
@@ -184,7 +182,7 @@ void ESAT_WifiClass::enableSelfProcessingWifiTelecommands()
 
 void ESAT_WifiClass::enableTelemetry(const byte identifier)
 {
-  enabledTelemetry.set(identifier);
+  ESAT_WifiConfiguration.enabledTelemetry.set(identifier);
 }
 
 void ESAT_WifiClass::enableWifiTelemetryRadioDelivery()
@@ -240,7 +238,7 @@ void ESAT_WifiClass::resetTelemetryQueue()
 {
   ESAT_Wifi.pendingTelemetry =
     (ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available())
-    & ESAT_Wifi.enabledTelemetry;
+    & ESAT_WifiConfiguration.enabledTelemetry;
 }
 
 void ESAT_WifiClass::signalTelemetryQueueReset()

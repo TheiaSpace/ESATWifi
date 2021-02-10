@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2018, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -20,6 +20,7 @@
 
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
 #include "ESAT_Wifi.h"
+#include "../ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
 boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
@@ -32,6 +33,8 @@ boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPack
   else
   {
     ESAT_Wifi.disableTelemetry(identifier);
+    ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
+    ESAT_WifiConfiguration.writeEnabledTelemetry();
     return true;
   }
 }

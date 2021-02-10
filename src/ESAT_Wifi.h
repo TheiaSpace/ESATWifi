@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -54,8 +54,9 @@ class ESAT_WifiClass
     void addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand);
 
     // Register a telemetry packet.
-    // The telemetry packet will be enabled by default;
-    // it can be disabled with disableTelemetry().
+    // The telemetry packet will be enabled or disabled depending on
+    // the stored configuration; it can be enabled with
+    // enableTelemetry() and disabled with disableTelemetry().
     void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
     
     // Check if wifi telecommands are self processed or not.
@@ -149,9 +150,6 @@ class ESAT_WifiClass
     
     // Flag for enabling standalone wifi telecommand processing.
     boolean areWifiRadioTelecommandsSelfProcessed;
-
-    // List of enabled telemetry packet identifiers.
-    ESAT_FlagContainer enabledTelemetry;
 
     // Flag for enabling wifi telemetry wifi radio delivery.
     boolean isTelemetryEnabledOnWifiRadio;	
