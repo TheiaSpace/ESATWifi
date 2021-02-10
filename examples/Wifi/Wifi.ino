@@ -1,5 +1,5 @@
 /*
- * ESAT Wifi Main Program version 2.1.1
+ * ESAT Wifi Main Program version 2.2.0
  * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
