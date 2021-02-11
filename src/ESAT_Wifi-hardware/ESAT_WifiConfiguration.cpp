@@ -211,7 +211,7 @@ void ESAT_WifiConfigurationClass::writeEnabledTelemetry()
        octet < ENABLED_TELEMETRY_LENGTH;
        octet = octet + 1)
   {
-    byte data;
+    byte data = 0;
     for (int bit = 0;
          bit < 8;
          bit = bit + 1)
