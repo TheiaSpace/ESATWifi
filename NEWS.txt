@@ -19,12 +19,6 @@ along with Theia Space's ESAT Wifi library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-* Changes in ESATWifi 2.1.1, 2019-04-30
-
-** This release fixes a crash on telemetry queue resets triggered
-during network operations.
-
-
 * Changes in ESATWifi 2.2, 2021-02-11
 
 ** There are new on-demand WLAN, network  and transport telemetries.
@@ -33,6 +27,12 @@ during network operations.
 
 ** The telemetry enable value is persistent beyond power resets for
 packets with number > 0 (0 always start enabled).
+
+
+* Changes in ESATWifi 2.1.1, 2019-04-30
+
+** This release fixes a crash on telemetry queue resets triggered
+during network operations.
 
 
 * Changes in ESATWifi 2.1.0, 2018-10-24
