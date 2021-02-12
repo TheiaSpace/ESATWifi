@@ -25,6 +25,9 @@ along with Theia Space's ESAT Wifi library.  If not, see
 
 ** Now static IP mode is supported.
 
+** A standalone self-processing telecommands and radio telemetry 
+delivery mode is available for debugging purposes.
+
 ** The telemetry enable value is persistent beyond power resets for
 packets with number > 0 (0 always start enabled).
 
