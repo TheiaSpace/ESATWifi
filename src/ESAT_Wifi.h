@@ -139,8 +139,8 @@ class ESAT_WifiClass
 
     // Version numbers.
     static const byte MAJOR_VERSION_NUMBER = 2;
-    static const byte MINOR_VERSION_NUMBER = 1;
-    static const byte PATCH_VERSION_NUMBER = 1;
+    static const byte MINOR_VERSION_NUMBER = 2;
+    static const byte PATCH_VERSION_NUMBER = 0;
 
     // Line for signaling that the Wifi board is not connected to the server.
     static const byte NOT_CONNECTED_SIGNAL_PIN = 0;
