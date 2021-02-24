@@ -1,4 +1,4 @@
-# Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+# Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
 #
 # This file is part of Theia Space's ESAT Wifi library.
 #
@@ -32,6 +32,7 @@ ESAT_WifiConnectionStateTelemetryClass	KEYWORD1
 ESAT_WifiDisableTelemetryTelecommandClass	KEYWORD1
 ESAT_WifiDisconnectTelecommandClass	KEYWORD1
 ESAT_WifiEnableTelemetryTelecommandClass	KEYWORD1
+ESAT_WifiNetworkInformationTelemetryClass	KEYWORD1
 ESAT_WifiRadioClass	KEYWORD1
 ESAT_WifiReadConfigurationTelecommandClass	KEYWORD1
 ESAT_WifiSetNetworkPassphraseTelecommandClass	KEYWORD1
@@ -56,6 +57,7 @@ ESAT_WifiConnectTelecommand	KEYWORD2
 ESAT_WifiDisableTelemetryTelecommand	KEYWORD2
 ESAT_WifiDisconnectTelecommand	KEYWORD2
 ESAT_WifiEnableTelemetryTelecommand	KEYWORD2
+ESAT_WifiNetworkInformationTelemetry	KEYWORD2
 ESAT_WifiRadio	KEYWORD2
 ESAT_WifiReadConfigurationTelecommand	KEYWORD2
 ESAT_WifiSetNetworkPassphraseTelecommand	KEYWORD2

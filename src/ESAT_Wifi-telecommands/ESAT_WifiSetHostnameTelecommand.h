@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -18,16 +18,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_WifiWriteConfigurationTelecommand_h
-#define ESAT_WifiWriteConfigurationTelecommand_h
+#ifndef ESAT_WifiSetHostnameTelecommand_h
+#define ESAT_WifiSetHostnameTelecommand_h
 
 #include <Arduino.h>
 #include <ESAT_CCSDSTelecommandPacketHandler.h>
 #include <ESAT_SemanticVersionNumber.h>
 
-// Telecommand handler for WIFI_WRITE_CONFIGURATION.
+// Telecommand handler for WIFI_SET_HOSTNAME.
 // Used by ESAT_Wifi.
-class ESAT_WifiWriteConfigurationTelecommandClass: public ESAT_CCSDSTelecommandPacketHandler
+class ESAT_WifiSetHostnameTelecommandClass: public ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -42,7 +42,7 @@ class ESAT_WifiWriteConfigurationTelecommandClass: public ESAT_CCSDSTelecommandP
     // match.
     byte packetIdentifier()
     {
-      return 0x21;
+      return 0x19;
     }
 
     // Return the version number of this telecommand handler.
@@ -51,12 +51,12 @@ class ESAT_WifiWriteConfigurationTelecommandClass: public ESAT_CCSDSTelecommandP
     // is backward-compatible with the handler version number.
     ESAT_SemanticVersionNumber versionNumber()
     {
-      return ESAT_SemanticVersionNumber(2, 0, 0);
+      return ESAT_SemanticVersionNumber(2, 2, 0);
     }
 };
 
-// Global instance of ESAT_WifiWriteConfigurationTelecommandClass.
+// Global instance of ESAT_WifiSetHostnameTelecommandClass.
 // Used by ESAT_Wifi.
-extern ESAT_WifiWriteConfigurationTelecommandClass ESAT_WifiWriteConfigurationTelecommand;
+extern ESAT_WifiSetHostnameTelecommandClass ESAT_WifiSetHostnameTelecommand;
 
-#endif /* ESAT_WifiWriteConfigurationTelecommand_h */
+#endif /* ESAT_WifiSetHostnameTelecommand_h */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -54,9 +54,13 @@ class ESAT_WifiClass
     void addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecommand);
 
     // Register a telemetry packet.
-    // The telemetry packet will be enabled by default;
-    // it can be disabled with disableTelemetry().
+    // The telemetry packet will be enabled or disabled depending on
+    // the stored configuration; it can be enabled with
+    // enableTelemetry() and disabled with disableTelemetry().
     void addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry);
+
+    // Check if wifi telecommands are self processed or not.
+    boolean areWifiRadioTelecommandsSelfProcessingEnabled();
 
     // Set up the Wifi board.
     // Use the radio buffer to store packets coming from the
@@ -71,16 +75,38 @@ class ESAT_WifiClass
                unsigned long serialBufferLength,
                byte networkConnectionTimeoutSeconds);
 
+    // Disable the processing of wifi telecommands received by wifi
+    // radio without being passed to OBC before.
+    void disableSelfProcessingWifiTelecommands();
+
     // Disable the generation of the telemetry packet with the given
     // identifier.
     void disableTelemetry(byte identifier);
+
+    // Disable the delivery of wifi telemetry by wifi radio without
+    // relying on OBC.
+    void disableWifiTelemetryRadioDelivery();
+
+    // Enable the processing of wifi telecommands received by wifi
+    // radio witout being passed to OBC before.
+    void enableSelfProcessingWifiTelecommands();
 
     // Enable the generation of the telemetry packet with the given
     // identifier.
     void enableTelemetry(byte identifier);
 
+    // Enable the delivery of wifi telemetry by wifi radio without
+    // relying on OBC.
+    void enableWifiTelemetryRadioDelivery();
+
     // Handle a telecommand.
     void handleTelecommand(ESAT_CCSDSPacket& packet);
+
+    // Check if the packet is a telecommand for the wifi module.
+    boolean isWifiTelecommand(ESAT_CCSDSPacket& packet);
+
+    // Check if wifi telemetry is also delivered by radio.
+    boolean isWifiTelemetryRadioDeliveryEnabled();
 
     // Fill the packet with data read from the radio interface.
     // Return true if there was a new packet; otherwise return false.
@@ -113,8 +139,8 @@ class ESAT_WifiClass
 
     // Version numbers.
     static const byte MAJOR_VERSION_NUMBER = 2;
-    static const byte MINOR_VERSION_NUMBER = 1;
-    static const byte PATCH_VERSION_NUMBER = 1;
+    static const byte MINOR_VERSION_NUMBER = 2;
+    static const byte PATCH_VERSION_NUMBER = 0;
 
     // Line for signaling that the Wifi board is not connected to the server.
     static const byte NOT_CONNECTED_SIGNAL_PIN = 0;
@@ -122,8 +148,11 @@ class ESAT_WifiClass
     // Line for signaling a telemetry queue reset condition.
     static const byte RESET_TELEMETRY_QUEUE_PIN = 2;
 
-    // List of enabled telemetry packet identifiers.
-    ESAT_FlagContainer enabledTelemetry;
+    // Flag for enabling standalone wifi telecommand processing.
+    boolean areWifiRadioTelecommandsSelfProcessed;
+
+    // Flag for enabling wifi telemetry wifi radio delivery.
+    boolean isTelemetryEnabledOnWifiRadio;
 
     // Use this clock for timekeeping.
     ESAT_SoftwareClock clock;
@@ -163,6 +192,9 @@ class ESAT_WifiClass
                        byte serialBuffer[],
                        unsigned long serialBufferLength,
                        byte networkConnectionTimeoutSeconds);
+
+    // Initialize class variables
+    void beginSoftware();
 
     // Configure the telecommand handlers.
     void beginTelecommands();

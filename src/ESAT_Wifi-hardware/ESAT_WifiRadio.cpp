@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -43,8 +43,25 @@ void ESAT_WifiRadioClass::connect()
 void ESAT_WifiRadioClass::connectToNetwork()
 {
   disconnectFromNetworkAndServer();
+  // If static mode is set, IP seetings are required to be configured
+  // previously to begin().  Otherwise DHCP will be selected.
+  if (ESAT_WifiConfiguration.hostConfigurationMode ==
+      ESAT_WifiConfigurationClass::STATIC_HOST_CONFIGURATION_MODE)
+  {
+    IPAddress ip((uint8_t*) ESAT_WifiConfiguration.hostAddress);
+    IPAddress mask((uint8_t*) ESAT_WifiConfiguration.subnetMask);
+    IPAddress gateway((uint8_t*) ESAT_WifiConfiguration.gatewayAddress);
+    IPAddress dns1((uint8_t*) ESAT_WifiConfiguration.domainNameSystemServer1Address);
+    IPAddress dns2((uint8_t*) ESAT_WifiConfiguration.domainNameSystemServer2Address);
+    (void) WiFi.config(ip, gateway, mask, dns1, dns2);
+  }
+  else
+  {
+    (void) WiFi.config(0, 0, 0);
+  }
   (void) WiFi.begin(ESAT_WifiConfiguration.networkSSID,
                     ESAT_WifiConfiguration.networkPassphrase);
+  (void) WiFi.hostname(ESAT_WifiConfiguration.hostname);
   connectionState = WAITING_FOR_NETWORK_CONNECTION;
   networkConnectionStartTimeMilliseconds = millis();
 }

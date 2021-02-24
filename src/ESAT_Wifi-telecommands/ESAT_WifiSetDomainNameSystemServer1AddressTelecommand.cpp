@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -18,25 +18,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
-#include "ESAT_Wifi.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDomainNameSystemServer1AddressTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
-boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+boolean ESAT_WifiSetDomainNameSystemServer1AddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
-  const byte identifier = packet.readByte();
-  if (packet.triedToReadBeyondLength())
-  {
-    (void) identifier; // Unused.
-    return false;
-  }
-  else
-  {
-    ESAT_Wifi.disableTelemetry(identifier);
-    ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
-    ESAT_WifiConfiguration.writeEnabledTelemetry();
-    return true;
-  }
+  ESAT_Buffer domainNameSystemServer1Address((byte*) ESAT_WifiConfiguration.domainNameSystemServer1Address,
+                                             sizeof(ESAT_WifiConfiguration.domainNameSystemServer1Address));
+  (void) domainNameSystemServer1Address.readFrom(packet, domainNameSystemServer1Address.capacity());
+  return true;
 }
 
-ESAT_WifiDisableTelemetryTelecommandClass ESAT_WifiDisableTelemetryTelecommand;
+ESAT_WifiSetDomainNameSystemServer1AddressTelecommandClass ESAT_WifiSetDomainNameSystemServer1AddressTelecommand;

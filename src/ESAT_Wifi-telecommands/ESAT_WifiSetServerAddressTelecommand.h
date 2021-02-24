@@ -56,7 +56,7 @@ class ESAT_WifiSetServerAddressTelecommandClass: public ESAT_CCSDSTelecommandPac
 };
 
 // Global instance of ESAT_WifiSetServerAddressTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetServerAddressTelecommandClass ESAT_WifiSetServerAddressTelecommand;
 
 #endif /* ESAT_WifiSetServerAddressTelecommand_h */

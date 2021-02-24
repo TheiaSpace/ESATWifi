@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -18,25 +18,23 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANConfigurationTelemetry.h"
 #include "ESAT_Wifi.h"
-#include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
-boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+boolean ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
-  const byte identifier = packet.readByte();
-  if (packet.triedToReadBeyondLength())
+  if (packet.readBoolean())
   {
-    (void) identifier; // Unused.
-    return false;
+    ESAT_WifiWLANConfigurationTelemetry.enablePermanentDelivery();
+    (void) packet.readWord();
   }
   else
   {
-    ESAT_Wifi.disableTelemetry(identifier);
-    ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
-    ESAT_WifiConfiguration.writeEnabledTelemetry();
-    return true;
+    ESAT_WifiWLANConfigurationTelemetry.disablePermanentDelivery();
+    ESAT_WifiWLANConfigurationTelemetry.setRemainingDeliveries(packet.readWord());
   }
+  return true;
 }
 
-ESAT_WifiDisableTelemetryTelecommandClass ESAT_WifiDisableTelemetryTelecommand;
+ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommandClass ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand;

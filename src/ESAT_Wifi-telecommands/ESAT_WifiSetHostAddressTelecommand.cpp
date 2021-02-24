@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -18,25 +18,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
-#include "ESAT_Wifi.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetHostAddressTelecommand.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 
-boolean ESAT_WifiDisableTelemetryTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
+boolean ESAT_WifiSetHostAddressTelecommandClass::handleUserData(ESAT_CCSDSPacket packet)
 {
-  const byte identifier = packet.readByte();
-  if (packet.triedToReadBeyondLength())
-  {
-    (void) identifier; // Unused.
-    return false;
-  }
-  else
-  {
-    ESAT_Wifi.disableTelemetry(identifier);
-    ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
-    ESAT_WifiConfiguration.writeEnabledTelemetry();
-    return true;
-  }
+  ESAT_Buffer hostAddress((byte*) ESAT_WifiConfiguration.hostAddress,
+                          sizeof(ESAT_WifiConfiguration.hostAddress));
+  (void) hostAddress.readFrom(packet, hostAddress.capacity());
+  return true;
 }
 
-ESAT_WifiDisableTelemetryTelecommandClass ESAT_WifiDisableTelemetryTelecommand;
+ESAT_WifiSetHostAddressTelecommandClass ESAT_WifiSetHostAddressTelecommand;

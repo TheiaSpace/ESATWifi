@@ -1,6 +1,6 @@
 ESATWifi NEWS -- history of changes.
 
-Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2018, 2019, 2021 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT utility library.
 
@@ -17,6 +17,19 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Theia Space's ESAT Wifi library.  If not, see
 <http://www.gnu.org/licenses/>.
+
+
+* Changes in ESATWifi 2.2, 2021-02-11
+
+** There are new on-demand WLAN, network  and transport telemetries.
+
+** Now static IP mode is supported.
+
+** A standalone self-processing telecommands and radio telemetry 
+delivery mode is available for debugging purposes.
+
+** The telemetry enable value is persistent beyond power resets for
+packets with number > 0 (0 always start enabled).
 
 
 * Changes in ESATWifi 2.1.1, 2019-04-30

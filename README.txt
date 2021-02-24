@@ -1,4 +1,4 @@
-Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2017, 2018, 2019, 2021 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT Wifi library.
 
@@ -17,7 +17,7 @@ along with Theia Space's ESAT EPS library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-ESAT Wifi library version 2.1.1.
+ESAT Wifi library version 2.2.0
 
 Wifi communications subsystem for ESAT.
 

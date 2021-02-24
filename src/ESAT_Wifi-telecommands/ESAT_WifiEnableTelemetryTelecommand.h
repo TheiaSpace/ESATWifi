@@ -56,7 +56,7 @@ class ESAT_WifiEnableTelemetryTelecommandClass: public ESAT_CCSDSTelecommandPack
 };
 
 // Global instance of ESAT_WifiEnableTelemetryTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiEnableTelemetryTelecommandClass ESAT_WifiEnableTelemetryTelecommand;
 
 #endif /* ESAT_WifiEnableTelemetryTelecommand_h */

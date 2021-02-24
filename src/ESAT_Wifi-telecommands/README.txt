@@ -1,4 +1,4 @@
-Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+﻿Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT Wifi library.
 
@@ -35,16 +35,16 @@ Telecommand handler for WIFI_DISCONNECT (0x01): disconnect from the
 network and ground station server.
 
 
-# ESAT_WifiSetNetworkPassphraseTelecommand
-
-Telecommand handler for WIFI_SET_NETWORK_PASSPHRASE (0x11): set the
-network passphrase.
-
-
 # ESAT_WifiSetNetworkSSIDTelecommand
 
 Telecommand handler for WIFI_SET_NETWORK_SSID (0x10): set the network
 SSID.
+
+
+# ESAT_WifiSetNetworkPassphraseTelecommand
+
+Telecommand handler for WIFI_SET_NETWORK_PASSPHRASE (0x11): set the
+network passphrase.
 
 
 # ESAT_WifiSetServerAddressTelecommand
@@ -59,16 +59,64 @@ Telecommand handler for WIFI_SET_SERVER_PORT (0x13): set the
 server port.
 
 
+# ESAT_WifiSetHostAddressTelecommand
+
+Telecommand handler for WIFI_SET_HOST_ADDRESS (0x14): set the
+static host IP address.
+
+
+# ESAT_WifiSetSubnetMaskTelecommand
+
+Telecommand handler for WIFI_SET_SUBNET_MASK (0x15): set the
+static subnet mask.
+
+
+# ESAT_WifiSetGatewayAddressTelecommand
+
+Telecommand handler for WIFI_SET_GATEWAY_ADDRESS (0x16): set the
+static default gateway IP address.
+
+
+# ESAT_WifiSetDomainNameSystemServer1AddressTelecommand
+
+Telecommand handler for WIFI_SET_DOMAIN_NAME_SYSTEM_SERVER_1_ADDRESS (0x17): set the
+domain name system server 1 IP address.
+
+
+# ESAT_WifiSetDomainNameSystemServer2AddressTelecommand
+
+Telecommand handler for WIFI_SET_DOMAIN_NAME_SYSTEM_SERVER_2_ADDRESS (0x18): set the
+domain name system server 2 IP address.
+
+
+# ESAT_WifiSetHostnameTelecommand
+
+Telecommand handler for WIFI_SET_HOSTNAME (0x19): set the
+hostname.
+
+
+# ESAT_WifiSetDHCPModeTelecommand
+
+Telecommand handler for  WIFI_SET_DHCP_MODE (0x1A): set the
+wifi IP address configuration to dynamic.
+
+
+# ESAT_WifiSetStaticIPModeTelecommand
+
+Telecommand handler for  WIFI_SET_STATIC_IP_MODE (0x1B): set the
+wifi IP address configuration to static (user defined).
+
+
 # ESAT_WifiReadConfigurationTelecommand
 
-Telecommand handler for WIFI_READ_CONFIGURATION (0x20): read the
-configuration.
+Telecommand handler for WIFI_READ_CONFIGURATION (0x20): load the
+wifi settings from non-volatile memory.
 
 
 # ESAT_WifiWriteConfigurationTelecommand
 
-Telecommand handler for WIFI_WRITE_CONFIGURATION (0x21): write the
-configuration.
+Telecommand handler for WIFI_WRITE_CONFIGURATION (0x21): save the
+wifi settings to non-volatile memory.
 
 
 # ESAT_WifiSetTimeTelecommand
@@ -76,13 +124,43 @@ configuration.
 Telecommand handler for WIFI_SET_TIME (0x30): set the real-time clock.
 
 
-# ESAT_EnableTelemetryTelecommand
+# ESAT_WifiEnableTelemetryTelecommand
 
 Telecommand handler for WIFI_ENABLE_TELEMETRY (0x40): enable the
 generation of a telemetry packet.
 
 
-# ESAT_DisableTelemetryTelecommand
+# ESAT_WifiDisableTelemetryTelecommand
 
 Telecommand handler for WIFI_DISABLE_TELEMETRY (0x41): disable the
 generation of a telemetry packet.
+
+
+# ESAT_WifiEnableStandaloneModeTelecommand
+
+Telecommand handler for WIFI_ENABLE_STANDALONE_MODE (0x42): enable the
+wifi telecommands and telemetry self handling witout OBC.
+
+
+# ESAT_WifiDisableStandaloneModeTelecommand
+
+Telecommand handler for WIFI_DISABLE_STANDALONE_MODE (0x43): disable the
+wifi telecommands and telemetry self handling witout OBC.
+
+
+# ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand
+
+Telecommand handler for WIFI_CONFIGURE_HOSTNAME_TELEMETRY_DELIVERY (0x44): set the
+delivery mode (continous or under request) of HOSTNAME_TELEMETRY packet.
+
+
+# ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand
+
+Telecommand handler for WIFI_CONFIGURE_WLAN_CONFIGURATION_TELEMETRY_DELIVERY (0x45): set the
+delivery mode (continous or under request) of WLAN_CONFIGURATION_TELEMETRY packet.
+
+# ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand
+
+Telecommand handler for WIFI_CONFIGURE_NETWORK_AND_TRANSPORT_INFORMATION_TELEMETRY_DELIVERY (0x46): set the
+delivery mode (continous or under request) of NETWORK_AND_TRANSPORT_CONFIGURATION_TELEMETRY packet.
+

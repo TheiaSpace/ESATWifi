@@ -56,7 +56,7 @@ class ESAT_WifiSetNetworkPassphraseTelecommandClass: public ESAT_CCSDSTelecomman
 };
 
 // Global instance of ESAT_WifiSetNetworkPassphraseTelecommandClass.
-// Used by ESAT_WifiSubsystem.
+// Used by ESAT_Wifi.
 extern ESAT_WifiSetNetworkPassphraseTelecommandClass ESAT_WifiSetNetworkPassphraseTelecommand;
 
 #endif /* ESAT_WifiSetNetworkPassphraseTelecommand_h */

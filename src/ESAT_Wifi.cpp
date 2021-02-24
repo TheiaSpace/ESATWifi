@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Wifi library.
  *
@@ -21,18 +21,36 @@
 #include "ESAT_Wifi.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiConfiguration.h"
 #include "ESAT_Wifi-hardware/ESAT_WifiRadio.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiConnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiDisableStandaloneModeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisableTelemetryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiDisconnectTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiEnableStandaloneModeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiEnableTelemetryTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiReadConfigurationTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDHCPModeTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDomainNameSystemServer1AddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetDomainNameSystemServer2AddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetGatewayAddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetHostAddressTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetHostnameTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkPassphraseTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetNetworkSSIDTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerAddressTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetServerPortTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetStaticIPModeTelecommand.h"
+#include "ESAT_Wifi-telecommands/ESAT_WifiSetSubnetMaskTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiSetTimeTelecommand.h"
 #include "ESAT_Wifi-telecommands/ESAT_WifiWriteConfigurationTelecommand.h"
 #include "ESAT_Wifi-telemetry/ESAT_WifiConnectionStateTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiHostnameTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiNetworkAndTransportConfigurationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANConfigurationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANConfigurationTelemetry.h"
+#include "ESAT_Wifi-telemetry/ESAT_WifiWLANStatusTelemetry.h"
 #include <ESAT_Buffer.h>
 #include <ESAT_CCSDSPacketToKISSFrameWriter.h>
 
@@ -44,7 +62,11 @@ void ESAT_WifiClass::addTelecommand(ESAT_CCSDSTelecommandPacketHandler& telecomm
 void ESAT_WifiClass::addTelemetry(ESAT_CCSDSTelemetryPacketContents& telemetry)
 {
   telemetryPacketBuilder.add(telemetry);
-  enableTelemetry(telemetry.packetIdentifier());
+}
+
+boolean ESAT_WifiClass::areWifiRadioTelecommandsSelfProcessingEnabled()
+{
+  return areWifiRadioTelecommandsSelfProcessed;
 }
 
 void ESAT_WifiClass::begin(byte radioBuffer[],
@@ -53,6 +75,7 @@ void ESAT_WifiClass::begin(byte radioBuffer[],
                            const unsigned long serialBufferLength,
                            const byte networkConnectionTimeoutSeconds)
 {
+  beginSoftware();
   beginTelemetry();
   beginTelecommands();
   beginHardware(radioBuffer,
@@ -68,8 +91,6 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
                                    const unsigned long serialBufferLength,
                                    const byte networkConnectionTimeoutSeconds)
 {
-  ESAT_WifiConfiguration.begin();
-  ESAT_WifiConfiguration.readConfiguration();
   ESAT_WifiRadio.begin(radioBuffer,
                        radioBufferLength,
                        networkConnectionTimeoutSeconds);
@@ -90,35 +111,83 @@ void ESAT_WifiClass::beginHardware(byte radioBuffer[],
                   FALLING);
 }
 
+void ESAT_WifiClass::beginSoftware()
+{
+  ESAT_WifiConfiguration.begin();
+  ESAT_WifiConfiguration.readConfiguration();
+  areWifiRadioTelecommandsSelfProcessed = false;
+  isTelemetryEnabledOnWifiRadio = false;
+}
+
 void ESAT_WifiClass::beginTelecommands()
 {
+  addTelecommand(ESAT_WifiConfigureHostnameTelemetryDeliveryTelecommand);
+  addTelecommand(ESAT_WifiConfigureNetworkAndTransportConfigurationTelemetryDeliveryTelecommand);
+  addTelecommand(ESAT_WifiConfigureWLANConfigurationTelemetryDeliveryTelecommand);
   addTelecommand(ESAT_WifiConnectTelecommand);
   addTelecommand(ESAT_WifiDisconnectTelecommand);
+  addTelecommand(ESAT_WifiSetDHCPModeTelecommand);
+  addTelecommand(ESAT_WifiSetDomainNameSystemServer1AddressTelecommand);
+  addTelecommand(ESAT_WifiSetDomainNameSystemServer2AddressTelecommand);
+  addTelecommand(ESAT_WifiSetGatewayAddressTelecommand);
+  addTelecommand(ESAT_WifiSetHostAddressTelecommand);
+  addTelecommand(ESAT_WifiSetHostnameTelecommand);
   addTelecommand(ESAT_WifiSetNetworkSSIDTelecommand);
   addTelecommand(ESAT_WifiSetNetworkPassphraseTelecommand);
   addTelecommand(ESAT_WifiSetServerAddressTelecommand);
   addTelecommand(ESAT_WifiSetServerPortTelecommand);
+  addTelecommand(ESAT_WifiSetStaticIPModeTelecommand);
+  addTelecommand(ESAT_WifiSetSubnetMaskTelecommand);
   addTelecommand(ESAT_WifiReadConfigurationTelecommand);
   addTelecommand(ESAT_WifiWriteConfigurationTelecommand);
   addTelecommand(ESAT_WifiSetTimeTelecommand);
   addTelecommand(ESAT_WifiEnableTelemetryTelecommand);
   addTelecommand(ESAT_WifiDisableTelemetryTelecommand);
+  addTelecommand(ESAT_WifiEnableStandaloneModeTelecommand);
+  addTelecommand(ESAT_WifiDisableStandaloneModeTelecommand);
 }
 
 void ESAT_WifiClass::beginTelemetry()
 {
   addTelemetry(ESAT_WifiConnectionStateTelemetry);
   enableTelemetry(ESAT_WifiConnectionStateTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiWLANStatusTelemetry);
+  addTelemetry(ESAT_WifiWLANConfigurationTelemetry);
+  enableTelemetry(ESAT_WifiWLANConfigurationTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry);
+  enableTelemetry(ESAT_WifiNetworkAndTransportConfigurationTelemetry.packetIdentifier());
+  addTelemetry(ESAT_WifiHostnameTelemetry);
+  enableTelemetry(ESAT_WifiHostnameTelemetry.packetIdentifier());
+}
+
+void ESAT_WifiClass::disableSelfProcessingWifiTelecommands()
+{
+  areWifiRadioTelecommandsSelfProcessed = false;
 }
 
 void ESAT_WifiClass::disableTelemetry(const byte identifier)
 {
-  enabledTelemetry.clear(identifier);
+  ESAT_WifiConfiguration.enabledTelemetry.clear(identifier);
+}
+
+void ESAT_WifiClass::disableWifiTelemetryRadioDelivery()
+{
+  isTelemetryEnabledOnWifiRadio = false;
+}
+
+void ESAT_WifiClass::enableSelfProcessingWifiTelecommands()
+{
+  areWifiRadioTelecommandsSelfProcessed = true;
 }
 
 void ESAT_WifiClass::enableTelemetry(const byte identifier)
 {
-  enabledTelemetry.set(identifier);
+  ESAT_WifiConfiguration.enabledTelemetry.set(identifier);
+}
+
+void ESAT_WifiClass::enableWifiTelemetryRadioDelivery()
+{
+  isTelemetryEnabledOnWifiRadio = true;
 }
 
 void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
@@ -126,6 +195,16 @@ void ESAT_WifiClass::handleTelecommand(ESAT_CCSDSPacket& packet)
   // We hide the complexity of handling telecommands with a
   // telecommand packet dispatcher.
   (void) telecommandPacketDispatcher.dispatch(packet);
+}
+
+boolean ESAT_WifiClass::isWifiTelecommand(ESAT_CCSDSPacket& packet)
+{
+  return telecommandPacketDispatcher.compatiblePacket(packet);
+}
+
+boolean ESAT_WifiClass::isWifiTelemetryRadioDeliveryEnabled()
+{
+	return isTelemetryEnabledOnWifiRadio;
 }
 
 boolean ESAT_WifiClass::readPacketFromRadio(ESAT_CCSDSPacket& packet)
@@ -159,7 +238,7 @@ void ESAT_WifiClass::resetTelemetryQueue()
 {
   ESAT_Wifi.pendingTelemetry =
     (ESAT_Wifi.pendingTelemetry | ESAT_Wifi.telemetryPacketBuilder.available())
-    & ESAT_Wifi.enabledTelemetry;
+    & ESAT_WifiConfiguration.enabledTelemetry;
 }
 
 void ESAT_WifiClass::signalTelemetryQueueReset()
